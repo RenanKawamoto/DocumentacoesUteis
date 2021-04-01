@@ -257,6 +257,7 @@ Para recuperar dados de uma tabela, a tabela é consultada. Uma instrução SQL 
     =>SELECT nome, idade, dinheiro FROM pessoa;
 ~~~
 *Resultado desse select:*
+
 ![img3](https://uploaddeimagens.com.br/images/003/177/012/full/img3.png?1617224105)
 
 *Nesse caso a linha que tem o nome "Joao", não foi passado algumas colunas, por isso estão vazias.*
@@ -280,6 +281,7 @@ Uma consulta pode ser “ qualificada ” adicionando uma cláusula WHERE que es
     =>SELECT nome, idade FROM pessoa WHERE idade > 10;
 ~~~
 *Resultado desse select:*
+
 ![img5](https://uploaddeimagens.com.br/images/003/177/044/full/img5.png?1617225304)
 
 - Ordenando SELECT (ORDER BY):
@@ -290,6 +292,7 @@ Você pode solicitar que os resultados de uma consulta sejam retornados em ordem
     =>SELECT nome, idade FROM pessoa ORDER BY nome;
 ~~~
 *Resultado desse select:*
+
 ![img6](https://uploaddeimagens.com.br/images/003/177/046/full/img6.png?1617225519)
 
 OBS: Nesse sentido, caso você deseje ordernar levando mais de uma coluna em consideração, você pode utilizado a seguinte estrutura (...ORDER BY nome, idade, dinheiro;)(ao ordenar dessa maneira, será levado em consideração a ordem das colunas).
@@ -303,6 +306,7 @@ Você pode solicitar que linhas duplicadas sejam removidas do resultado de uma c
 ~~~
 
 *Resultado desse select:*
+
 ![img7](https://uploaddeimagens.com.br/images/003/177/080/full/img7.png?1617227095)
 
 OBS: Esse comando pode ser utilizado em conjunto com o ORDER BY.
