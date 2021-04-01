@@ -271,6 +271,7 @@ Para recuperar dados de uma tabela, a tabela é consultada. Uma instrução SQL 
 Alido a isso existe o comando `AS` que tem a função de nomear essa nova coluna que será gerada da expressão (sendo assim, ela é opcional).
 
 *Resultado desse select:*
+
 ![img4](https://uploaddeimagens.com.br/images/003/177/038/full/img4.png?1617224877)
 
 - Utilizando WHERE:
