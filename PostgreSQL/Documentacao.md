@@ -306,3 +306,19 @@ Você pode solicitar que linhas duplicadas sejam removidas do resultado de uma c
 ![img7](https://uploaddeimagens.com.br/images/003/177/080/full/img7.png?1617227095)
 
 OBS: Esse comando pode ser utilizado em conjunto com o ORDER BY.
+
+
+--------------------------------------------------
+
+## *-Associações entre tabelas (Consulta de junção):*
+Até agora, nossas consultas acessaram apenas uma tabela por vez. Porém essas podem acessar várias tabelas de uma vez ou acessar a mesma tabela de forma que várias linhas da tabela sejam processadas ao mesmo tempo. Uma consulta que acessa várias linhas da mesma tabela ou de tabelas diferentes ao mesmo tempo é chamada de `consulta de junção`.
+
+OBS: Para melhor entendimento dos exemplos que se seguem, entenda que crie duas tabelas / 1°- pessoa (nome varchar(200), idade int, dinheiro real, data_de_nascimento date, mora varchar(200), bairro varchar(200)) 2° - endereco (rua varchar(200), bairo varchar(200), cidade varchar(100), numero int)
+
+Exemplo dessa consulta:
+~~~SQL
+    => SELECT * FROM pessoa, endereco WHERE pessoa.bairro = endereco.bairro;
+~~~
+OBS: Nesse exemplo utilizo o pessoa.bairro = endereco.bairro, pois ambas as tabelas tem colunas bairro com mesmo nome, assim é possível diferencia-las, porem com colunas distintas não a necessidade de utilizar essa sintaxe.
+
+
