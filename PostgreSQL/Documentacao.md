@@ -166,6 +166,11 @@ Cada tabela é uma coleção nomeada de `linhas`. Cada linha de uma determinada 
 
 As tabelas são agrupadas em `bancos de dados` e uma `coleção de bancos de dados gerenciados por uma única instância do servidor PostgreSQL` constitui um `cluster de banco de dados`.
 
+OBS: todos os comandos passados aqui podem ser colocados em um arquivo .sql (CASO FAÇA ISSO, É NECESSÁRIO RODA-LOS COM O COMANDO:)
+~~~SQL
+    psql -U ``usuario´´ -d database -f ``nomeDoArquivo.sql´´
+~~~
+
 --------------------------------------------------
 
 <div id="cdtabelas"></div>
@@ -198,6 +203,39 @@ OBS: O PostgreSQL pode ser personalizado com um número arbitrário de tipos de 
 
 --------------------------------------------------
 
+## *-Criando uma propriedade primary key em uma tabela:*
+
+~~~
+    => CREATE TABLE pessoa
+    (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100)
+    );
+~~~
+
+--------------------------------------------------
+
+## *-Criando uma propriedade foreign key em uma tabela:*
+Uma foreign key é um atributo que possui a função de gerar uma ligação entre tabelas através das primary keys, assim você pode acessar informações de outras tabelas por essa conexão.
+
+~~~SQL
+    => CREATE TABLE pessoa
+    (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100),
+        nomeDaTabelaNoSingular_id INT,
+        CONSTRAINT fk_nomeDaTabelaReferenciadaNoSingular
+        FOREIGN KEY (nomeDaTabelaReferenciadaNoSingular_id) REFERENCES nomeDaTabelaReferenciadaNoPlura(colunaDaPrimaryKey)
+    );
+~~~
+
+OBS: O `CONSTRAINT` UTILIZADO NESSE CÓDIGO SE TRATA DE UMA FORMA DE SIMPLIFICAR OS SELECTS FUTURAMENTE.
+
+
+
+
+--------------------------------------------------
+
 <div id="idadostabela"></div>
 
 ## *-Inserindo dados em uma tabela:*
@@ -212,7 +250,7 @@ As constantes que não são valores numéricos simples geralmente devem estar en
 *Explicando:*
 Esse comando irá inserir dentro da tabela "pessoa", os valores passados entre os (), onde eles seguem a ordem padrão difinida ao criar essa tabela.
 
-
+**OBS:** CASO VOCÊ DESEJE INSERIR EM UMA TABELA E NÃO QUEIRA PASSAR O ID, BASTA COLOCAR `"VALUES(DEFAULT, ...)"`
 
 **OBS:** CASO VOCÊ NÃO COLOQUE UM ELEMENTO PARA SER INSERIDO NA COLUNA ELE IRÁ VAZIO.
 
