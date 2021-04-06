@@ -14,6 +14,8 @@
 6. [Como dropar um banco de dados](#dropdb)
 7. [Linguagem SQL](#sql)
     1. [Criando e dropando tabelas](#cdtabelas)
+    2. [Criando propriedade primary key](#primary)
+    3. [Criando propriedade foreign key](#fk)
     2. [Inserindo dados em uma tabela (INSET VALUE)](#idadostabela)
     3. [Copiando tabela para um arquivo](#ctabelaparquivo)
     4. [Consultando uma tabela, de maneira simples (SELECT)](#stabela)
@@ -133,7 +135,7 @@ Explicando o comando:
 
 **Para criar dentro do psql:**
 ~~~
-    => 
+    => CREATE DATABASE ``nomeDoBanco´´;
 ~~~
 
 OBS: O PostgreSQL permite que você crie qualquer número de bancos de dados em um determinado site. Os nomes dos bancos de dados devem ter um primeiro caractere alfabético e são limitados a 63 bytes de comprimento. Uma escolha conveniente é criar um banco de dados com o mesmo nome de seu nome de usuário atual. Muitas ferramentas assumem esse nome de banco de dados como o padrão, de modo que você pode economizar um pouco de digitação.
@@ -151,14 +153,14 @@ OBS: O PostgreSQL permite que você crie qualquer número de bancos de dados em 
 
 **Para dropar dentro do psql:**
 ~~~
-    => 
+    => DROP DATABASE ``nomeDoBanco´´;
 ~~~
 --------------------------------------------------
 --------------------------------------------------
 
 <div id="sql"></div>
 
-## **-A linguagem SQL:**
+## **`-A linguagem SQL:`**
 ## *-Conceitos:*
 PostgreSQL é um sistema de gerenciamento de banco de dados relacional ( RDBMS ). Isso significa que é um sistema de gerenciamento de dados armazenados nas relações. Relação é essencialmente um termo matemático para `tabelas (tables)`.
 
@@ -203,6 +205,8 @@ OBS: O PostgreSQL pode ser personalizado com um número arbitrário de tipos de 
 
 --------------------------------------------------
 
+<div id="primary"></div>
+
 ## *-Criando uma propriedade primary key em uma tabela:*
 
 ~~~
@@ -214,6 +218,8 @@ OBS: O PostgreSQL pode ser personalizado com um número arbitrário de tipos de 
 ~~~
 
 --------------------------------------------------
+
+<div id="fk"></div>
 
 ## *-Criando uma propriedade foreign key em uma tabela:*
 Uma foreign key é um atributo que possui a função de gerar uma ligação entre tabelas através das primary keys, assim você pode acessar informações de outras tabelas por essa conexão.
@@ -349,7 +355,7 @@ Você pode solicitar que linhas duplicadas sejam removidas do resultado de uma c
 ![img7](https://uploaddeimagens.com.br/images/003/177/080/full/img7.png?1617227095)
 
 OBS: Esse comando pode ser utilizado em conjunto com o ORDER BY.
-<<<<<<< HEAD
+
 
 
 --------------------------------------------------
@@ -365,5 +371,107 @@ Exemplo dessa consulta:
 ~~~
 OBS: Nesse exemplo utilizo o pessoa.bairro = endereco.bairro, pois ambas as tabelas tem colunas bairro com mesmo nome, assim é possível diferencia-las, porem com colunas distintas não a necessidade de utilizar essa sintaxe.
 
+### **-Outra maneira de fazer essa consulta:**
 
-=======
+~~~SQL
+    => SELECT * FROM pessoa INNER JOIN endereco ON (pessoa.bairro = endereco.bairro);
+~~~
+
+### **-Junção externa a esquerda/direita:**
+
+~~~SQL
+    =>SELECT * FROM pessoa LEFT OUTER JOIN endereco ON (pessoa.bairro = endereco.bairro);
+~~~
+
+Esta consulta é chamada de junção externa a esquerda, porque a tabela mencionada à esquerda do operador de junção (JOIN) terá `em cada uma de suas linhas pelo menos uma aparição, enquanto a tabela à direita terá apenas as saídas de linhas que correspondem a alguma linha do tabela a esquerda`. Ao gerar uma linha da tabela esquerda para a qual não há correspondência da tabela direita, valores vazios (nulos) são substituídos pelas colunas da tabela direita.
+
+OBS: caso você deseje inverter para a direita, basta substituir o LEFT por RIGHT.
+
+### **-Apelidando tabelas:**
+Para apelidarmos uma tabela, basta colocar seu apelido, após sua chamada no FROM:
+
+~~~SQL
+    => SELECT p.nome FROM pessoa p;
+~~~
+
+### **-Auto-junção:**
+Isso ocorre quando fazemos um select de uma tabela com ela mesma.
+
+~~~SQL
+    => SELECT p1.nome as nome, p2.city as cidade FROM pessoa p1, pessoa p2;
+~~~
+
+--------------------------------------------------
+
+## *-Funções de agregação:*
+
+Como a maioria dos outros produtos de banco de dados relacional, o PostgreSQL oferece suporte a funções agregadas. Uma função de agregação calcula um único resultado de várias linhas de entrada. Por exemplo, existem agregados para calcular a soma de todas linhas (sum), avg(média), max(máximo) e min(mínima) ao longo de um conjunto de linhas.
+
+~~~SQL
+    => SELECT max(idade) FROM pessoas;
+~~~
+*Irá mostrar a pessoa mais velha da tabela*
+
+### **Funções de agregações:**
+* `MAX()` = A função MAX analisa um conjunto de valores e retorna o maior entre eles.
+* `MIN()` = MIN analisa um grupo de valores e retorna o menor entre eles.
+* `SUM()` = A função SUM realiza a soma dos valores em uma única coluna e retorna esse resultado.
+* `AVG()` = Com a função AVG podemos calcular a média aritmética dos valores em uma única coluna.
+* `COUNT()` = A função COUNT retorna o total de linhas selecionadas.
+
+
+
+### **-Utilizando essa funções agregadas em consultas com where:**
+
+Os agregadores não podem ser usados no WHERE de maneira simples. Essa restrição existe pois a clausula WHERE determina quais linhas serão incluidas no calculo das agregações, sendo assim ela é chamada antes dos agregadores. Porém a consulta pode ser feita utilizando uma subconsulta:
+
+~~~SQL
+    => SELECT idade FROM pessoa WHERE idade = (SELECT max(idade) FROM pessoa);
+~~~
+
+###  **-Group by dentro do select:**
+Um group by tem como função principal agrupar os elemento de acordo com uma coluna de sua tabela, sendo utilizada APENAS QUANDO HOUVER UMA FUNÇÃO AGREGADORA.
+
+~~~SQL
+    => SELECT count(name) from pessoa GROUP BY name;
+~~~
+
+OBS: Nesse caso se eu não colocar o group by toda a informação será baseada no todo, send assim terá como resultado uma informação geral.
+
+### **-Having dentro do select:**
+O having tem a função de criar uma condição para mostragem na tela.
+
+~~~SQL
+    => SELECT count(name) from pessoa HAVING count(name) < 5;
+~~~
+*Nesse caso o having ira mostrar na tela as informações que ao utilizarem a função agregadora count sejam menor que 5.*
+
+OBS: APRESENTA AS MESMAS REGRAS DO GROUP BY / E PODE SER UTILIZADO EM CONJUNTO AO GROUP BY.
+
+--------------------------------------------------
+
+## *-Atualizações:*
+
+### **-UPDATE:**
+Você pode atualizar as linhas existentes usando o comando UPDATE.
+
+~~~SQL
+    => UPDATE pessoa SET name = 'OLA' WHERE pessoa.name = 'ola';
+~~~
+
+--------------------------------------------------
+
+## *-Deleções:*
+
+### **-DELETE:**
+Você pode excluir linhas de tabelas, utilizando o comando DELETE.
+
+~~~SQL
+    => DELETE FROM pessoa WHERE id = 1;
+~~~
+
+--------------------------------------------------
+
+## **`-Caracteristics avançadas do SQL:`**
+
+
