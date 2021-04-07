@@ -492,7 +492,42 @@ As visualizações podem ser usadas em quase todos os lugares em que uma tabela 
 
 --------------------------------------------------
 
-## *Explicando um pouco mehor as foreign keys:*
+## *-Outra maneira de criar uma foreign key:*
+Podemos utilizar uma maneira diferente para definir nossas FK, sendo essa: `<nomeDoCampo> <tipo> REFERENCES <tabelaRelacionada>(<campoRelacionado>)`
+
+Exemplo:
+~~~SQL
+    CREATE TABLE cidades(
+        id serial primary key,
+        name varchar(100)
+    );
+
+    CREATE TABLE climas(
+        id serial primary key,
+        climate varchar(100),
+        cidade_id int references cidades(id)
+    );
+~~~
+
+--------------------------------------------------
+
+## *-Transações (TRANSACTIONS):*
+As transações possuem a função de rodar um código SQL somente se ele de certo por completo, se der algum erro ele não irá rodar. Para você fazer uma transaction é necessário adicionar ao inicio do seu código o termo `BEGIN;` e no final `COMMIT;`
+
+Exemplo:
+~~~SQL
+    BEGIN;
+    UPDATE people SET cpf = '11111'
+    WHERE id = 23;
+    COMMIT;
+~~~
+
+Caso você decida que não quer fazer as alterações é possível colocar a cláusula `ROLLBACK` em vez da COMMIT, assim cancelando todas as alterações.
+
+--------------------------------------------------
+
+
+
 
 
 

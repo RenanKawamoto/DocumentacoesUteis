@@ -20,6 +20,7 @@
     4. [GROUP BY](#group)
     5. [HAVING](#having)
     6. [DISTINCT](#distinct)
+6. [DQL com JOINS]()
 --------------------------------------
 
 ## **Nesse arquivo tentarei explicar de maneira breve a sintaxe utilizada no postgreSQL.**
@@ -266,3 +267,128 @@ Exemplo:
     SELECT DISTINCT nome FROM clientes;
 ~~~
 
+## *`-DQL com JOINS:`*
+
+Os joins tem a função de relacionar tabelas nas consultas.
+
+OBS: As <tabelasPrincipais> são as que não apresentam o FK, já as <tabelasDependentes> são as que apresentam o FK.
+
+#### **Tipos:**
+* INNER JOIN;
+* LEFT JOIN;
+* RIGHT JOIN;
+
+Convenções:
+~~~SQL
+    SELECT <atributos>
+    FROM
+        <tabelaPrincipal> AS p
+    <JOIN> <tabelaDependente1> AS d1 ON <ligaçãoChavePkFk>
+    <JOIN> <tabelaDependente2> AS d2 ON <ligaçãoChavePkFk>
+~~~
+
+### **INNER JOIN:**
+* É um join em que é obrigatorio ter relacionemento entre as tabelas.
+* A ligação deve ser entre constraints().
+
+Sintaxe:
+~~~SQL
+    SELECT 
+        <atributosDaTabelaPrincipal>,
+        <atributoDaTabelaDependente> AS <nomeQueDesejar>(opcional)
+    FROM
+        <tabelaDependente>
+    INNER JOIN
+        <tabelaPricipal> ON <condicional>;
+~~~
+
+Exemplo:
+~~~SQL
+    SELECT 
+        roles.name As role
+        users.id,
+    FROM
+        users
+    INNER JOIN
+        roles ON users.role_id = roles.id;
+~~~
+
+### **LEFT JOIN:**
+* Pode ter ou não relacionamento entre as tabelas;
+* Direita é a tabela principal, esquerda é a tabela dependente;
+* Os dados da esquerda são apresentado, mesmo não tendo relação.
+
+Sintaxe:
+~~~SQL
+    SELECT 
+        <atributosDaTabelaPrincipal>,
+        <atributoDaTabelaDependente> AS <nomeQueDesejar>(opcional)
+    FROM
+        <tabelaPricipal>
+        
+    LEFT JOIN
+        <tabelaDependente> ON <condicional>;
+~~~
+
+Exemplo:
+~~~SQL
+    SELECT 
+        adresses.city,
+        people.name AS nome
+    FROM
+        adresses
+    LEFT JOIN
+        people ON people.adress_id = adresses.id;
+~~~
+
+### **RIGHT JOIN:**
+* Pode ter ou não relacionamento entre as tabelas;
+* Direita é a tabela principal, esquerda é a tabela dependente;
+* Os dados da direita são apresentado, mesmo não tendo relação.
+
+Sintaxe:
+~~~SQL
+    SELECT 
+        <atributosDaTabelaPrincipal>,
+        <atributoDaTabelaDependente> AS <nomeQueDesejar>(opcional)
+    FROM
+        <tabelaPricipal>
+        
+    LEFT JOIN
+        <tabelaDependente> ON <condicional>;
+~~~
+
+Exemplo:
+~~~SQL
+    SELECT 
+        adresses.city,
+        people.name AS nome
+    FROM
+        adresses
+    RIGHT JOIN
+        people ON people.adress_id = adresses.id;
+~~~
+
+### **Subqueries:**
+* USE COM MODERAÇÃO;
+* Um SELECT que foi "embutido" em outro comando como SELECT, UPDATE, DELETE ou dentro de outra subquery.
+
+Sintaxe:
+~~~SQL
+    SELECT 
+        *
+    FROM
+        <tabela>
+    WHERE
+        <atributo> = (<OutoSelect>)
+~~~
+
+Exemplo:
+~~~SQL
+    SELECT 
+        *
+    FROM
+        people
+    WHERE 
+        people.id = (SELECT SUM(id) from people where people.id between 11 and 12);
+~~~
