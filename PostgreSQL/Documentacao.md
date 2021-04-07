@@ -472,6 +472,27 @@ Você pode excluir linhas de tabelas, utilizando o comando DELETE.
 
 --------------------------------------------------
 
-## **`-Caracteristics avançadas do SQL:`**
+## **`-Conceitos avançadas do SQL:`**
+
+## *-VIEW:*
+Suponha que a lista combinada de registros de certas tabelas seja de particular interesse para seu aplicativo, mas você não deseja digitar a consulta sempre que precisar. Você pode criar uma `view` sobre a consulta, que dá um nome à consulta ao qual você pode se referir como uma tabela comum.
+
+~~~SQL
+    => CREATE VIEW ``nomeDaView´´ AS
+        SELECT name 
+        FROM city, pessoa 
+        WHERE pessoa.name = city.name;
+
+    SELECT * FROM ``nomeDaView´´
+~~~
+
+As views permitem que você encapsule os detalhes da estrutura de suas tabelas, que podem mudar à medida que seu aplicativo evolui, por trás de interfaces consistentes.
+
+As visualizações podem ser usadas em quase todos os lugares em que uma tabela real pode ser usada. Sendo assim, construir views sobre outras views não é incomum.
+
+--------------------------------------------------
+
+## *Explicando um pouco mehor as foreign keys:*
+
 
 
