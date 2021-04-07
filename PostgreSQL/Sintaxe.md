@@ -134,7 +134,7 @@ Sintaxe:
 Exemplo:
 
 ~~~SQL
-    INSERT INTO clientes(nome, rg, cpf, dataDeNascimento) VALUES ('Pedro',00000000, 111111111, '01-01-1999');
+    INSERT INTO clientes(nome, rg, cpf, dataDeNascimento) VALUES ('Pedro','2222222', '111111111', '01-01-1999');
 ~~~
 
 <div id='update'></div>
@@ -149,7 +149,7 @@ Sintaxe:
 Exemplo:
 
 ~~~SQL
-    UPDATE clientes SET nome='Joao', dataDeNascimento='02-02-1999' WHERE cpf=111111111;
+    UPDATE clientes SET nome='Joao', dataDeNascimento='02-02-1999' WHERE cpf='111111111';
 ~~~
 
 <div id='delete'></div>
@@ -163,7 +163,7 @@ Sintaxe:
 
 Exemplo:
 ~~~SQL
-    DELETE FROM clientes WHERE cpf=111111111;
+    DELETE FROM clientes WHERE cpf='111111111';
 ~~~
 
 <div id='dql'></div>
