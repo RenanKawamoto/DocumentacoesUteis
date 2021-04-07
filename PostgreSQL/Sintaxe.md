@@ -20,7 +20,11 @@
     4. [GROUP BY](#group)
     5. [HAVING](#having)
     6. [DISTINCT](#distinct)
-6. [DQL com JOINS]()
+6. [DQL com JOINS](#dqljoin)
+    1. [INNER JOIN](#inner)
+    2. [LEFT JOIN](#left)
+    3. [RIGTH JOIN](#right)
+7. [DQL com Subqueries](#sub)
 --------------------------------------
 
 ## **Nesse arquivo tentarei explicar de maneira breve a sintaxe utilizada no postgreSQL.**
@@ -267,6 +271,8 @@ Exemplo:
     SELECT DISTINCT nome FROM clientes;
 ~~~
 
+<div id='dqljoin'></div>
+
 ## *`-DQL com JOINS:`*
 
 Os joins tem a função de relacionar tabelas nas consultas.
@@ -286,6 +292,8 @@ Convenções:
     <JOIN> <tabelaDependente1> AS d1 ON <ligaçãoChavePkFk>
     <JOIN> <tabelaDependente2> AS d2 ON <ligaçãoChavePkFk>
 ~~~
+
+<div id='inner'></div>
 
 ### **INNER JOIN:**
 * É um join em que é obrigatorio ter relacionemento entre as tabelas.
@@ -312,6 +320,8 @@ Exemplo:
     INNER JOIN
         roles ON users.role_id = roles.id;
 ~~~
+
+<div id='left'></div>
 
 ### **LEFT JOIN:**
 * Pode ter ou não relacionamento entre as tabelas;
@@ -341,6 +351,8 @@ Exemplo:
         people ON people.adress_id = adresses.id;
 ~~~
 
+<div id='right'></div>
+
 ### **RIGHT JOIN:**
 * Pode ter ou não relacionamento entre as tabelas;
 * Direita é a tabela principal, esquerda é a tabela dependente;
@@ -369,7 +381,9 @@ Exemplo:
         people ON people.adress_id = adresses.id;
 ~~~
 
-### **Subqueries:**
+<div id='sub'></div>
+
+## *`-Subqueries:`*
 * USE COM MODERAÇÃO;
 * Um SELECT que foi "embutido" em outro comando como SELECT, UPDATE, DELETE ou dentro de outra subquery.
 
