@@ -524,8 +524,22 @@ Exemplo:
 
 Caso você decida que não quer fazer as alterações é possível colocar a cláusula `ROLLBACK` em vez da COMMIT, assim cancelando todas as alterações.
 
+Alido a isso é possível transformar a transaction em algo mais fracionado através da clausula `SAVEPOINT`, que salva todas as alterações vindas antes dela em um espaço especifico, assim podemos retornar a ele ou commita-lo.
+
+Exemplo:
+~~~SQL
+    BEGIN;
+    UPDATE people SET cpf = '11111'
+    WHERE id = 23;
+    SAVEPOINT update_people;
+    UPDATE adresses SET city = 'ABC'
+    WHERE adresses.id = 15;
+    ROLLBACK TO update_people;
+~~~
+
 --------------------------------------------------
 
+## *-Funções de janela (WINDOW FUNCTIONS):*
 
 
 
