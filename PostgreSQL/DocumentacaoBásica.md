@@ -1,4 +1,4 @@
-# **-Documentação de PostgreSQL**
+# **-Documentação básica de PostgreSQL**
 --------------------------------------------------
 --------------------------------------------------
 ## *-Sumário:*
@@ -16,9 +16,19 @@
     1. [Criando e dropando tabelas](#cdtabelas)
     2. [Criando propriedade primary key](#primary)
     3. [Criando propriedade foreign key](#fk)
-    2. [Inserindo dados em uma tabela (INSET VALUE)](#idadostabela)
-    3. [Copiando tabela para um arquivo](#ctabelaparquivo)
-    4. [Consultando uma tabela, de maneira simples (SELECT)](#stabela)
+    4. [Inserindo dados em uma tabela (INSET VALUE)](#idadostabela)
+    5. [Copiando tabela para um arquivo](#ctabelaparquivo)
+    6. [Consultando uma tabela, de maneira simples (SELECT)](#stabela)
+    7. [Consulta com join](#join)
+    8. [Funções de agregacao](#agregacao)
+    9. [UPDATE](#update)
+    10. [DELETE](#delete)
+8. [Conceitos um pouco mais avançados do SQL](#avancados)
+    1. [VIEW](#view)
+    2. [FOREIGN KEY](#ofk)
+    3. [TRANSACTION](#transactions)
+    4. [WINDOW FUNCTIONS](#window)
+    5. [INHERITS](#heranca)
 --------------------------------------------------
 --------------------------------------------------
 
@@ -360,6 +370,8 @@ OBS: Esse comando pode ser utilizado em conjunto com o ORDER BY.
 
 --------------------------------------------------
 
+<div id="join"></div>
+
 ## *-Associações entre tabelas (Consulta de junção):*
 Até agora, nossas consultas acessaram apenas uma tabela por vez. Porém essas podem acessar várias tabelas de uma vez ou acessar a mesma tabela de forma que várias linhas da tabela sejam processadas ao mesmo tempo. Uma consulta que acessa várias linhas da mesma tabela ou de tabelas diferentes ao mesmo tempo é chamada de `consulta de junção`.
 
@@ -402,6 +414,8 @@ Isso ocorre quando fazemos um select de uma tabela com ela mesma.
 ~~~
 
 --------------------------------------------------
+
+<div id="agregacao"></div>
 
 ## *-Funções de agregação:*
 
@@ -450,6 +464,8 @@ OBS: APRESENTA AS MESMAS REGRAS DO GROUP BY / E PODE SER UTILIZADO EM CONJUNTO A
 
 --------------------------------------------------
 
+<div id="update"></div>
+
 ## *-Atualizações:*
 
 ### **-UPDATE:**
@@ -460,6 +476,8 @@ Você pode atualizar as linhas existentes usando o comando UPDATE.
 ~~~
 
 --------------------------------------------------
+
+<div id="delete"></div>
 
 ## *-Deleções:*
 
@@ -472,7 +490,11 @@ Você pode excluir linhas de tabelas, utilizando o comando DELETE.
 
 --------------------------------------------------
 
-## **`-Conceitos avançadas do SQL:`**
+<div id="avancados"></div>
+
+## **`-Conceitos um pouco mais avançados do SQL:`**
+
+<div id="view"></div>
 
 ## *-VIEW:*
 Suponha que a lista combinada de registros de certas tabelas seja de particular interesse para seu aplicativo, mas você não deseja digitar a consulta sempre que precisar. Você pode criar uma `view` sobre a consulta, que dá um nome à consulta ao qual você pode se referir como uma tabela comum.
@@ -492,6 +514,8 @@ As visualizações podem ser usadas em quase todos os lugares em que uma tabela 
 
 --------------------------------------------------
 
+<div id="ofk"></div>
+
 ## *-Outra maneira de criar uma foreign key:*
 Podemos utilizar uma maneira diferente para definir nossas FK, sendo essa: `<nomeDoCampo> <tipo> REFERENCES <tabelaRelacionada>(<campoRelacionado>)`
 
@@ -510,6 +534,8 @@ Exemplo:
 ~~~
 
 --------------------------------------------------
+
+<div id="transactions"></div>
 
 ## *-Transações (TRANSACTIONS):*
 As transações possuem a função de rodar um código SQL somente se ele de certo por completo, se der algum erro ele não irá rodar. Para você fazer uma transaction é necessário adicionar ao inicio do seu código o termo `BEGIN;` e no final `COMMIT;`
@@ -539,9 +565,46 @@ Exemplo:
 
 --------------------------------------------------
 
+<div id="window"></div>
+
 ## *-Funções de janela (WINDOW FUNCTIONS):*
+Uma função de janela executa um cálculo em um conjunto de linhas da tabela que estão de alguma forma relacionadas à linha atual. Isso é comparável ao tipo de cálculo que pode ser feito com uma função agregada. No entanto, as funções de janela não fazem com que as linhas sejam agrupadas em uma única linha de saída, como fariam as chamadas agregadas sem janela. Em vez disso, as linhas retêm suas identidades separadas.
+
+Sintaxe:
+~~~SQL
+    SELECT <atributo1>, <atributo2>, funçãoagregadora(<atributo3>) OVER(PARTITION BY <atributo>) FROM <tabela>;
+~~~
+
+Exemplo:
+~~~SQL
+    SELECT name, age, count(age) OVER(PARTITION BY age) FROM people;
+~~~
 
 
+--------------------------------------------------
 
+<div id="heranca"></div>
 
+## *-Herança (INHERITS):*
+
+Igualmente nas linguagens POO, o Sql aceita herança, onde uma tabela herda todas os atributos da outra:
+
+Exemplo:
+~~~SQL 
+    CREATE TABLE city(
+        name text,
+        population int
+    )
+
+    CREATE TABLE capital(
+        state varchar(2)
+    ) INHERITS (city)
+~~~
+
+Após a criação dessas tabelas, caso você deseje acessar ambas tabelas um select simples irá resolver o problema, porém caso deseje retornar apenas a tabela principal, basta utilizar o ONLY
+
+Exemplo:
+~~~SQL
+    SELECT * FROM ONLY city;
+~~~
 

@@ -116,7 +116,7 @@ Exemplo:
 
 Como devem ser usados:
 ~~~SQL
-    AVG(campoDaTabela)
+    SELECT AVG(campoDaTabela) FROM tabela;
 ~~~
 OBS: Caso queira usar outra função agregada basta trocar seu nome e permanecer o ().
 
