@@ -18,7 +18,7 @@ Além disso, **comentários podem ocorrer na entrada SQL. Eles não são tokens,
 
 -------------------------------------------
 
-### **1.1: Identificadores e palavras-chave (Identifiers and Key Words):**
+### **`1.1: Identificadores e palavras-chave (Identifiers and Key Words):`**
 
 * Tokens como *SELECT, DELETE, DROP, VALUES, etc* são as chamadas **palavras-chave(key words)**.
 
@@ -28,7 +28,7 @@ Além disso, **comentários podem ocorrer na entrada SQL. Eles não são tokens,
 
 Palavras-chave e identificadores têm a mesma estrutura lexical, o que significa que não se pode saber se um token é um identificador ou uma palavra-chave sem conhecer o idioma.
 
-### *-Padrão para nomear um identificado:*
+### *`-Padrão para nomear um identificado:`*
 
 **Identificadores SQL e palavras-chave devem começar com uma letra ( a - z) ou um sublinhado ( _ ). Os caracteres subsequentes em um identificador ou palavra-chave podem ser letras, sublinhados, dígitos ( 0 - 9)** ou cifrões ( $ ). Observe que **cifrões não são permitidos em identificadores de acordo com a letra do padrão SQL, portanto, seu uso pode tornar os aplicativos menos portáveis**. O padrão SQL não definirá uma palavra-chave que contenha dígitos ou comece ou termine com um sublinhado, portanto, os identificadores dessa forma estão protegidos contra possíveis conflitos com extensões futuras do padrão.
 
@@ -36,9 +36,9 @@ Palavras-chave e identificadores têm a mesma estrutura lexical, o que significa
 
 **Palavras-chave e identificadores sem aspas não diferenciam maiúsculas de minúsculas.**
 
-### <span style="color:#90FF90">*-Convenção:*</span>
+### *`-Convenção:`*
 
-**Uma convenção frequentemente usada é escrever palavras-chave em maiúsculas e nomes em minúsculas**
+Uma convenção frequentemente usada é escrever **palavras-chave em maiúsculas e nomes em minúsculas**
 
 ### *-Identificador delimitado/entre aspas:*
 
