@@ -1,35 +1,87 @@
 # **Sintaxe básica SQL:**
 
 ## **Sumário:**
-1. [O que é SQL, DML e DQL](#significado)
-2. [Operadores](#operadores)
+1. [Comandos do PSQL](#psql)
+2. [O que é SQL, DML e DQL](#significado)
+3. [Operadores](#operadores)
     1. [Lógicos](#logicos)
     2. [Relacionais](#relacionais)
     3. [BETWEEN](#between)
     4. [LIKE](#like)
     5. [IN](#in)
-3. [Funções de agregação](#agregacao)
-4. [DML](#dml)
+4. [Funções de agregação](#agregacao)
+5. [DML Básico](#dml)
     1. [INSERT](#insert)
     2. [UPDATE](#update)
     3. [DELETE](#delete)
-5. [DQL](#dql)
+6. [DQL Básico](#dql)
     1. [SELECT](#select)
     2. [WHERE](#where)
     3. [ORDER BY](#order)
     4. [GROUP BY](#group)
     5. [HAVING](#having)
     6. [DISTINCT](#distinct)
-6. [DQL com JOINS](#dqljoin)
+7. [DQL com JOINS](#dqljoin)
     1. [INNER JOIN](#inner)
     2. [LEFT JOIN](#left)
     3. [RIGTH JOIN](#right)
-7. [DQL com Subqueries](#sub)
+8. [DQL com Subqueries](#sub)
+9. [Criando foreign key](#fk)
+10. [DML: TRANSACTIONS](#transactions)
 --------------------------------------
 
 ## **Nesse arquivo tentarei explicar de maneira breve a sintaxe utilizada no postgreSQL.**
 
 --------------------------------------
+
+<div id='psql'></div>
+
+## *`-Comandos uteis do psql:`*
+
+Caso você não esteja utilizando o postegreSql com psql, pode pular essa sessão.
+
+### **Logar em um banco de dados:**
+
+Sintaxe:
+~~~
+    psql -U <nomeDoUsuario> -d <nomeDoBancoDeDados> -p <porta> -h <host>
+~~~
+*Nesse caso tudo que possui **-** antes de uma letra é uma **flag**(um argumento para o psql).*
+
+OBS: Caso você não passe o -d ele irá entrar no data base padrão, o postgres / E caso você não passe o -U ele tentará entrar como o usuario da sua maquina.
+
+Exemplo:
+~~~
+    psql -U postgres -d bancoDeTeste -p 5433 -h localhost
+~~~
+
+### **Dentro do psql, como ver os bancos:**
+
+Sintaxe:
+~~~
+    \ls
+~~~
+
+### **Dentro do psql, como ver as tabelas:**
+
+Sintaxe:
+~~~
+    \dt
+~~~
+
+### **Dentro do psql, como ver as tabelas, sequencias e views:**
+
+Sintaxe:
+~~~
+    \d
+~~~
+
+### **Dentro do psql, como ver sair:**
+
+Sintaxe:
+~~~
+    \q
+~~~
 
 <div id='significado'></div>
 
@@ -406,3 +458,130 @@ Exemplo:
     WHERE 
         people.id = (SELECT SUM(id) from people where people.id between 11 and 12);
 ~~~
+
+<div id='fk'></div>
+
+## *`-Foreign key:`*
+São chaves, vindas de outras tabelas, que fazem uma ligação simples.
+
+Sintaxe:
+~~~SQL
+    CREATE TABLE <nomeDaTabela>
+    (
+        <nomeDasPropriedades> <tipoDasPropriedasdes>,
+        <nomeDaForeignKey_id> <tipoDaForeignKey>
+
+        FOREIGN KEY (<nomeDaForeignKey_id>) REFERENCES <nomeDaTabelaQueAForeignKeyVeio>(<colunaDaPrimaryKey>)
+    );
+~~~
+
+Exemplo:
+~~~SQL
+    CREATE TABLE people
+    (
+        name VARCHAR(100),
+        address_id int
+
+        FOREIGN KEY (address_id) REFERENCES adresses (id)
+    );
+~~~
+
+<div id='transactions'></div>
+
+## *`-TRANSACTIONS:`*
+As transações possuem a função de rodar um código SQL somente se ele de certo por completo, se der algum erro ele não irá rodar.
+
+Sintaxe:
+~~~SQL
+    BEGIN;
+    <alteracao>
+    <condicional>;
+    COMMIT;
+~~~
+
+Exemplo:
+~~~SQL
+    BEGIN;
+    UPDATE people SET cpf = '11111'
+    WHERE id = 23;
+    COMMIT;
+~~~
+
+### **ROLL BACK:**
+Caso você decida que não quer fazer as alterações é possível colocar a cláusula `ROLLBACK` em vez da COMMIT, assim cancelando todas as alterações.
+
+Sintaxe:
+~~~SQL
+    BEGIN;
+    <alteracao>
+    <condicional>;
+    ROLLBACK;
+~~~
+
+Exemplo:
+~~~SQL
+    BEGIN;
+    UPDATE people SET cpf = '11111'
+    WHERE id = 23;
+    ROLLBACK;
+~~~
+
+### **SAVEPOINT:**
+É possível transformar a transaction em algo mais fracionado através da clausula `SAVEPOINT`, que salva todas as alterações vindas antes dela em um espaço especifico, assim podemos retornar a ele ou commita-lo.
+
+Sintaxe:
+~~~SQL
+    BEGIN;
+    <alteracao>
+    <condicional>;
+    SAVEPOINT <nomeDoSave>
+    ROLLBACK;
+~~~
+
+Exemplo:
+~~~SQL
+    BEGIN;
+    UPDATE people SET cpf = '11111'
+    WHERE id = 23;
+    SAVEPOINT alteracaoPessoa
+    ROLLBACK TO alteracaoPessoa;
+~~~
+
+## *`-WINDOW FUNCTIONS:`*
+
+É uma maneira de fazer com que as funções agregadoras sejam expressadas por linha, não por conjunto total.
+
+Sintaxe:
+~~~SQL
+    SELECT <atributo1>, <atributo2>, funçãoagregadora(<atributo3>) OVER(PARTITION BY <atributo>) FROM <tabela>;
+~~~
+
+Exemplo:
+~~~SQL
+    SELECT name, age, avg(age) OVER(PARTITION BY name) FROM people;
+~~~
+
+## *`-VIEW:`*
+
+Views são selects que você pode montar, para falicitar futuras consultas.
+
+Sintaxe:
+~~~SQL
+    CREATE VIEW <nomeDaView> AS
+        <selectDesejado>;
+    SELECT * FROM <nomeDaView>; --Caso queira utilizar a view;
+~~~
+
+Exemplo:
+~~~SQL
+    CREATE VIEW nomeOrdenado AS
+        SELECT name 
+        FROM pessoa 
+        ORDER BY name;
+    SELECT * FROM nomeOrdenado;
+~~~
+
+
+
+
+
