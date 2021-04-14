@@ -1,9 +1,37 @@
 # **Documentação básica sobre o Docker**
 
 ## *`Sumário:`*
-1.
-2.
-3.
+1. [O que é o docker](#oque)
+2. [Instalar o docker](#instalar)
+3. [O que é uma imagem](#img)
+4. [Subindo os seus primeiros containers](#primeiro)
+    1. [Subindo um container com apenas uma imagem](#simg)
+    2. [Subindo um container com um comando echo](#containercomcomando)
+    3. [Subindo um container bash](#containeri)
+    4. [Subindo container em segundo plano](#dockerd)
+5. [Pricipais comandos e flags](#principais)
+    1. [Mostrar versão do docker](#version)
+    2. [Listar imagens presentes no host](#images)
+    3. [Buscar imagens no dockerhub](#search)
+    4. [Baixar a imagem para a maquina local](#pull)
+    5. [Criar conteiner](#run)
+    6. [Verificar status dos containers em execução](#ps)
+    7. [Verificar status de todos os container locais](#psa)
+    8. [Verificar informações(de processamento) sobre determinado container](#stats)
+    9. [Verificar informações detalhadas sobre imagem ou container](#inspect)
+    10. [Removendo imagem do host](#rmi)
+    11. [FLAGS PRINCIPAIS](#flags)
+    12. [Executar um comando em um container funcionando](#exec)
+    13. [Entrar em um container](#attach)
+    14. [Restartar um container](#start)
+    15. [Stopar um container](#stop)
+    16. [Enviar uma imagem para o dockerhub](#push)
+    17. [Linkar container](#link)
+    18. [Como limpar o seu docker](#limpar)
+6. [Criando imagens](#criandoimg)
+7. [Visão geral dos comandos](#geral)
+
+<div id = "oque"></div>
 
 ## *`O que é?`*
 É uma ferramenta de empacotamento de uma aplicação e suas dependências em um container virtual que pode ser executado em um servidor linux.
@@ -15,6 +43,8 @@
 
 ### **Docker é igual a uma máquina virtual?**
 -Não. O Docker tem como principio os container, e esses possuem uma arquitetura diferente, que permite maior portabilidade e eficiência.
+
+<div id = "instalar"></div>
 
 ## *`Instalando o docker:`*
 
@@ -28,11 +58,16 @@
 ### **No Mac:**
 -...
 
+<div id = "img"></div>
 
 ## *`O que é uma imagem?`*
 Uma imagem é um modelo/template/"ISO"/"VDI" somente de leitura, que é utilizado como base para subir um container.
 
-## *`Subindo seus primeiros containeres:`*
+<div id = "primeiro"></div>
+
+## *`Subindo seus primeiros containers:`*
+
+<div id = "simg"></div>
 
 ### **Subindo, apenas uma imagem:**
 
@@ -46,6 +81,8 @@ Exemplo:
     sudo docker run --name containerTeste1 Ubuntu:14.04
 ~~~
 
+<div id = "containercomcomando"></div>
+
 ### **Subindo um container e dando um comando:**
 
 Sintaxe:
@@ -58,7 +95,9 @@ Exemplo:
     sudo docker run --name containerTeste2 Ubuntu:14.04 /bin/echo 'Ola mundo'
 ~~~
 
-`OBS: Após os exemplos citados, é possível notar que os cotaineres não ficam em pé, pois "Containeres são executados enquanto o comando especificado está ativo"`
+`OBS: Após os exemplos citados, é possível notar que os cotaineres não ficam em pé, pois "Containers são executados enquanto o comando especificado está ativo"`
+
+<div id = "containeri"></div>
 
 ### **Subindo um container no "modo iterativo":**
 
@@ -72,7 +111,9 @@ Exemplo:
     sudo docker run -t -i --name containerTeste3 Ubuntu:14.04 /bin/bash 
 ~~~
 
-### **Subindo um container no modo daemon:**
+<div id = "dockerd"></div>
+
+### **Subindo um container em segundo plano:**
 
 Sintaxe:
 ~~~
@@ -84,7 +125,11 @@ Exemplo:
     sudo docker run -d --name containerTeste4 Ubuntu:14.04 /bin/bash -c "while true; do echo ola mundo; sleep 1; done"
 ~~~
 
+<div id = "principais"></div>
+
 ## *`Entendendo principais comandos e flags:`*
+
+<div id = "version"></div>
 
 ### **Mostrar a versão do seu docker:**
 ~~~
@@ -92,10 +137,14 @@ Exemplo:
 ~~~
 *OBS: Esse comando irá mostrar a versão do docker tanto do cliente quando do servidor*
 
+<div id = "images"></div>
+
 ### **Listar as imagens que temos no nosso host:**
 ~~~
     docker images
 ~~~
+
+<div id = "search"></div>
 
 ### **Procurar imagens compativeis com nosso servidor:**
 Sintaxe:
@@ -108,6 +157,8 @@ Exemplo:
     docker search node
 ~~~
 
+<div id = "pull"></div>
+
 ### **Baixando imagem para o nosso host:**
 
 Sintaxe:
@@ -119,6 +170,8 @@ Exemplo:
 ~~~
     docker pull node
 ~~~
+
+<div id = "run"></div>
 
 ### **Criando um container (Hello world)**
 
@@ -134,15 +187,21 @@ Exemplo:
 
 *OBS: Caso você não possua a imagem em questão no seu host, ele irá até o repositório central para baixa-la*
 
+<div id = "ps"></div>
+
 ### **Verificando o status dos nossos conteineres em execução:**
 ~~~
     docker ps
 ~~~
 
+<div id = "psa"></div>
+
 ### **Verificando o status de TODOS os nossos conteineres:**
 ~~~
     docker ps -a
 ~~~
+
+<div id = "stats"></div>
 
 ### **Retornar informações sobre um determinado container:**
 Sintaxe:
@@ -155,7 +214,9 @@ Exemplo:
     docker stats 4fd993a164db
 ~~~
 
-### **Retornar mais detalhes sobre uma determinada imagem ou o seu container:**
+<div id = "inspect"></div>
+
+### **Retornar mais detalhes sobre uma determinada imagem ou container:**
 Sintaxe:
 ~~~
     docker inspect <id_Da_imagem_ou_container>
@@ -166,6 +227,8 @@ Exemplo:
     docker inspect 4fd993a164db
 ~~~
 OBS: Ele irá retornar um json com todas as informações relacionadas a nossa busca.
+
+<div id = "rmi"></div>
 
 ### **Deletando uma imagem do seu host:**
 
@@ -179,6 +242,8 @@ Exemplo:
     docker rmi hello-world
 ~~~
 
+<div id = "flags"></div>
+
 ### **Flags principais:**
 * `-i` -> Permite interagir com o container;
 * `-t` -> Associa o seu terminal ao terminal do container ;
@@ -187,6 +252,8 @@ Exemplo:
 * `-p n:m` -> Mapeia a porta **m** do container para a porta **n** do host;
 * `-d` -> Executa o container em background;
 * `-v /pasta/host:/pasta/container` -> Cria um volume '/pasta/container' dentro do container com o conteúdo da pasta '/pasta/host' do host.
+
+<div id = "exec"></div>
 
 ### **Executar um comando no container:**
 
@@ -200,6 +267,8 @@ Exemplo:
     docker exec ab5386d99ed2 /bin/echo 'ola mundo' 
 ~~~
 
+<div id = "attach"></div>
+
 ### **Entrar dentro de um container**
 
 Sintaxe:
@@ -211,6 +280,8 @@ Exemplo:
 ~~~
     docker attach ab5386d99ed2 
 ~~~
+
+<div id = "start"></div>
 
 ### **Como subir novamente um container que já foi "morto":**
 
@@ -224,6 +295,8 @@ Exemplo:
     docker start ab5386d99ed2 
 ~~~
 
+<div id = "stop"></div>
+
 ### **Como "matar" um container em execução:**
 
 Sintaxe:
@@ -236,11 +309,39 @@ Exemplo:
     docker stop ab5386d99ed2 
 ~~~
 
+<div id = "push"></div>
+
 ### **Como enviar uma imagem para o dockerhub:**
 
 ~~~
     docker push ...
 ~~~
+
+<div id = "link"></div>
+
+### **Como linkar rede entre dois containers:**
+
+Nesse caso o linkar rede entre os dois container teria a seguinte sintaxe: `nome-do-container:porta` (Exemplo: postgres:5433, para acessar o banco)
+
+~~~
+    docker run -ti --name <nomeDoContainer> <imagem> --link <nomeDoContainerLinkdado>
+~~~
+
+<div id = "limpar"></div>
+
+### **Como remover: Todos os contêineres parados / Todas as redes não usadas pelo menos por um contâiner / Todas as imagens pendentes (dangling images) / Todo o cache build pendente:**
+
+~~~
+    docker system prune
+~~~
+
+### **Como remover: Todos os contêineres parados / Todas as redes não usadas pelo menos por um contâiner / Todas as imagens pendentes (dangling images) / Todo o cache build pendente / volumes e imagens não utilizadas:**
+
+~~~
+    docker system prune --all --volumes
+~~~
+
+<div id = "criandoimg"></div>
 
 ## *`Criando suas proprias imagens:`*
 
@@ -316,7 +417,7 @@ Exemplo:
     VOLUME /arquivos/
 ~~~
 
-*OBS:Caso você altere os elementos dentro desse diretorio os outros containeres que possuirem "herança" terão seus diretorios alterados igualmente, porém essa pasta não é refletida na maquina local.*
+*OBS:Caso você altere os elementos dentro desse diretorio os outros containers que possuirem "herança" terão seus diretorios alterados igualmente, porém essa pasta não é refletida na maquina local.*
 
 * 8° Passo: Definir portas que podem ser utilizadas na Imagem:
 
@@ -382,6 +483,9 @@ Exemplo:
     docker build -t minha-imagem:1.0 .
 ~~~
 *OBS: Nesse caso a flag -t tem função de dar uma tag para a imagem*
+
+<div id = "geral"></div>
+
 ## *`Visão geral dos comandos:`*
 
 ~~~
