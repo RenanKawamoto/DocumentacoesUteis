@@ -252,6 +252,8 @@ Exemplo:
 * `-p n:m` -> Mapeia a porta **m** do container para a porta **n** do host;
 * `-d` -> Executa o container em background;
 * `-v /pasta/host:/pasta/container` -> Cria um volume '/pasta/container' dentro do container com o conteúdo da pasta '/pasta/host' do host.
+* `--volumes-from` <nomeDoContainer> -> Compartilha o volume entre 2 ou mais containers
+
 
 <div id = "exec"></div>
 
