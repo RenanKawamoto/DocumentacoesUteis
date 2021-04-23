@@ -275,12 +275,12 @@ Exemplo:
 
 Sintaxe:
 ~~~
-    docker attach <id_container ou nome_container> 
+    docker attach <flags> <id_container ou nome_container> <comando>
 ~~~
 
 Exemplo:
 ~~~
-    docker attach ab5386d99ed2 
+    docker attach -ti ab5386d99ed2 /bin/sh
 ~~~
 
 <div id = "start"></div>

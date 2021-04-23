@@ -45,3 +45,15 @@ Exemplo:
     ENTRYPOINT ["/usr/sbin/nginx"]
     CMD ["-g", "daemon off;"]
 ~~~
+
+### **Como buildar sua imagem:**
+
+Sintaxe:
+~~~
+    docker build -t <nomeDaImagem> <diretorio>
+~~~
+
+Exemplo:
+~~~
+    docker build -t minha-imagem:1.0 .
+~~~
