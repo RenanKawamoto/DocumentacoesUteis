@@ -407,7 +407,7 @@ OBS-3: As constantes sempre são globais, assim podem ser usadas em qualquer esc
 
 ### **Array associativo:**
 
-São iguais aos numericos, porém com a diferença que definimos os indices para serem strings.
+- São iguais aos numericos, porém com a diferença que definimos os indices para serem strings.
 
    - Sintaxe:
         ~~~php
@@ -415,6 +415,7 @@ São iguais aos numericos, porém com a diferença que definimos os indices para
         ~~~
 
     - Exemplo:
+
         ~~~php
             $pessoa = array("nome" => "Luiza", "idade" => 35);
         ~~~
@@ -457,4 +458,454 @@ OBS: para chamar esses elementos é necessário um indice duplo, exemplo: $pesso
 * `in_array($valor, $array)` ==> verifica se o valor passado está dentro do array, retornando um boolean.
 
 * `array_keys($array)` ==> retorna um novo array com as chaves do array passado.
+
+* `array_values($array)` ==> retorna um novo array com os valores do array passado.
+
+* `array_merge($array1, $array2)` ==> agrega o conteúdo dos arrays.
+
+* `array_pop($array)` ==> exclui o ultimo elemento do array, e retorna qual o valor que foi excluido.
+
+* `array_unshift($array, "valor1", "valor2", ...)`==> adiciona um ou mais elementos no inicio do array.
+
+* `array_push($array, "valor1", "valor2", ...)`==> adiciona um ou mais elementos no final do array.
+
+* `array_combine($keys, $values)`==> mescla os dois arrays passados, como chave-valor.
+
+* `array_sum($array)`==> calcula a soma dos elementos de um array.
+
+* `array_explode("divisor", $variavel)`==> transforma uma string em um array.
+
+    - Exemplo:
+
+        ~~~php
+            $data = "30/01/2001"
+            $novoArray = array_explode('/', $data);
+        ~~~
+
+* `array_implode("divisor", $array)`==> transforma um array em uma string.
+
+    - Exemplo:
+
+        ~~~php
+            $nomes = array("Rodrigo", "Maria", "Julia", "Luiz");
+            $palavra = implode ("-", $nomes);
+
+            echo $palavra; // irá imprimir Rodrigo-Maria-Julia-Luiz 
+        ~~~
+
+### **Condicionais:**
+
+- **If/Elseif/Else:**
+
+    - Sintaxe:
+        ~~~php
+            if (<condição>):
+                ...
+            elseif (<condição2>):
+                ...
+            else:
+                ...
+            endif;
+        ~~~
+    
+    - Exemplo:
+        ~~~php
+            $n = 45;
+            if ($n < 20):
+                echo "n eh menor que 20";
+            elseif ($n == 40):
+                echo "n eh igual a 40";
+            else:
+                echo "n eh maior que 20";
+        ~~~
+
+- **Operador ternario:**
+
+    - Sintaxe:
+        ~~~php
+            echo (<condicional>) ? <codigoSeForTrue> : <codigoSeForFalse>;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $media = 6;
+            echo ($media >= 7) ? "Aprovado" : "Reprovado";
+        ~~~
+
+- **Switch case:**
+
+    - Sintaxe:
+        ~~~php
+            switch($<variavelQueDesejaComparar>):
+                case <ValorComparado>:
+                    ...
+                    break;
+                default:
+                    ...
+            endswitch;
+        ~~~
+        OBS: O switch case sempre será um comparação de igualdade.
+
+    - Exemplo:
+        ~~~php
+            switch($media):
+                case 10:
+                    echo "Nota 10";
+                    break;
+                case 9:
+                    echo "Nota 9";
+                    break;
+                default:
+                    echo "Nota menor que 9";
+            endswitch;
+        ~~~
+
+### **Operadores aritméticos:**
+
+* `Adição( + )`
+* `Subtração( - )`
+* `Multiplicação ( * )`
+* `Divisão ( / )`
+* `Módulo ( % )`
+* `Exponenciação ( ** )`
+
+### **Operadores de Incremento e Decremento:**
+
+* Pré-Incremento e pré-decremento:
+     - Tem a função de incrementar o valor e depois utiliza-lo.
+
+        Sintaxe:
+        ~~~php
+            ++$<variavelOuNumero>;
+            --$<variavelOuNumero>;
+        ~~~
+
+* Pós-Incremento e pós-decremento:
+     - Tem a função de incrementar o valor apenas após utiliza-lo.
+
+        Sintaxe:
+        ~~~php
+            $<variavelOuNumero>++;
+            $<variavelOuNumero>--;
+        ~~~
+
+Exemplos:
+~~~php
+    $n = 3;
+
+    echo ++$n; // irá printar 4;
+
+    $n = 3;
+
+    echo $n++ // irá printar 3, porém o valor será alterado após o comando;
+~~~
+
+### **Operadores de atribuição:**
+
+* `=` ---> é um operador de atribuição simples, sendo assim ele irá transferir o valor da sua direta para a variavel na sua esquerda.
+* `-=` ---> é um operador de atribuição que irá decrementar o valor que está na esquerda ao valor da direita.
+* `+=` ---> é um operador de atribuição que irá incrementar o valor que está na esquerda ao valor da direita.
+* `*=` ---> é um operador de atribuição que irá multiplicar o valor que está na esquerda ao valor da direita.
+* `/=` ---> é um operador de atribuição que irá dividir o valor que está na esquerda ao valor da direita.
+* `%=` ---> é um operador de atribuição que irá pegar o resto da divisão do valor que está na esquerda ao valor da direita.
+
+### **Operadores de comparação:**
+* `==` ---> compara o conteudo, vendo se são iguais.
+* `!=` ---> compara se o conteudo, vendo se são diferentes.
+* `===` ---> compara se um valor é identico ao outro (vendo até os tipos).
+* `!==` ---> compara se um valor não é identico ao outro.
+* `<>` ---> ve se os valores são diferentes.
+* `<` ---> compara se o valor é menor que o outro.
+* `>` ---> compara se o valor é maior que o outro.
+* `<=` ---> compara se o valor é menor ou igual ao outro.
+* `>=` ---> compara se o valor é maior ou igual ao outro.
+* `<=>` ---> compara os dois valores e retorna: se o da esquerda for menor -1 / se o da direita for menor 1 / se os dois forem iguais 0.
+
+### **Operadores lógicos:**
+* `&&` ou `and` ---> retorna true se os dois lados derem true;
+* `||` ou `or` ---> retorna true se um dos lados ou os dois derem true;
+* `xor` ---> retorna true quando apenas uma das condições for verdadeira;
+* `!` ---> inverte o estado lógico da expressão.
+
+### **Estruturas de repetição:**
+
+- **While:**
+    - Sintaxe:
+        ~~~php
+            while (<condição>):
+                ...
+            endwhile;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $contador = 1;
+            while($contador < 10):
+                echo $contador;
+                $contador++;
+            endwhile;
+        ~~~
+
+- **Do while:**
+    - Tem a mesma função do while, porém com o `Do` o loop será executado pelo menos uma vez.
+
+    - Sintaxe:
+        ~~~php
+            do
+            {
+                ...
+            }while(<condição>);
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $contador = 1;
+            do
+            {
+                echo $contador;
+                $contador++;
+            }while($contador < 10);
+        ~~~
+    
+- **For:**
+    - Sintaxe:
+        ~~~php
+            for (<contador>; <condição>; <incremento>):
+                ...
+            endfor;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            for ($cont = 0; $cont < 10; cont++):
+                echo $cont."<br>";
+            endfor;
+        ~~~
+
+- **Foreach:**
+    - Tem a função de percorrer um array atribuindo cada desse em uma variavel local.
+
+    - Sintaxe:
+        ~~~php
+            foreach ($<array> as $<variavel>):
+                ...
+            endforeach;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $pessoas = ["Lucas","Luna","Mario"];
+            foreach ($pessos as $pessoa):
+                echo $pessoa."<br>";
+            endforeach;
+        ~~~
+
+    OBS: É possível pegar os indices do array utilizado mais uma variavel no foreach e `=>`:
+
+    - Exemplo:
+        ~~~php
+            $pessoas = ["Lucas","Luna","Mario"];
+            foreach ($pessos as $indice => $pessoa):
+                echo $indice.": ".$pessoa."<br>";
+            endforeach;
+        ~~~
+
+### **Funções para string:**
+
+* `strtoupper($string)` ===> passa a string para maiuscula;
+* `strtolowe($string)` ===> passa a string para minuscula;
+* `substr($string, CaractereQueDesejaIniciar, QuantosCaracteresIraAndar)` ===> irá retorna uma parte da string:
+    - Exemplo:
+        ~~~php
+            $mensagem = "ola mundo";
+            echo substr($mensagem, 4, 4); //ira printar mund
+        ~~~
+
+* `str_pad($string, QuantidadeDeCaracteresDesejada, "ElementoQueIraPrencherOsNovosCaracteres", EsseCampoÉOpcionalParaColocarOsNovosCaracteresAEsquerda<STR_PAD_LEFT>)` ===> irá acrescentar "n" caracteres até o comprimento desejado;
+    - Exemplo:
+        ~~~php
+            $mensagem = "ola";
+            echo std_pad($mensagem, 5, "*"); //irá printar ola**
+        ~~~
+    OBS: É possível coloca os caracteres a direita com STR_PAD_RIGHT / a esquerda com STR_PAD_LEFT / distribuir STR_PAD_BOTH;
+
+* `str_repeat(StringQueQuerRepetir, numeroDeVezes)` ===> irá retornar uma string repetidas "n" vezes;
+
+* `strlen($string)` ===> retorna o comprimento da string;
+
+* `str_replace(PalavraQueSeraSubstituida, PalavraQueVaiSubstituir, $string)` ===> irá substituir a palavra na sua string;
+
+* `strpos($string, palavraQueQuerRetornarAPosição)` ===> retorna a posição de uma palavra em uma string.
+
+### **Funções para números:**
+
+* `number_format($numero, casasDecimais, separadorDecimal, separadorDeMilhares)` ===> irá formatar os numeros floats:
+
+    - Exemplo:
+    ~~~php
+        $numero = 1425.255555;
+        echo number_format($numero, 2, ",", "."); // ira printar 1.425,26
+    ~~~
+
+* `round(valor)` ===> serve para arredondar valores;
+
+* `ceil(valor)` ===> serve para arredondar valores, porém sempre para cima;
+
+* `floor(valor)` ===> serve para arredondar valores, porém sempre para baixo;
+
+
+* `rand(valorInicial, valorFinal)` ===> irá retornar um valor aleatorio entre intervalo numerico;
+
+### **Como criar funções:**
+
+Sintaxe:
+~~~php
+    function <nomeDaFunção>($<parametros>)
+    {
+        ...
+        <opcional> return ...;
+    }
+~~~
+
+Exemplo1:
+~~~php
+    function media($n1, $n2)
+    {
+        if(($n1+$n2)/2 < 7):
+            echo "Reprovado";
+        else:
+            echo "Aprovado";
+        endif;
+    }
+
+    media(10, 9); //irá printar aprovado
+~~~
+
+Exemplo2:
+~~~php
+    function media($n1, $n2)
+    {
+        if(($n1+$n2)/2 < 7):
+            return "Reprovado";
+        else:
+            return "Aprovado";
+        endif;
+    }
+
+    echo media(1, 2); //irá printar reprovado
+~~~
+
+### **Variaveis superglobais:**
+
+- Essas variaveis sempre estão disponiveis, independente do escopo.
+
+* `$GLOBALS['nomeDaVariavel']` ===> tem a função de disponibilizar as variaveis globais para uso.
+   
+    - Exemplo:
+        ~~~php
+            $numero = 10;
+            function MaisUm()
+            {
+                echo ++$GLOBALS['numero'];
+            }
+        ~~~
+
+* `$_SERVER['Indice']` ===> contem varias iformações sobre o server, que podem ser acessadas através dos indices, pré estabelecidos exemplo: $_SERVER['SERVER_NAME'];
+
+* `$_POST['nomeDoInput']` ===> tem a função de pegar os dados contidos em um formulario POST:
+
+    - Sintaxe Formulario POST:
+        ~~~php
+            <html>
+                <body>
+                    <form action = "path/arquivo.php" method="POST">
+                        BlaBla <input type = "<tipo>" name="<nomeQueSeráPassadoNo$_POST[]>">
+                        <button type = "submit">BlaBla</button>
+                    </form>
+                </body>
+            </html>
+        ~~~
+
+    - Sintaxe Arquivo para pegar o POST:
+        ~~~php
+            <?php
+                $<nomeDaVariavel> = $_POST['<nomeDoInputDoForms'];
+            ?>
+        ~~~
+
+    - Exemplo Formulario POST:
+        ~~~php
+            <html>
+                <body>
+                    <form action = "dados/dado.php" method="POST">
+                        Nome <input type = "text" name="name">
+                        <button type = "submit">Enviar</button>
+                    </form>
+                </body>
+            </html>
+        ~~~
+
+    - Exemplo arquivo para pegar o POST:
+        ~~~php
+            <?php
+                $nome = $_POST['name'];
+                echo $nome;
+            ?>
+        ~~~
+
+* `$_GET['nomeDaVariavel']` ===> tem a função de pegar os dados contidos na URL:
+
+
+    - Sintaxe Formulario GET:
+        ~~~php
+            <html>
+                <body>
+                    <form action = "path/arquivo.php" method="GET">
+                        BlaBla <input type = "<tipo>" name="<nomeQueSeráPassadoNo$_GET[]>">
+                        <button type = "submit">BlaBla</button>
+                    </form>
+                </body>
+            </html>
+        ~~~
+
+    - Sintaxe Arquivo para pegar o GET:
+        ~~~php
+            <?php
+                $<nomeDaVariavel> = $_GET['<nomeDoInputDoForms'];
+            ?>
+        ~~~
+
+    - Exemplo Formulario GET:
+        ~~~php
+            <html>
+                <body>
+                    <form action = "dados/dado.php" method="GET">
+                        Nome <input type = "text" name="name">
+                        <button type = "submit">Enviar</button>
+                    </form>
+                </body>
+            </html>
+        ~~~
+
+    - Exemplo arquivo para pegar o GET:
+        ~~~php
+            <?php
+                $nome = $_GET['name'];
+                echo $nome;
+            ?>
+        ~~~
+
+    OBS: como essas informações vem da URL não há necessidade de passarmos um formulario:
+
+    Exemplo arquivo para enviar o GET:
+    ~~~php
+        <a href="/dados/dados.php?name=Felipe&age=48">Mandar</a>
+    ~~~
+    *Nesse caso utilizamos o "?" para mostrar ao programa que tudo que vier após isso na URL é um parametro, sendo assim o parametro name contem o conteudo Felipe (o & em questão adiciona mais um parametro) e o age contem 48.*
+
+### **Validações(Validate Filters):**
+
+- `isset($_POST['<indice>'])` ===> retorna um boolean se existir o indice;
+
+
 
