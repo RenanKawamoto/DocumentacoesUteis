@@ -1,11 +1,30 @@
 # **Documentação básica de php**
 
 ## *Sumário:*
-1.
+1. [Sintaxe básica](#sintaxe)
+    1. [Como abrir um código php](#abertura)
+    2. [Como criar comentários](#comentarios)
+    3. [Echo](#echo)
+    4. [Como criar variaveis](#variaveis)
+    5. [Como printar variaveis](#printandovariaveis)
+    6. [Variaveis dinamicas](#variaveisdinamicas)
+    7. [Pegar mais informações sobre uma variavel(var_dump)](#vardump)
+    8. [Verificar tipo](#verificartipo)
+    9. [Tipos de dados escalares](#tiposescalares)
+    10. [Tipos de dados compostos](#dadoscompostos)
+    11. [Tipos dados especiais](#especiais)
+    12. [Diferença entre as aspas](#aspas)
+    13. [Concatenação](#concatenacao)
+    14. [Como criar funções](#funcao)
 2.
 3.
 
+
+<div id = "sintaxe"></div>
+
 ## *Sintaxe básica:*
+
+<div id = "abertura"></div>
 
 ### **Abertura de um código php:**
 
@@ -35,6 +54,8 @@ Exemplo:
     </html>
 ~~~
 
+<div id = "comentarios"></div>
+
 ### **Comentarios:**
 
 Sintaxe comentario de um linha:
@@ -49,6 +70,8 @@ Sintaxe comentario em bloco:
         bloco de comentario
     */
 ~~~
+
+<div id = "echo"></div>
 
 ### **Mostrando elementos html com o php:**
 
@@ -68,6 +91,8 @@ Sintaxe 2:
 
 OBS: As tags html também funcionam.
 
+<div id = "variaveis"></div>
+
 ### **Variaveis:**
 
 Sintaxe:
@@ -81,6 +106,8 @@ Exemplo:
 ~~~
 
 OBS: As variaveis no php são case sensitive, e seguem as mesmas regras de identificação das outras linguagens (Não podendo haver espaço, nem iniciar com numero, ter caracteres especiais e etc).
+
+<div id = "printandovariaveis"></div>
 
 ### **Printando variaveis:**
 
@@ -98,6 +125,8 @@ Exemplo:
     echo $nome;
     echo "Ola meu nome é $nome";
 ~~~
+
+<div id = "variaveisdinamicas"></div>
 
 ### **Variaveis dinamicas / Variaveis de variaveis:**
 
@@ -118,6 +147,8 @@ Exemplo:
 ~~~
 *Nesse caso, a variavel nome é criada devido ao $$pessoa, que faz o processo de atribuir o conteudo de $pessoa a outra variavel*
 
+<div id = "vardump"></div>
+
 ### **Pegar mais informações sobre uma variavel:**
 
 Sintaxe:
@@ -131,6 +162,8 @@ Exemplo:
     var_dump($nome);
 ~~~
 OBS: O var_dump irá fazer um echo automaticamente.
+
+<div id = "verificartipo"></div>
 
 ### **Verificar se uma variavel é de certo tipo:**
 
@@ -146,6 +179,8 @@ Exemplo:
 
 OBS: No caso essa é uma função que retorna um boolean (true ou false).
 
+<div id = "tiposescalares"></div>
+
 ### **Tipos de dados escalares:**
 
 Os tipos escalares são:
@@ -153,6 +188,8 @@ Os tipos escalares são:
 * int (trata-se de um numero inteiro);
 * float (trata-se de um numero que tenha um ponto flutuante);
 * boolean (trata-se de um valor true ou false);
+
+<div id = "dadoscompostos"></div>
 
 ### **Tipos de dados compostos:**
 
@@ -171,17 +208,23 @@ Exemplo:
 
 * object (é a instanciação de uma classe [Veremos isso mais detalhadamente a frente]);
 
+<div id = "especiais"></div>
+
 ### **Tipos de dados especiais:**
 
 Os tipos de dados especiais são:
 * NULL (um valor vazio);
 * Resource (um tipo de dado que é utilizado para fazer referencia a recursos externos [Exemplo: Manipulação com o banco de dados, manipulação de arquivos e etc])
 
+<div id = "aspas"></div>
+
 ### **Diferença entre as aspas:**
 
 * `'` são literais, sendo assim todo conteudo dentro dela será interpretado como uma string.
 
 * `"` são interpretativas, sendo assim caso haja uma variavel ela irá entender e colocar seu conteudo.
+
+<div id = "concatenacao"></div>
 
 ### **Concatenação:**
 
@@ -192,6 +235,8 @@ Exemplo:
     $nome = "Maria";
     echo 'Ola meu nome é '.$nome.' e tenho 23 anos';
 ~~~
+
+<div id = "funcao"></div>
 
 ### **Como criar uma função:**
 
@@ -905,7 +950,314 @@ Exemplo2:
 
 ### **Validações(Validate Filters):**
 
-- `isset($_POST['<indice>'])` ===> retorna um boolean se existir o indice;
+* `isset($_POST['<indice>'])` ===> retorna um boolean se existir o indice;
+
+* `filter_input(<verbo_do_input>, <nome_do_input>, <tipo_do_filtro>)` ===> irá validar o input segundo algum filtro, retornando true ou false:
+
+    - Exemplo:
+    ~~~php
+        if(filter_input(INPUT_POST, 'idade', FILTER_VALIDATE_INT))
+        {
+            echo 'O valor é um inteiro';
+        }
+    ~~~
+
+    - `**Alguns Validate Filters:**`
+        - `FILTER_VALIDATE_INT` ===> valida se o input é um inteiro;
+        - `FILTER_VALIDATE_EMAIL` ===> valida se o input tem as caracteristicas de um email;
+        - `FILTER_VALIDATE_FLOAT`  ===> valida se o input é do tipo float;
+        - `FILTER_VALIDATE_IP`  ===> valida se o input segue um padrão de ip;
+        - `FILTER_VALIDATE_URL`  ===> valida se o input segue as caracteristicas de uma url;
+
+### **Sanitização(Sanitize Filters):**
+
+- Esses filtros tem a intenção de "limpar" os inputs para que fiquem no formato solicitado.
+
+- `filter_input(<verbo_do_input>, <nome_do_input>, <filter_sanitize>)`, esse filtro irá entender somente o que é correto para seu tipo:
+
+    - Exemplo: 
+    ~~~php
+        filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_SPECIAL_CHARS);    
+    ~~~
+
+    - `**Alguns Sanitize Filters:**`
+        - `FILTER_SANITIZE_SPECIAL_CHARS` ===> irá escapar todas as informações;
+        
+        - `FILTER_SANITIZE_NUMBER_INT` ===> irá pegar somente os numeros de um input.
+
+        - `FILTER_SANITIZE_EMAIL` ===> irá pegar apenas os caracteres que podem compor um email, dentro do input.
+
+        - `FILTER_SANITIZE_URL` ===> irá pegar apenas os caracteres que podem compor uma URL, dentro do input.
+
+### **Validando variaveis(filter_var):** 
+Essa validação irá ver se uma variavel passa pelos padrões de um determinado filtro, retornando um boolean.
+
+Sitaxe:
+~~~php
+    filter_var($<variavel>, <filtroDesejado>);
+~~~
+
+Exemplo:
+~~~php
+    $n = 12;
+    if(filter_var($n, FILTER_VALIDATE_INT))
+    {
+        echo "O numero é inteiro";
+    }
+~~~
+
+### **Sessões:**
+
+- Tem a função de armazenar informações, que poderão ser acessadas em diversas páginas, através da superglobal $_SESSION.
+
+    - **Iniciar uma sessão:**
+        - Sintaxe:
+            ~~~php
+                session_start();
+
+                $_SESSION['NomeDaSessão'] = "valor contido na sessão"; //Isso irá criar as sessões
+            ~~~
+
+        - Exemplo:
+            ~~~php
+                session_start();
+
+                $_SESSION['cor'] = "vermelho";
+            ~~~
+
+    - **Utilizar em outras páginas:**
+        - Exemplo:
+            ~~~php
+                session_start();
+
+                echo $_SESSION['cor']; //irá printar vermelho;
+            ~~~
+
+    - **Exibir o id da sessão:**
+        - Sintaxe:
+            ~~~php
+                session_start();
+                session_id();
+            ~~~
+
+    - **Limpar a sessão:**
+        - Sintaxe:
+            ~~~php
+                session_unset();
+            ~~~
+
+    - **Destruir a sessão:**
+        - Sintaxe:
+            ~~~php
+                session_destroy();
+            ~~~
+
+### **Criptografia:**
+
+- **Criptografia de mão dupla:**
+    - Essas criptografias podem ser criptografas e descriptografas com suas respectivas funções.
+
+    - **Base64:**
+
+        - Sintaxe:
+        ~~~php
+            $<variavel> = base64_encode($<variavelSenha>);
+
+            $<variavelDescripto> = base64_decode($<variavel>);
+        ~~~
+
+        - Exemplo:
+        ~~~php
+            $senha = "123456"
+            $senhaCripto = base64_encode($senha);
+
+            $senhaDescripto = base64_decode($senhaCripto);
+        ~~~
+
+- **Criptografia de mão unica:**
+    - Essas criptografias podem ser somente criptografas.
+
+    - **Md5:**
+
+        - Sintaxe:
+        ~~~php
+          $<variavel> = md5($<variavelSenha>);
+        ~~~ 
+
+        - Exemplo:
+        ~~~php
+            $senha = "123456";
+            $senhaCripto = md5($senha);
+        ~~~ 
+
+    - **Sha1:**
+
+        - Sintaxe:
+        ~~~php
+          $<variavel> = sha1($<variavelSenha>);
+        ~~~ 
+
+        - Exemplo:
+        ~~~php
+            $senha = "123456";
+            $senhaCripto = sha1($senha);
+        ~~~ 
+
+### **Password_hash:**
+
+É uma maneira que foi implementada pelo php para gerar uma criptografia mais segura para suas senhas.
+
+Sintaxe Criptografar:
+~~~php
+    $<variavel> = password_hash($<senha>, <AlgoritmoQueIraGerarASenha>, <ArrayDeOpçõesOpcionalQueSoApresentaAChaveCost>);
+~~~
+
+Exemplo:
+~~~php
+    $options = ['cost' => 10]; // quanto maior o cost, mais segura será a cripto, porém irá demorar mais para gerar
+    $senha = "123456";
+    $senhaCripto = password_hash($senha, PASSWORD_DEFAULT, $options); //lembre-se que o $options é um argumento opcional, o default dele é 10
+~~~
+
+Sintaxe Altenticar (ira retornar um boolean):
+~~~php
+    $<variavel>;
+    $<variavelCripto>;
+    if(password_verify($<variavel>, $<variavelCripto>))
+    {
+        ...
+    }
+~~~
+
+Exemplo:
+~~~php
+    $senha = "123456";
+    $senhaCripto = password_hash($senha, PASSWORD_DEFAULT);
+    if(password_verify($senha, $senhaCripto)
+    {
+        echo "Senha correta";
+    }
+    else
+    {
+        echo "Senha incorreta";
+    }
+~~~
+
+### **Include / Include_Once / Require / Require_Once:**
+
+- Tanto o include, quanto o require tem a função de incluir códigos php em outros arquivos .php, porém existe uma pequena diferença.
+
+- **Include:**
+    - O include da um warning caso o arquivos que você deseja adicionar não exista.
+
+    - Sintaxe:
+        ~~~php
+            include '<nomeDoArquivo.php>';
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            include 'ola.php';
+        ~~~
+
+- **Require:**
+    - O require para o script caso o arquivo que você deseja adicionar não exista.
+
+    - Sintaxe:
+        ~~~php
+            require '<nomeDoArquivo.php>';
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            require 'ola.php';
+        ~~~
+
+- **Include e Require once:**
+
+    - Tem a mesma função que os seus respectivos comando sem o once, porém verificam se o código já foi adicionado, e se já tiver sido, não adiciona novamente.
 
 
+### **Cookies:**
+
+Cookie é um arquivo criado pelo servidor no computador do usuario para armazenar algumas informações.
+
+Sintaxe setar um cookie:
+~~~php
+    setcookie('<nome>', '<valorDoCookie>', time()+<quantidadeEmSegundos>);
+~~~
+
+Exemplo:
+~~~php
+    setcookie('user', 'teste', time()+3600); //um cookie user com conteudo teste e que dura 1h
+~~~
+
+Exemplo acessar info:
+~~~php
+    echo $_COOKIE['name'];
+~~~
+
+### **Datas:**
+
+- **Date():**
+    - Todas as instruções a seguir são utilizadas dentro da função date();
+
+        * `d` ===> retorna o dia atual no formato de dois digitos;
+        * `D` ===> retorna o dia da semana na forma de dois caracteres;
+        * `m` ===> retorna o mês atual no formato de dois digitos;
+        * `M` ===> retorna o mês atual em formato textual com três caracteres;
+        * `y` ===> retorna o ano em dois digitos;
+        * `Y` ===> retorna o ano em formato de quatro digitos;
+        * `l` ===> retorna o dia da semana; 
+        * `h` ===> retorna a hora no formato de 12 horas;
+        * `H` ===> retorna a hora no formato de 24 horas;
+        * `i` ===> retorna os minutos;
+        * `s` ===> retorna os segundos;
+        * `A` ===> retorna o PM ou AM;
+
+    - Como definir a timezone:
+
+        - Exemplo:
+            ~~~php
+                date_default_timezone_set('America/Sao_Paulo'); 
+            ~~~ 
+
+- **Time():**
+    - Ele retorna o tempo em segundos desde 1970, até a data atual.
+
+    - Caso queira formatar, basta utilizar a seguinte sintaxe:
+
+        Exemplo:
+        ~~~php
+            date('d/m/y', time());
+        ~~~
+        
+- **Mktime():**
+    - É uma outra maneira de criar uma data, com horas, minutos e segundos.
+
+    - Sintaxe:
+        ~~~php
+            $data_pagamento = mktime(<hora_com_dois_digitos>, <minutos_com_dois_digitos>, <segundos_com_dois_digitos>, <mes_com_dois_digitos> , <dia_com_dois_digitos>, <ano_com_quatro_digitos>)
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $data_pagamento = mktime(20, 25, 10, 12, 01, 2001);
+        ~~~
+
+    - Como formatar:
+        ~~~php
+            $data_pagamento = mktime(20, 25, 10, 12, 01, 2001);
+            date('d/m - h:i', $data_pagamento);
+        ~~~
+
+- **Converter string para time, e assim poder formatar:**
+
+Para isso utilizamos a função strtotime($<variavel>);
+
+Exemplo:
+~~~php
+    $data = '2020-04-10 13:20:10';
+    $data = strtotime($data);
+~~~
 
