@@ -543,7 +543,7 @@ OBS-3: As constantes sempre são globais, assim podem ser usadas em qualquer esc
 
     - Exemplo:
         ~~~php
-            echo cout($nomes)
+            echo count($nomes)
         ~~~
 
 <div id = "arrayf"></div>
@@ -564,7 +564,7 @@ OBS-3: As constantes sempre são globais, assim podem ser usadas em qualquer esc
         ~~~php
             foreach($pessoas as $pessoa)
             {
-                echo pessoa;
+                echo var_dump(pessoa);
             }
         ~~~
 
@@ -692,6 +692,7 @@ OBS: para chamar esses elementos é necessário um indice duplo, exemplo: $pesso
                 echo "n eh igual a 40";
             else:
                 echo "n eh maior que 20";
+            endif;
         ~~~
 
 <div id = "ternario"></div>
@@ -1699,6 +1700,945 @@ Antes de tudo é necessário instalar php-pgsql.
             print_r($resultado);
         ~~~
 
+## *PHP Orientado a Objetos(POO):*
+
+### **Classes:**
+
+Para entendermos classes é necessário saber o conceito geral de atributos e métodos:
+
+* Atributos são caracteristicas de uma classe: 
+
+    - Exemplo:
+        ~~~php
+            class Carro
+            {
+                public $cor;
+            }
+        ~~~
+    
+        *Nesse caso temos uma classe carro com atributo $cor*
+
+        *Peço que por hora não se importe com o termo `public`, pois mais a frente haverá um explicação completa*
+    
+* Métodos são "ações" feitas pela classe:
+
+    - Exemplo:
+        ~~~php
+            class Carro
+            {
+                public function buzinar()
+                {
+                    echo "peeeeh";
+                }
+            }
+        ~~~
+        
+        *Nesse caso o método é buzinar tem a função de imprimir a onomatopeia da buzina, quando é chamada*
+
+* Como é criado uma classe:
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                <nivelDeVisibilidade> $<atributos>;
+                ...
+                <nivelDeVisibilidade> function <nomeDoMétodo>($<argumentos>)
+                {
+                    ...;
+                }
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Carro
+            {
+                public $cor;
+                public $quantidadeDeRodas;
+                public $nome;
+                public function Buzinar()
+                {
+                    echo "peeeeeh";
+                }
+            }
+        ~~~
+
+* Como acessar atributos dentro da classe($this->):
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                <nivelDeVisibilidade> $<atributos>;
+                ...
+                <nivelDeAcesso> function <nomeDoMétodo>($<argumentos>)
+                {
+                    echo $this-><nomeDoAtributo>;
+                }
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Pessoa
+            {
+                public $nome;
+                public function printarNome()
+                {
+                    echo $this->nome;
+                }
+            }
+        ~~~
+
+### **Objetos:**
+
+Um objeto é uma instancia de uma classe.
+
+* Como instanciar uma classe (new):
+
+    - Sintaxe:
+        ~~~php
+            $<variavel> = new <nomeDaClasse>();
+        ~~~
+    
+    - Exemplo:
+        ~~~php
+            $Julia = new Pessoa();
+        ~~~
+
+* Como pegar/utilizar atributos publicos de um objeto (->):
+
+    - Sintaxe:
+        ~~~php
+            $<variavel> = new <nomeDaClasse>();
+            $<variavel>-><atributo>;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $Luiz = new Pessoa();
+            $Luiz->nome = "Luiz";
+        ~~~
+
+* Como utilizar métodos de um objeto (->):
+
+    - Sintaxe:
+        ~~~php  
+            $<variavel> = new <nomeDaClasse>();
+            $<variavel>-><método>();
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $Luiza = new Pessoa();
+            $Luiza->Falar();
+        ~~~
+
+### **Níveis de visibilidade / Modificadores de acesso:**
+Os níveis de visibilidade, tem a função de gerir se é possível ou não acessar determinados métodos ou atributos dependendo da circunstância:
+
+* `public` é possível acessar os atributos ou métodos que tem esse nível em qualquer circunstância;
+
+*  `private` somente a classe criadora que pode acessar o método ou atributo que tenha esse nível;
+
+* `protected` somente a classe criadora e as que herdam dela podem acessar o método ou atributo que tenha esse nível;
+
+*OBS: Caso tenha duvida sobre herança, mais a frente será explicado como funciona essa mecânica da linguagem.*
+
+### **Retornando algo nos métodos:**
+
+Assim como as funções os métodos podem retornar valores, porém para isso é necessário a clausula `return`:
+
+- Sintaxe:
+    ~~~php
+        class <nomeDaClasse>
+        {
+            <nivelDeVisibilidade> <nomeDoMétodo>($<parametros>)
+            {
+                return <oQueDesejaRetornar>;
+            }
+        }
+    ~~~
+
+- Exemplo:
+    ~~~php
+        class Calculadora
+        {
+            public Somar($numero1, $numero2)
+            {
+                return $numero1 + $numero2;
+            }
+        }
+    ~~~
+
+### **Métodos GETTERS e SETTERS:**
+
+Esses métodos são criados para acessar ou atribuir valores a atributos que são privados:
+
+- **GETTERS:**
+    
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                private $<atributo>;
+
+                public function getAtributo()
+                {
+                    return $this->atributo;
+                }
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Cadastro
+            {
+                private login;
+                private senha;
+
+                public function getSenha()
+                {
+                    return $this->senha;
+                }
+            }
+        ~~~
+
+- **SETTERS:**
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                private $<atributo>;
+
+                public function setAtributo($<variavelParaReceberOValor>)
+                {
+                    $this->atributo = $<variavelParaReceberOValor>;
+                }
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Cadastro
+            {
+                private login;
+                private senha;
+
+                public function setSenha($senha)
+                {
+                    $this->senha = $senha;
+                }
+            }
+        ~~~
+
+### **Construtor ( __construct ):**
+
+É um método que é inicializado quando instanciamos sua classe.
+
+- Sintaxe:
+    ~~~php
+        class <nomeDaClasse>
+        {
+            public function __construct($<parametros>)
+            {
+                ...
+            }
+        }
+        
+    ~~~
+
+- Exemplo:
+    ~~~php
+        class Pessoa
+        {
+            private $nome;
+            private $idade;
+            private $RG;
+
+            public function __construct($nome, $idade, $RG)
+            {
+                $this->nome = $nome;
+                $this->idade = $idade;
+                $this->RG = $RG;
+            }
+        }
+
+        $p = new Pessoa("Paulo", 29, "11111111111");
+    ~~~
+
+### **Herança (extends):**
+
+Herança em POO tem a função de "puxar" os atributos e métodos da classe herdada para a classe herdeira:
+
+- Sintaxe:
+    
+    ~~~php
+        class <nomeDaClasseQueSeraHerdada>
+        {
+            <nivelDeVisibilidade> $<atributos>;
+            ...
+            <nivelDeVisibilidade> function <nomeDoMétodo>()
+            {
+                ...
+            }
+        }
+
+        class <nomeDaClasseHerdeira> extends <nomeDaClasseQueSeraHerdada>
+        {
+            ...
+        }
+    ~~~
+
+- Exemplo:
+    
+    ~~~php
+        class Veiculo
+        {
+            public $cor;
+            public $ano;
+            public $nome;
+            public function rodar()
+            {
+                echo "rodou";
+            }
+        }
+
+        class Carro extends Veiculo //Nesse caso a classe Carro herda todos os atributos e métodos da classe veiculo.
+        {
+            public function ligarLimpador()
+            {
+                echo "Limpando o parabrisa";
+            }
+        }
+    ~~~
+
+### **Abstração(abstract):**
+
+Em POO algo abstrato é como se fosse um modelo a ser seguido:
+
+- **Classe abastrata:**
+
+    - Uma classe abstrata só pode ser herdada, porém nunca instanciada:
+
+        - Sintaxe:
+
+            ~~~php
+                abstract class <nomeDaClasse>
+                {
+                    ...
+                }
+
+                class <nomeDaClasse2> extends <nomeDaClasse>
+                {
+                    ...
+                }
+            ~~~
+
+        * Exemplo:
+            ~~~php
+                abstract class Banco // Nesse caso o banco não pode ser instanciado, é apenas uma classe "molde"
+                {
+                    public function Depositar()
+                    {
+                        echo "depositou";
+                    }
+                }
+
+                class BancoA extends Banco
+                {
+                }
+            ~~~
+
+- **Métodos Abstratos:**
+
+    - Métodos abstratas seguem o mesmo conceito de "molde", porém eles obrigam que as classes que herdarem criem os métodos abstratos invocados:
+
+        - Sintaxe:
+
+            ~~~php
+                abstract class <nomeDaClasse>
+                {
+                    abstract <nivelDeVisibilidade> function <nomeDoMétodo>($<parametros>);
+                }
+
+                class <nomeDaClasse2> extends <nomeDaClasse>
+                {
+                    <nivelDeVisibilidade> function <nomeDoMétodoAbstrato> ($<parametrosDoMétodoAbstrato>)
+                    {
+                        ...
+                    }
+                }
+            ~~~
+
+        * Exemplo:
+
+            ~~~php
+                abstract class Banco
+                {
+                    abstract public function Depositar($dinheiro);
+                }
+
+                class BancoA extends Banco
+                {
+                    public function Depositar($dinheiro) //Nesse caso o método depositar tem que ser implementado, visto que ele é abstrato
+                    {
+                        echo "Você depositou: ".$dinheiro;
+                    }
+                }
+            ~~~
+
+        *OBS: A classe que contem o método abstrato também tem que ser abstrata.*
+
+### **Como trabalhar com constantes em classes:**
+
+- **Como definir um atributo constante:**
+    
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                const <nomeDoAtributo> = <valor>;
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Cachorro
+            {
+                const RACA = "Chow chow";
+            }
+        ~~~
+
+- **Como pegar um atributo constante (self::):**
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                const <nomeDoAtributo> = <valor>;
+
+                <nivelDeVisibilidade> function <nomeDoMétodo>($<parametros>)
+                {
+                    return self::<nomeDoAtributo>;
+                }
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Animal
+            {
+                const nome = "Lobo";
+
+                public function pegarConst()
+                {
+                    return self::nome;
+                }
+            }
+        ~~~
+
+- **Como pegar um atributo constante da classe "Pai" da herança:**
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasseFilho>  extends <nomeDaClassePai>
+            {
+                const <nomeDoAtributo> = <valor>;
+
+                <nivelDeVisibilidade> function <nomeDoMétodo>($<parametros>)
+                {
+                    return parent::<nomeDoAtributoDaClassePai>;
+                }
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Animais
+            {
+                const nome = "Porco";
+            }
+            class Feras extends Animais
+            {
+                const nome = "Leao";
+
+                public function pegarConst()
+                {
+                    return parent::nome; // irá retornar Porco.
+                }
+            }
+        ~~~
+
+### **Estático (static):**
+
+Atributos e métodos estáticos tem a caracteristica de não necessitarem ter sua classe instanciada para funcionar:
+
+- **Atributos estáticos:**
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                <nivelDeVisibilidade> static        $<nomeDOatributo>;
+            }
+
+            <nomeDaClasse>::$<nomeDoAtributo>;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Login
+            {
+                public static $user;
+            }
+
+            Login::$user = "admin";
+        ~~~
+    
+    *OBS: Caso você deseje utilizar um atributo static em um método é necessário utilizar o `self::$<nomeDoAtributo>`*
+
+- **Métodos estáticos:**
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                <nivelDeVisibilidade> static function <nomeDoMétodo>($<parametros>)
+                {
+                    ...
+                }
+            }
+
+            <nomeDaClasse>::<nomeDoMétodo>();
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Ferramentas
+            {
+                public static function Printar($mensagem)
+                {
+                    echo $mensagem;
+                }
+            }
+
+            Ferramentas::Printar("Ola mundo");
+        ~~~
+    
+### **Polimorfismo:**
+
+O polimorfismo é quando sobrescrevemos um método que já havia sido herdado:
+
+- Sintaxe:
+    ~~~php
+        class <nomeDaClasse1>
+        {
+            <nivelDeVisibilidade> function <nomeDoMétodo>()
+            {
+                ...
+            }
+        }
+
+        class <nomeDaClasse2> extends <nomeDaClasse1>
+        {
+            <nivelDeVisibilidade> function <nomeDoMétodoQueSeráSobrescrito>()
+            {
+                ...
+            }
+        }
+    ~~~
+
+- Exemplo:
+    ~~~php
+        class Animal
+        {
+            public function Andar()
+            {
+                echo "andou";
+            }
+        }
+
+        class Vaca extends Animal
+        {
+            public function Andar()
+            {
+                echo "a vaca andou";
+            }
+        }
+    ~~~
+
+### **Interfaces:**
+Interface tem a função de criar um molde de métodos, assim quer "herdar"/implementar ela, será obrigado a cria-los.
+
+- Sintaxe:
+    ~~~php
+        interface <nomeDaInterface>
+        {
+            <nivelDeVisibilidade> function <nomeDoMétodo>($<parametros>);
+            ...
+        }
+
+        class <nomeDaClasse> implements <nomeDaInterface>
+        {
+            <nivelDeVisibilidade> function <nomeDoMétodo>($<parametros>);
+            ...
+        }
+    ~~~
+
+- Exemplo:
+    ~~~php
+        interface Crud
+        {
+            public function create();
+        }
+
+        class Noticias implements Crud
+        {
+            public function create()
+            {
+                echo "criado";
+            }
+            public function teste()
+            {
+                echo "teste";
+            }
+        }
+    ~~~
+
+### **Namespace:**
+
+- O nasmespace tem a função de diferenciar classes que possuam o mesmo nome, sendo assim é como se fosse um indentificador:
+
+- **Como criar um namespace:**
+
+    - Sintaxe:
+        ~~~php
+            namespace <nomeDoNamespace>;
+            class <nomeDaClasse>
+            {
+                ...
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            namespace classe1;
+            class Produto
+            {
+                public function teste()
+                {
+                    echo "Classe1";
+                }
+            }
+
+            namespace classe2;
+            class Produto
+            {
+                public function teste()
+                {
+                    echo "Classe2";
+                }
+            }
+        ~~~
+
+    *OBS: Todo o conteudo que ficar abaixo do namespace será considerado parte dele, até que encontre outro namespace, ou o código termine.*
+
+- **Como utilizar o namespace com as " \ ":**
+
+    - Sintaxe:
+        ~~~php
+            $<nomeDaVariavel> = new \<nomeDoNamespace>\<NomeDaClasse>();
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            $p = new \classe1\Produto();
+        ~~~
+
+- **Como utilizar o namespace com o "use":**
+
+    - Sitaxe:
+        ~~~php
+            use <nomeDoNamespace>\<nomeDaClasse>;
+        ~~~
+
+    - Sintaxe:
+        ~~~php
+            use classe1\Produto();
+        ~~~
+
+- **Como apelidar um namespace:**
+
+    - Sintaxe:
+        ~~~php
+            use <nomeDoNamespace>\<nomeDaClasse> as <apelido>;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            use classe1\Produto as Produto1;
+        ~~~
+
+    *OBS: Nesse caso você terá que instanciar o apelido da classe*.
+
+### **Referencia e clonagem de objetos:**
+
+Quando atribuimos uma instancia a uma nova variavel, será criado uma atribuição por referencia, fazendo assim que ambos compartilhem as mesmas caracteristicas (caso um seja alterado, o outro também será).
+
+Seguindo essa lógica o php nos permite transformar essa atribuição por referencia, para uma atribuição por dado (clonar):
+
+- **Clone:**
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                ...
+            }
+
+            $<variavelA> = new <nomeDaClasse>();
+            $<variavelB> = clone $<variavelA>;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Pessoa
+            {
+                public $idade;
+            }
+
+            $a = new Pessoa();
+            $b = clone $a;
+            $b->idade = 20; //assim somente o b será alterado
+        ~~~
+
+- **Método mágico clone( __clone ):**
+
+    - Esse método será chamado sempre que exitir o clone antes da instancia da classe que o contem:
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasse>
+            {
+                <nivelDeVisibilidade> function __clone()
+                {
+                    ...
+                }
+                ...
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Pessoa
+            {
+                public function __clone()
+                {
+                    echo "clonou";
+                }
+            }
+
+            $a = new Pessoa();
+            $b = clone $a;
+        ~~~
+
+### **Tratamento de exceções:**
+
+- **Como gerar uma exceção:**
+
+    - Sintaxe:
+        ~~~php
+            throw new Exception("<AMensagemDaExceção>", <codigoQueDeseja>);
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            throw new Exception("Erro de cadastro", 1);
+        ~~~
+
+- **Como tratar um exceção com try catch:**
+
+    - Sintaxe:
+        ~~~php
+            try
+            {
+                <codigoQuePodeDarErro>
+            }catch(Exception $<nomeDaVariavelQueVaiConterOsDadosDaExeção>){
+                <codigoQueVaiRodarSeDerErro>
+            }
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            try
+            {
+                $v = 1;
+                if ($v != 1)
+                {
+                    throw new Exception("Valor diferente de 1", 101);
+                }
+                else
+                {
+                    echo $v;
+                }
+            }catch(Exception $v2){
+                echo $v2->getMessage();
+            }
+        ~~~
+
+- **Métodos do Exception:**
+
+    - `getMessage()` ===> pega a mensagem da exeção;
+    - `getCode()` ===> pega o codigo da exeção;
+    - `getFile()` ===> pega o path do arquivo que está dando o erro;
+    - `getLine()` ===> pega a linha que deu a exeção.
+
+### **Relação entre os objetos:**
+
+Uma relação entre objetos é uma forma de conseguirmos acessar dados de um objeto dentro de outro:
+
+- **Associação:**
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasseA>
+            {
+                <nivelDeVisibilidade> $<nomeDoAtributoDaClasseB>;
+            }
+
+            class <nomeDaClasseB>
+            {
+                <nivelDeVisibilidade> $<nomeDoAtributoB>;
+            }
+
+            $<variavelA> = new <NomeDaClasseA>();
+            $<variavelA>-><nomeDoAtributoDaClasseB>-><nomeDoAtributoB>;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class ClasseA
+            {
+                public $associacaoB;
+            }
+            class ClasseB
+            {
+                public $B;
+            }
+
+            $a = new ClasseA();
+            $b = new ClasseB();
+            $b->B = "Ola mundo";
+            $a->associacaoB = $b;
+            echo $a->associacaoB->B;
+        ~~~
+
+- **Agregação:**
+
+    - Ocorre quando uma classe precisa de outra para fazer alguma ação, sendo assim inializamos ela com um construtor:
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasseA>
+            {
+                <nivelDeVisibilidade> $<nomeDoAtributoAgregadoAClasseB>;
+
+                function __construct(<tipoDaClasse B> $<parametro>)
+                {
+                    $this-><nomeDoAtributoAgregadoAClasseB> = $<parametro>;
+                }
+            }
+
+            class <nomeDaClasseB>
+            {
+                <nivelDeVisibilidade> $<nomeDoAtributoB>;
+                function __construct($<parametro>)
+                {
+                    $this-><nomeDoAtributoB> = $<parametro>;
+                }
+            }
+            $<variavelB> = new <nomeDaClasseB>($<parametos>)
+            $<variavelA> = new <NomeDaClasseA>($<variavelB>);
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Carrinho
+            {
+                public $produtos;
+
+                function __construct(Produtos $p)
+                {
+                    $this->produtos[] = $p;
+                }
+            }
+
+            class Produtos
+            {
+                public $nome;
+                function __construct($nom)
+                {
+                    $this->nome = $nom;
+                }
+            }
+            $toalha = new Produtos("toalha");
+            $compras = new Carrinho($toalha);
+        ~~~
+
+- **Composições:**
+
+    - Na composição, uma classe cria a instancia de outra classe dentro de si, sendo assim, quando ela for destruida, a outra classe também será.
+
+    - Sintaxe:
+        ~~~php
+            class <nomeDaClasseA>
+            {
+                <nivelDeVisibilidade> $<nomeDoAtributoA>;
+            }
+
+            class <nomeDaClasseB>
+            {
+                <nivelDeVisibilidade> $<nomeDoAtributoBCompostoPorA>;
+                function __construct($<parametro>)
+                {
+                    $this-><nomeDoAtributoBCompostoPorA> = $<parametro>;
+                }
+            }
+            $<variavelB> = new <nomeDaClasseB>($<parametros>);
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            class Pessoa
+            {
+                public $nome;
+            }
+
+            class Exibir
+            {
+                public $pessoa;
+                function __construct($n)
+                {
+                    $this->pessoa = new Pessoa();
+                    $this->pessoa->nome = $n;
+                }
+            }
+            $e = new Exibir("Joao");
+        ~~~
+
+### **Métodos mágicos:**
+
+* *Os métodos mágicos devem ser utilizados dentro de uma classe*
+
+* `__set($<atributoPrivado>, $<input>)` ===> funciona como uma maneira de criar sets, de maneira mais prática, uma vez que ao criar esse método o atributo poderá ser setado como se fosse publico.
+* `__get($<atributoPrivado>)` ===> funciona como uma maneira de criar gets, de maneira mais prática, uma vez que ao criar esse método o atributo poderá ser pego como se fosse publico.
+* `__tostring`===> esse método é chamado toda vez que o objeto for considerado como uma string;
+* `__invoke`===> esse método é chamado toda vez que você tenta chamar um método como função.
+
+* *OBS: Todos o métodos mágicos são criados como o __construct, sendo "public function <nomeDoMétodo>(){}"*
 
 
-
+###
