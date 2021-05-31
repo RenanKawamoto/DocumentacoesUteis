@@ -92,8 +92,17 @@
         1. [Criando conexão com o banco de dados ( pg_connect )](#pgconnect)
         2. [Criando query ( pg_query )](#pgquery)
         3. [Transformando o resultado da query em uma matriz ( pg_fetch_all )](#pgfetchall)
-3.
-
+3. [Programação orientada a objetos](#poo)
+    1. [Classes](#class)
+        1. [Atributos](#atributos)
+        2. [Metodos](#metodos)
+        3. [Criando classes](#criandoclasse)
+        4. [Acessando atributos dentro da classe ($this->)](#this)
+    2. [Objetos](#objetos)
+        1. [Instanciando uma classe (new)](#new)
+        2. [Utilizando atributos publicos (->)](#utilizandoatributospublicos)
+        3. [Utilizando métodos publicos (->)](#uao)
+    3. [Modificadores de acesso](#modificadoresdeacesso)
 
 <div id = "sintaxe"></div>
 
@@ -1700,11 +1709,17 @@ Antes de tudo é necessário instalar php-pgsql.
             print_r($resultado);
         ~~~
 
+<div id = "poo"></div>
+
 ## *PHP Orientado a Objetos(POO):*
+
+<div id = "class"></div>
 
 ### **Classes:**
 
 Para entendermos classes é necessário saber o conceito geral de atributos e métodos:
+
+<div id = "atributos"></div>
 
 * Atributos são caracteristicas de uma classe: 
 
@@ -1719,7 +1734,9 @@ Para entendermos classes é necessário saber o conceito geral de atributos e m�
         *Nesse caso temos uma classe carro com atributo $cor*
 
         *Peço que por hora não se importe com o termo `public`, pois mais a frente haverá um explicação completa*
-    
+
+<div id = "metodos"></div>
+
 * Métodos são "ações" feitas pela classe:
 
     - Exemplo:
@@ -1734,6 +1751,8 @@ Para entendermos classes é necessário saber o conceito geral de atributos e m�
         ~~~
         
         *Nesse caso o método é buzinar tem a função de imprimir a onomatopeia da buzina, quando é chamada*
+
+<div id = "criandoclasse"></div>
 
 * Como é criado uma classe:
 
@@ -1764,6 +1783,8 @@ Para entendermos classes é necessário saber o conceito geral de atributos e m�
             }
         ~~~
 
+<div id = "this"></div>
+
 * Como acessar atributos dentro da classe($this->):
 
     - Sintaxe:
@@ -1791,9 +1812,13 @@ Para entendermos classes é necessário saber o conceito geral de atributos e m�
             }
         ~~~
 
+<div id = "objetos"></div>
+
 ### **Objetos:**
 
 Um objeto é uma instancia de uma classe.
+
+<div id = "new"></div>
 
 * Como instanciar uma classe (new):
 
@@ -1806,6 +1831,8 @@ Um objeto é uma instancia de uma classe.
         ~~~php
             $Julia = new Pessoa();
         ~~~
+
+<div id = "utilizandoatributospublicos"></div>
 
 * Como pegar/utilizar atributos publicos de um objeto (->):
 
@@ -1821,6 +1848,8 @@ Um objeto é uma instancia de uma classe.
             $Luiz->nome = "Luiz";
         ~~~
 
+<div id = "uao"></div>
+
 * Como utilizar métodos de um objeto (->):
 
     - Sintaxe:
@@ -1835,6 +1864,8 @@ Um objeto é uma instancia de uma classe.
             $Luiza->Falar();
         ~~~
 
+<div id = "modificadoresdeacesso"></div>
+
 ### **Níveis de visibilidade / Modificadores de acesso:**
 Os níveis de visibilidade, tem a função de gerir se é possível ou não acessar determinados métodos ou atributos dependendo da circunstância:
 
@@ -1845,6 +1876,8 @@ Os níveis de visibilidade, tem a função de gerir se é possível ou não aces
 * `protected` somente a classe criadora e as que herdam dela podem acessar o método ou atributo que tenha esse nível;
 
 *OBS: Caso tenha duvida sobre herança, mais a frente será explicado como funciona essa mecânica da linguagem.*
+
+<div id = "pgfetchall"></div>
 
 ### **Retornando algo nos métodos:**
 
@@ -2641,4 +2674,46 @@ Uma relação entre objetos é uma forma de conseguirmos acessar dados de um obj
 * *OBS: Todos o métodos mágicos são criados como o __construct, sendo "public function <nomeDoMétodo>(){}"*
 
 
-###
+## *Como utilizar o php POO tipado:*
+
+### **Como tipar propriedades de classes:**
+
+* Sintaxe:
+    ~~~php
+        class <nomeDaClasse>
+        {
+            <nivelDeVisibilidade> <tipoDaPropriedade> $<nomeDaPropriedade>;
+        }
+    ~~~
+
+* Exemplo:
+    ~~~php
+        class Pessoa
+        {
+            public string $nome;
+        }
+    ~~~
+
+### **Como tipar métodos e seus retornos:**
+
+* Sintaxe:
+    ~~~php
+        class <nomeDaClasse>
+        {
+            <nivelDeVisibilidade> function <nomeDoMétodo>(<tipoDoArgumento> $<nomeDoArgumento>):<tipoDeRetorno>
+            {
+                ...
+            }
+        }
+    ~~~
+
+* Exemplo:
+    ~~~php
+        class Pessoa
+        {
+            public function Falar(string $frase):string
+            {
+                return "Frase: $frase";
+            }
+        }
+    ~~~
