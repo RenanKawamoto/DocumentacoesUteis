@@ -103,6 +103,44 @@
         2. [Utilizando atributos publicos (->)](#utilizandoatributospublicos)
         3. [Utilizando métodos publicos (->)](#uao)
     3. [Modificadores de acesso](#modificadoresdeacesso)
+    4. [Retornando valores](#return)
+    5. [Getters e Setters](#getset)
+        1. [Getter](#get)
+        2. [Setter](#set)
+    6. [Construtor ( __construct )](#construtor)
+    7. [Herança (extends)](#heranca)
+    8. [Abstratação (abstract)](#abstract)
+        1. [Classes abstratas](#abstractclass)
+        2. [Métodos abstratos](#abstractmethod)
+    9. [Atributos constantes](#const)
+        1. [Como definir atributos constantes](#defineconst)
+        2. [Como pegar atributos constantes (self::)](#getconst)
+        3. [Como pegar constantes de uma classe herdada (parents)](#parents)
+    10. [Static](#static)
+        1. [Atributos estaticos](#atributesstatic)
+        2. [Metodos estaticos](#methodstatic)
+    11. [Polimorfismo](#polimorfismo)
+    12. [Interfaces](#interfaces)
+    11. [Namespace](#namespace)
+        1. [Como criar um namespace](#createnamespace)
+        2. [Como utilizar a " \ " e os " : "](#usetwopoints)
+        3. [Como utilizar o " use "](#use)
+        4. [Como apelidar o namespace](#namenamespace)
+    12. [Referencia e clonagem de objetos](#referenceclone)
+        1. [Clone](#clone)
+        2. [Método mágico clone ( __clone )](#mclone)
+    13. [Tratamento de exceções](#excecao)
+        1. [Como gerar um exceção](#exception)
+        2. [Como tratar exceções (try catch)](#trycatch)
+        3. [Métodos das exceções](#metodosexception)
+    14. [Relações entre objetos](#relacoes)
+        1. [Associação](#associacao)
+        2. [Agregação](#agregacao)
+        3. [Composição](#composicao)
+    15. [Métodos mágicos](#metodosmagicos)
+4. [Como tipar o seu código php orientado a objetos](#pootipado)
+    1. [Como tipar propriedades](#tipandopropriedades)
+    2. [Como tipar métodos e retornos](#tipandometodoseretornos)
 
 <div id = "sintaxe"></div>
 
@@ -1877,7 +1915,7 @@ Os níveis de visibilidade, tem a função de gerir se é possível ou não aces
 
 *OBS: Caso tenha duvida sobre herança, mais a frente será explicado como funciona essa mecânica da linguagem.*
 
-<div id = "pgfetchall"></div>
+<div id = "return"></div>
 
 ### **Retornando algo nos métodos:**
 
@@ -1905,9 +1943,13 @@ Assim como as funções os métodos podem retornar valores, porém para isso é 
         }
     ~~~
 
+<div id = "getset"></div>
+
 ### **Métodos GETTERS e SETTERS:**
 
 Esses métodos são criados para acessar ou atribuir valores a atributos que são privados:
+
+<div id = "get"></div>
 
 - **GETTERS:**
     
@@ -1938,6 +1980,8 @@ Esses métodos são criados para acessar ou atribuir valores a atributos que sã
             }
         ~~~
 
+<div id = "set"></div>
+
 - **SETTERS:**
 
     - Sintaxe:
@@ -1966,6 +2010,8 @@ Esses métodos são criados para acessar ou atribuir valores a atributos que sã
                 }
             }
         ~~~
+
+<div id = "construtor"></div>
 
 ### **Construtor ( __construct ):**
 
@@ -2001,6 +2047,8 @@ Esses métodos são criados para acessar ou atribuir valores a atributos que sã
 
         $p = new Pessoa("Paulo", 29, "11111111111");
     ~~~
+
+<div id = "heranca"></div>
 
 ### **Herança (extends):**
 
@@ -2048,9 +2096,13 @@ Herança em POO tem a função de "puxar" os atributos e métodos da classe herd
         }
     ~~~
 
+<div id = "abstract"></div>
+
 ### **Abstração(abstract):**
 
 Em POO algo abstrato é como se fosse um modelo a ser seguido:
+
+<div id = "abstractclass"></div>
 
 - **Classe abastrata:**
 
@@ -2084,6 +2136,8 @@ Em POO algo abstrato é como se fosse um modelo a ser seguido:
                 {
                 }
             ~~~
+
+<div id = "abstractmethod"></div>
 
 - **Métodos Abstratos:**
 
@@ -2125,7 +2179,11 @@ Em POO algo abstrato é como se fosse um modelo a ser seguido:
 
         *OBS: A classe que contem o método abstrato também tem que ser abstrata.*
 
+<div id = "const"></div>
+
 ### **Como trabalhar com constantes em classes:**
+
+<div id = "defineconst"></div>
 
 - **Como definir um atributo constante:**
     
@@ -2144,6 +2202,8 @@ Em POO algo abstrato é como se fosse um modelo a ser seguido:
                 const RACA = "Chow chow";
             }
         ~~~
+
+<div id = "getconst"></div>
 
 - **Como pegar um atributo constante (self::):**
 
@@ -2172,6 +2232,8 @@ Em POO algo abstrato é como se fosse um modelo a ser seguido:
                 }
             }
         ~~~
+
+<div id = "parents"></div>
 
 - **Como pegar um atributo constante da classe "Pai" da herança:**
 
@@ -2205,9 +2267,13 @@ Em POO algo abstrato é como se fosse um modelo a ser seguido:
             }
         ~~~
 
+<div id = "static"></div>
+
 ### **Estático (static):**
 
 Atributos e métodos estáticos tem a caracteristica de não necessitarem ter sua classe instanciada para funcionar:
+
+<div id = "atributesstatic"></div>
 
 - **Atributos estáticos:**
 
@@ -2232,6 +2298,8 @@ Atributos e métodos estáticos tem a caracteristica de não necessitarem ter su
         ~~~
     
     *OBS: Caso você deseje utilizar um atributo static em um método é necessário utilizar o `self::$<nomeDoAtributo>`*
+
+<div id = "methodstatic"></div>
 
 - **Métodos estáticos:**
 
@@ -2261,6 +2329,8 @@ Atributos e métodos estáticos tem a caracteristica de não necessitarem ter su
             Ferramentas::Printar("Ola mundo");
         ~~~
     
+<div id = "polimorfismo"></div>
+
 ### **Polimorfismo:**
 
 O polimorfismo é quando sobrescrevemos um método que já havia sido herdado:
@@ -2303,6 +2373,8 @@ O polimorfismo é quando sobrescrevemos um método que já havia sido herdado:
         }
     ~~~
 
+<div id = "interface"></div>
+
 ### **Interfaces:**
 Interface tem a função de criar um molde de métodos, assim quer "herdar"/implementar ela, será obrigado a cria-los.
 
@@ -2341,9 +2413,13 @@ Interface tem a função de criar um molde de métodos, assim quer "herdar"/impl
         }
     ~~~
 
+<div id = "namespace"></div>
+
 ### **Namespace:**
 
 - O nasmespace tem a função de diferenciar classes que possuam o mesmo nome, sendo assim é como se fosse um indentificador:
+
+<div id = "createnamespace"></div>
 
 - **Como criar um namespace:**
 
@@ -2379,6 +2455,8 @@ Interface tem a função de criar um molde de métodos, assim quer "herdar"/impl
 
     *OBS: Todo o conteudo que ficar abaixo do namespace será considerado parte dele, até que encontre outro namespace, ou o código termine.*
 
+<div id = "usetwopoints"></div>
+
 - **Como utilizar o namespace com as " \ ":**
 
     - Sintaxe:
@@ -2391,6 +2469,8 @@ Interface tem a função de criar um molde de métodos, assim quer "herdar"/impl
             $p = new \classe1\Produto();
         ~~~
 
+<div id = "use"></div>
+
 - **Como utilizar o namespace com o "use":**
 
     - Sitaxe:
@@ -2402,6 +2482,8 @@ Interface tem a função de criar um molde de métodos, assim quer "herdar"/impl
         ~~~php
             use classe1\Produto();
         ~~~
+
+<div id = "namenamespace"></div>
 
 - **Como apelidar um namespace:**
 
@@ -2417,11 +2499,15 @@ Interface tem a função de criar um molde de métodos, assim quer "herdar"/impl
 
     *OBS: Nesse caso você terá que instanciar o apelido da classe*.
 
+<div id = "referenceclone"></div>
+
 ### **Referencia e clonagem de objetos:**
 
 Quando atribuimos uma instancia a uma nova variavel, será criado uma atribuição por referencia, fazendo assim que ambos compartilhem as mesmas caracteristicas (caso um seja alterado, o outro também será).
 
 Seguindo essa lógica o php nos permite transformar essa atribuição por referencia, para uma atribuição por dado (clonar):
+
+<div id = "clone"></div>
 
 - **Clone:**
 
@@ -2447,6 +2533,8 @@ Seguindo essa lógica o php nos permite transformar essa atribuição por refere
             $b = clone $a;
             $b->idade = 20; //assim somente o b será alterado
         ~~~
+
+<div id = "mclone"></div>
 
 - **Método mágico clone( __clone ):**
 
@@ -2478,7 +2566,11 @@ Seguindo essa lógica o php nos permite transformar essa atribuição por refere
             $b = clone $a;
         ~~~
 
+<div id = "excecao"></div>
+
 ### **Tratamento de exceções:**
+
+<div id = "exception"></div>
 
 - **Como gerar uma exceção:**
 
@@ -2491,6 +2583,8 @@ Seguindo essa lógica o php nos permite transformar essa atribuição por refere
         ~~~php
             throw new Exception("Erro de cadastro", 1);
         ~~~
+
+<div id = "trycatch"></div>
 
 - **Como tratar um exceção com try catch:**
 
@@ -2522,6 +2616,8 @@ Seguindo essa lógica o php nos permite transformar essa atribuição por refere
             }
         ~~~
 
+<div id = "metodosexception"></div>
+
 - **Métodos do Exception:**
 
     - `getMessage()` ===> pega a mensagem da exeção;
@@ -2529,9 +2625,13 @@ Seguindo essa lógica o php nos permite transformar essa atribuição por refere
     - `getFile()` ===> pega o path do arquivo que está dando o erro;
     - `getLine()` ===> pega a linha que deu a exeção.
 
+<div id = "relacoes"></div>
+
 ### **Relação entre os objetos:**
 
 Uma relação entre objetos é uma forma de conseguirmos acessar dados de um objeto dentro de outro:
+
+<div id = "associacao"></div>
 
 - **Associação:**
 
@@ -2568,6 +2668,8 @@ Uma relação entre objetos é uma forma de conseguirmos acessar dados de um obj
             $a->associacaoB = $b;
             echo $a->associacaoB->B;
         ~~~
+
+<div id = "agregacao"></div>
 
 - **Agregação:**
 
@@ -2621,6 +2723,8 @@ Uma relação entre objetos é uma forma de conseguirmos acessar dados de um obj
             $compras = new Carrinho($toalha);
         ~~~
 
+<div id = "composicao"></div>
+
 - **Composições:**
 
     - Na composição, uma classe cria a instancia de outra classe dentro de si, sendo assim, quando ela for destruida, a outra classe também será.
@@ -2662,6 +2766,8 @@ Uma relação entre objetos é uma forma de conseguirmos acessar dados de um obj
             $e = new Exibir("Joao");
         ~~~
 
+<div id = "metodosmagicos"></div>
+
 ### **Métodos mágicos:**
 
 * *Os métodos mágicos devem ser utilizados dentro de uma classe*
@@ -2673,8 +2779,11 @@ Uma relação entre objetos é uma forma de conseguirmos acessar dados de um obj
 
 * *OBS: Todos o métodos mágicos são criados como o __construct, sendo "public function <nomeDoMétodo>(){}"*
 
+<div id = "pootipado"></div>
 
 ## *Como utilizar o php POO tipado:*
+
+<div id = "tipandopropriedades"></div>
 
 ### **Como tipar propriedades de classes:**
 
@@ -2693,6 +2802,8 @@ Uma relação entre objetos é uma forma de conseguirmos acessar dados de um obj
             public string $nome;
         }
     ~~~
+
+<div id = "tipandometodoseretornos"></div>
 
 ### **Como tipar métodos e seus retornos:**
 
