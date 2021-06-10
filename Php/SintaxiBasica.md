@@ -2779,6 +2779,55 @@ Uma relação entre objetos é uma forma de conseguirmos acessar dados de um obj
 
 * *OBS: Todos o métodos mágicos são criados como o __construct, sendo "public function <nomeDoMétodo>(){}"*
 
+### **Namespace e Use:**
+
+- **Como criar um namespace:**
+    - Os namespaces é uma maneira de organizarmos nossas classes afim de não haver conflitos, caso existam duas classes com mesmo nome.
+
+    - Sintaxe:
+        ~~~php
+            namespace <ElementoOrganizacional>\<NomeDoNamespace>;
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            namespace MainPage\Login;
+        ~~~
+
+    OBS: Criando o namespace dessa maneira tudo que vier abaixo dele entra dentro do seu contexto.
+
+    OBS2: O namespace funciona de maneira semelhante a pastas em SO.
+
+- **Como utilizar o "use":**
+
+    - O use tem a função de indicar qual é o namespace que você está utilizando, podendo apelida-los, caso queira.
+
+    - Sintaxe:
+        ~~~php
+            use <nomeDoNamespace>\<ClasseDoNasmespaceQueDeseja>;
+            ...
+        ~~~
+
+    - Exemplo:
+        ~~~php
+            use MainPage\Home;
+        ~~~
+
+    OBS: Diferente de outras linguagens o use não 'importa' o arquivo que contem a classe, sendo assim é necessário utilizar o require_once ou spl_autoload_register.
+
+### **spl_autoload_register:**
+
+- O spl_autoload_register tem a função de criar uma forma mais simples de fazer os require_once (além de fazer diversos require, ao mesmo tempo).
+
+- Exemplo:
+    ~~~php
+            spl_autoload_register(function ($class) {
+                require_once "$class.php";
+            });
+    ~~~
+
+OBS: o sql_autoload_register() aceita uma function onde seu parametro será o nome das instancias;
+
 <div id = "pootipado"></div>
 
 ## *Como utilizar o php POO tipado:*
