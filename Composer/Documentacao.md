@@ -249,7 +249,7 @@
 
 - Para fazer isso basta entrar no site do Packagist e ir em submit.
 
-## *Comando do composer pelo prompt:*
+## *Comandos básicos do composer pelo prompt:*
 
 ### **Opções globais:**
 
@@ -359,4 +359,51 @@
     -...
 
 ### **Comando reinstall:**
+
+- O comando de reinstalação procura pacotes instalados por nome, desinstala-os e reinstala-os. Isso permite que você faça uma instalação limpa de um pacote se você mexer com seus arquivos.
+
+- **Opções para o comando reinstall:**
+    -...
+
+### **Comando check-platform-reqs:**
+
+- Esse comando tem a função de verificar se suas versões de PHP e extensões correspondem aos requisitos de plataforma dos pacotes instalados.
+
+### **Comando global:**
+
+- O comando global permite que você execute outros comandos como install, remove, require ou update como se você os estivesse executando a partir do diretório COMPOSER_HOME.
+
+### **Comando search:**
+
+- Esse comando tem a função de fazer uma busca por pacotes no repositorio padrão (packagist).
+
+- **Opções para o comando search:**
+    -...
+
+### **Comando show:**
+
+- Tem a função de listar os pacotes instalados e suas versões.
+
+- Caso você queira saber mais sobre algum pacote basta colocar seu nomeDoFornecedor/nomeDoPacote:
+
+- Exemplo:
+    ~~~
+        composer show monolog/monolog
+    ~~~
+
+- **Opções para o comando show:**
+    -...
+
+### **Comando outdated:**
+
+- Esse comando tem a função de mostrar uma lista de pacotes instalados que tem atualização disponivel.
+
+- Código de cores:
+    - verde (=): a dependência está na versão mais recente e atualizada;
+    -amarelo (~): A dependência tem uma nova versão disponível que inclui quebras de compatibilidade com versões anteriores, então atualize quando puder, mas pode envolver trabalho adicional.
+    - vermelho (!): A dependência tem uma nova versão que é sempre compatível e você deve atualizá-la.
+
+- **Opções para o comando outdated:**
+    -...
+
 
