@@ -1,26 +1,66 @@
 # **Documentação básica do composer**
 
 ## *Sumário:*
-1.
-2.
+1. [Introdução](#introducao)
+    1. [O que é o composer](#oqe)
+    2. [O composer é igual ao apt ou yum](#apt)
+    3. [Como instalar o composer no linux](#instalar)
+        1. [Localmente](#local)
+        2. [Globalmente](#globalmente)
+2. [Uso básico](#basico)
+    1. [Explicações](#explicacoes)
+    2. [O composer.json](#composer.json)
+    3. [Instalando as dependencias](#install1)
+    4. [Atualizando as depencias](#update1)
+    5. [Packagist](#packagist1)
+    6. [Autoloading](#autoloading)
+3. [Como disponibilizar suas bibliotecas/pacotes](#libs)
+    1. [Adicionando o nome ao seu pacote](#name)
+    2. [Versionando seu pacote](#version)
+    3. [Publicando seu pacote em um VCS](#vcs)
+    4. [Publicando no packagist](#packagist2)
+4. [Comando básicos do composer](#prompt)
+    1. [Opções globais](#globais)
+    2. [Retornos](#retornos)
+    3. [Init](#init)
+    4. [Install](#install2)
+    5. [Update](#update2)
+    6. [Require](#require)
+    7. [Remove](#remove)
+    8. [Reinstall](#reinstall)
+    9. [Check-platform-reqs](#check)
+    10. [Global](#comandoglobal)
+    11. [Search](#search)
+    12. [Show](#show)
+    13. [Outdated](#outdated)
+
+<div id="introducao"></div>
 
 ## *Introdução:*
+
+<div id="oqe"></div>
 
 ### **O que é o composer:**
 - O composer é uma ferramenta de gerenciamento de dependencias para o PHP (muito semelhante ao pip do python, ou npm do node, caso já tenha utilizado).
 
 - Ele irá instalar e atualizar as depencias que você definiu que seu programa necessita.
 
+<div id="apt"></div>
+
 ### **O composer é igual ao Apt ou Yum?**
 - Não, o composer trata sim dos pacotes e bibliotecas para o usuario, porém ele os gerencia por projeto, instalando-os em um diretorio.
+
+<div id="instalar"></div>
 
 ### **Como instalar o composer no linux:**
 - O composer tem duas formas de ser instalado, sendo elas:
 
+    <div id="local"></div>
+
     - `Localmente:`
         - Ao instalar o composer localmente, você terá que baixar um arquivo e executa-lo no diretorio atual, toda vez que quiser gerenciar seus pacotes com o composer:
 
-            - **Processo de download:**
+        - **Processo de download:**
                 - Rode os seguintes comando pelo prompt no diretorio que quer utilizar:
                     ~~~
                         php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -38,6 +78,8 @@
                     php composer.phar install
                 ~~~
             - **OBS:** PARA QUE O COMANDO FUNCIONE É NECESSÁRIO EXISTIR UM ARQUIVO NO DIRETORIO CHAMADO: "composer.json" QUE SERÁ EXPLICADO MAIS A FRENTE.
+
+    <div id="globalmente"></div>
 
     - `Globalmente:`
         - Ao instalar o composer globalmente você poderá executa-lo em qualquer diretorio, utilizando o comando "composer" em vez de "php composer.phar":
@@ -68,11 +110,17 @@
                 ~~~
             - **OBS:** PARA QUE O COMANDO FUNCIONE É NECESSÁRIO EXISTIR UM ARQUIVO NO DIRETORIO CHAMADO: "composer.json" QUE SERÁ EXPLICADO MAIS A FRENTE.
 
+<div id="basico"></div>
+
 ## *Uso básico do composer:*
+
+<div id="explicacoes"></div>
 
 ### **Explicações:**
 
 - Para que possamos entender melhor como funciona o básico do composer, usaremos o "monolog/monolog", que se trata de uma biblioteca de login.
+
+<div id="composer.json"></div>
 
 ### **Composer.json: o arquivo de configuração de projeto:**
 
@@ -110,6 +158,8 @@
 
         - *Package version constraints*: as restrições de versões dos pacotes são colocadas logo após os package names, e tem a função de selecionar uma versão especifica para nosso projeto, em nosso exemplo queremos uma versão 2.0.(qualquer numero);
 
+<div id="install1"></div>
+
 ### **Instalando as dependencias:**
 
 - **OBS:** NOS EXEMPLOS A SEGUIR UTILIZAREI O COMPOSER INSTALADO DE MANEIRA GLOBAL, SENDO ASSIM CASO VOCÊ TENHA INSTALADO DE MANEIRA LOCAL BASTA SUBSTITUIR O COMANDO: 'composer ...' para 'php composer.phar ...';
@@ -138,6 +188,8 @@
 
     - Ao utilizar o comando "composer install", quando já existe um composer.lock dentro do diretorio, faz com que o composer gerencie os pacotes para a versão presente no lock.
 
+<div id="update1"></div>
+
 ### **Atualizando as dependencias para a versão mais recente:**
 
 - Para isso utilizamos o comando "composer update", que irá buscar qual a ultima versão presente em seu composer.json e atualizar o composer.lock.
@@ -149,11 +201,15 @@
             composer update monolog/monolog 2.0.0
         ~~~
 
+<div id="packagist1"></div>
+
 ### **Packagist:**
 
 - O packagist é um repositorio padrão (sendo assim, você não precisa especificar onde o composer deve buscar o pacote) e principal do composer;
 
 - O packagist é um site, sendo assim é possível acessa-lo e buscar os pacotes a sua escolha.
+
+<div id="autoloading"></div>
 
 ### **Autoloading:**
 
@@ -161,11 +217,15 @@
 
 - OBS: Você pode até adicionar seu próprio código ao autoloader adicionando um campo "autoload" ao composer.json.
 
+<div id="libs"></div>
+
 ## *Bibliotecas:*
 
 - Nessa parte da documentação será explicado como tornar sua bliblioteca instalavel, através do composer.
 
 - Para composer, assim que você possui um composer.json em seu diretorio, o seu diretorio se torna um pacote, a unica diferença entre um pacote real e seu diretorio é o nome.
+
+<div id="name"></div>
 
 ### **Adicionando um nome ao seu pacote:**
 
@@ -193,6 +253,7 @@
 
 - OBS: O name tem que ser em lower case.
 
+<div id="version"></div>
 
 ### **Versionando sua biblioteca:**
 
@@ -202,6 +263,8 @@
     ~~~
         "version": "1.0.0"
     ~~~
+
+<div id="vcs"></div>
 
 ### **Publicando seu pacote em um VCS:**
 
@@ -241,6 +304,8 @@
             }
         ~~~
 
+<div id="packagist2"></div>
+
 ### **Publicando no packagist:**
 
 - Como vimos anteriormente é possível colocarmos nossos pacotes em repositorios para assim pordermos utiliza-los com composer e a clausula "repositories", porém isso não é muito pratico.
@@ -249,7 +314,11 @@
 
 - Para fazer isso basta entrar no site do Packagist e ir em submit.
 
+<div id="prompt"></div>
+
 ## *Comandos básicos do composer pelo prompt:*
+
+<div id="globais"></div>
 
 ### **Opções globais:**
 
@@ -277,10 +346,14 @@
 
     - `--version(-V):` Exibi a versão do composer.
 
+<div id="retornos"></div>
+
 ### **Retorno do código:**
 - **0**:OK;
 - **1**:Erro desconhecido;
 - **2**:Código de erro de resolução de dependência;
+
+<div id="init"></div>
 
 ### **Comando para criar um composer.json de maneira interativa (init):**
 
@@ -300,6 +373,8 @@
     - `--repository:` Passa um ou mais repositorios, para a busca de pacotes.
     - `--autoload(-a):` Adicione um mapeamento de carregamento automático PSR-4 ao composer.json. Mapeia automaticamente o namespace do seu pacote para o diretório fornecido.
 
+<div id="install2"></div>
+
 ### **Comando install/i:**
 
 - O comando install lê o arquivo composer.json do diretório atual, resolve as dependências e as instala.
@@ -310,6 +385,8 @@
 
 - **Opções para o comando install:**
     -...
+
+<div id="update2"></div>
 
 ### **Comando update/u:**
 
@@ -332,6 +409,8 @@
 - **Opções para o comando update:**
     -...
 
+<div id="require"></div>
+
 ### **Comando require:**
 
 - O comando `require` adiciona novos pacotes ao arquivo composer.json do diretório atual. Se nenhum arquivo existir, um será criado imediatamente.
@@ -346,6 +425,8 @@
 - **Opções para o comando require:**
     -...
 
+<div id="remove"></div>
+
 ### **Comando remove:**
 
 - O comando `remove` tem a função de excluir um pacote do seu composer.json presente no seu diretorio atual.
@@ -358,6 +439,8 @@
 - **Opções para o comando remove:**
     -...
 
+<div id="reinstall"></div>
+
 ### **Comando reinstall:**
 
 - O comando de reinstalação procura pacotes instalados por nome, desinstala-os e reinstala-os. Isso permite que você faça uma instalação limpa de um pacote se você mexer com seus arquivos.
@@ -365,13 +448,19 @@
 - **Opções para o comando reinstall:**
     -...
 
+<div id="check"></div>
+
 ### **Comando check-platform-reqs:**
 
 - Esse comando tem a função de verificar se suas versões de PHP e extensões correspondem aos requisitos de plataforma dos pacotes instalados.
 
+<div id="comandoglobal"></div>
+
 ### **Comando global:**
 
 - O comando global permite que você execute outros comandos como install, remove, require ou update como se você os estivesse executando a partir do diretório COMPOSER_HOME.
+
+<div id="search"></div>
 
 ### **Comando search:**
 
@@ -379,6 +468,8 @@
 
 - **Opções para o comando search:**
     -...
+
+<div id="show"></div>
 
 ### **Comando show:**
 
@@ -393,6 +484,8 @@
 
 - **Opções para o comando show:**
     -...
+
+<div id="outdated"></div>
 
 ### **Comando outdated:**
 
