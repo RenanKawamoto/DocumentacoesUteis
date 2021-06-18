@@ -384,7 +384,7 @@
 - Se não houver um arquivo composer.lock, o Composer criará um após a resolução da dependência.
 
 - **Opções para o comando install:**
-    -...
+    - ...
 
 <div id="update2"></div>
 
@@ -407,7 +407,7 @@
         ~~~
 
 - **Opções para o comando update:**
-    -...
+    - ...
 
 <div id="require"></div>
 
@@ -423,7 +423,7 @@
         ~~~
 
 - **Opções para o comando require:**
-    -...
+    - ...
 
 <div id="remove"></div>
 
@@ -437,7 +437,7 @@
     ~~~
 
 - **Opções para o comando remove:**
-    -...
+    - ...
 
 <div id="reinstall"></div>
 
@@ -446,7 +446,7 @@
 - O comando de reinstalação procura pacotes instalados por nome, desinstala-os e reinstala-os. Isso permite que você faça uma instalação limpa de um pacote se você mexer com seus arquivos.
 
 - **Opções para o comando reinstall:**
-    -...
+    - ...
 
 <div id="check"></div>
 
@@ -467,7 +467,7 @@
 - Esse comando tem a função de fazer uma busca por pacotes no repositorio padrão (packagist).
 
 - **Opções para o comando search:**
-    -...
+    - ...
 
 <div id="show"></div>
 
@@ -483,7 +483,7 @@
     ~~~
 
 - **Opções para o comando show:**
-    -...
+    - ...
 
 <div id="outdated"></div>
 
@@ -497,6 +497,6 @@
     - vermelho (!): A dependência tem uma nova versão que é sempre compatível e você deve atualizá-la.
 
 - **Opções para o comando outdated:**
-    -...
+    - ...
 
 

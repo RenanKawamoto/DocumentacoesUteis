@@ -12,14 +12,14 @@
 ### **No linux(com composer):**
 
 Sintaxe:
-    ~~~
-        composer create-project    laravel/laravel <nomeDoProjeto>
-    ~~~
+~~~
+    composer create-project    laravel/laravel <nomeDoProjeto>
+~~~
 
 Exemplo:
-    ~~~
-        composer create-project laravel/laravel projeto1
-    ~~~
+~~~
+    composer create-project laravel/laravel projeto1
+~~~
 
 ## *Como iniciar um server local com laravel artisan:*
 
@@ -56,20 +56,20 @@ Exemplo:
 - Vá em: routes >> web.php:
 
 Sintaxe:
-    ~~~php
-        Route::<verbo>('/<uri>', function()
-        {
-            return view('<nomeDaView>');
-        })
-    ~~~
+~~~php
+    Route::<verbo>('/<uri>', function()
+    {
+        return view('<nomeDaView>');
+    })
+~~~
 
 Exemplo:
-    ~~~php
-        Route::get('/teste', function()
-        {
-            return view('teste');
-        })
-    ~~~
+~~~php
+    Route::get('/teste', function()
+    {
+        return view('teste');
+    })
+~~~
 
 ### **Como passar variaveis pelas rotas**
 
@@ -282,12 +282,13 @@ OBS: tudo isso deve ser feito dentro de métodos, para funcionar.
 ### **Como deve ficar a sua rota ao usar o controller:**
 
 Sintaxe:
-    ~~~
-        Route::<verbo>('<Uri>', [<NomeDoController>::class, '<nomeDoMétodo>']); 
-    ~~~
+~~~
+    Route::<verbo>('<Uri>', [<NomeDoController>::class, '<nomeDoMétodo>']); 
+~~~
 
 Exemplo:
-    ~~~
-        Route::get('/', [MainPage::class, 'Index']);
-    ~~~
+
+~~~
+    Route::get('/', [MainPage::class, 'Index']);
+~~~
 
