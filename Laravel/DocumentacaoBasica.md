@@ -455,7 +455,7 @@ OBS: Caso você utilize a padronização a ORM irá encontrar sua tabela tranqui
     </form>
 ~~~
 
-OBS: é necessário utilizar o @csrf para que o laravel permitir as requisições post
+OBS: é necessário utilizar o `@csrf` para que o laravel permitir as requisições post
 
 - Método store:
 ~~~php
@@ -522,5 +522,45 @@ Para salvar dados como json(array), dentro do banco inicialmente precisamos de a
         ~~~
 
 ### **Salvando datas com laravel:**
+
+Para salvar datas no banco de dados com o Laravel é muito simples, basta ter:
+
+- Um formulario com um input do type = date;
+
+- E um campo no seu banco do tipo dateTime;
+
+Após basta fazer o mesmo processo para salvar o dado, que qualquer outro.
+
+- OBS:Caso deseje mostrar na view a data formatada basta utilizar o date("d/m/y", strtodate(<campoDoBanco>));
+
+### **Como utilizar o where com laravel:**
+
+Para utilizar o where em laravel basta instanciar o seu model e utilizar o método estatico where em vez de all:
+
+- Sintaxe:
+~~~php
+    $people = <Model>::where([
+        [<colunaDaTabela>, <LikeOpcional> , <DadoQueFicaADireitaDoWhere>]
+    ])->get();
+~~~
+
+- Exemplo:
+~~~php
+    $search = request("search");    
+    if($search)
+    {
+        $people = Person::where([
+            ['name', $search]
+        ])->get();
+    }
+    else
+    {
+        $people = Person::all();
+    }
+    return view('mainPage', ['people'=>$people]);
+~~~
+
+### **Como criar relacionamentos(one to many) com o laravel:**
+
 
 
