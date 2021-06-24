@@ -452,10 +452,208 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
         php artisan route:clear;
     ~~~
 
+## *Middleware:*
 
+- Os middlewares são mecanismos conveniente para inspecionar e filtrar solicitações HTTP que entram em sua aplicação. Por exemplo, o Laravel inclui um middleware que verifica se o usuário do seu aplicativo está autenticado.
 
+- Existem vários middlewares incluídos no framework Laravel, incluindo middleware para autenticação e proteção CSRF. Todos esses middleware estão localizados no diretório "app / Http / Middleware"
 
+### **Defining Middleware(Definindo Middleware):**
 
+- Para criar um novo middleware, basta utilizar o comando make do artisan:
 
+- Exemplo:
+    ~~~php
+        php artisan make:middleware NomeDoMiddleware
+    ~~~
+
+- OBS: Ao criar um middleware com o artisan será gerado um código padrão e nesse tera o comando "return $next($request);", que possui como função a deixar que a requisição passe normalmente.
+
+#### **Middleware & Responses(Middleware e Respostas):**
+
+- Os middlewares podem realizar tarefas antes ou depois de passar a request.
+
+- Exemplo antes da request:
+~~~php
+    <?php
+
+    namespace App\Http\Middleware;
+
+    use Closure;
+
+    class BeforeMiddleware
+    {
+        public function handle($request, Closure $next)
+        {
+            // Perform action
+
+            return $next($request);
+        }
+    }
+~~~
+
+- Exemplo depois da request:
+~~~php
+    <?php
+
+    namespace App\Http\Middleware;
+
+    use Closure;
+
+    class AfterMiddleware
+    {
+        public function handle($request, Closure $next)
+        {
+            $response = $next($request);
+
+            // Perform action
+
+            return $response;
+        }
+    }
+~~~
+
+### **Registering Middleware(Registrando Middleware):**
+
+#### **Global Middleware(Middleware Global):**
+
+- Se você deseja que um middleware seja executado durante cada solicitação HTTP para sua aplicação, liste a classe de middleware na propriedade $ middleware de sua classe "app / Http / Kernel.php."
+
+#### **Assigning Middleware To Routes(Atribuindo Middleware a Rotas):**
+
+- Se desejar atribuir middleware a rotas específicas, você deve primeiro atribuir ao middleware uma chave(nome) no arquivo "app / Http / Kernel.php" dentro da propriedade "$routeMiddleware":
+
+- Exemplo:
+    ~~~php
+        protected $routeMiddleware = [
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+            'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+            'can' => \Illuminate\Auth\Middleware\Authorize::class,
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+            'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        ];
+    ~~~
+
+- Uma vez que você já tenha nomeado seu middleware, basta utilizar o método "middleware(<nomeDoMiddleware>)" na sua rota:
+
+- Exemplo:
+    ~~~php
+        Route::get('/profile', function () {
+            //
+        })->middleware('auth');
+    ~~~
+
+- Você pode atribuir vários middlewares à rota, passando uma matriz de nomes de middleware para o método:
+
+- Exemplo:
+    ~~~php
+        Route::get('/', function () {
+            //
+        })->middleware(['first', 'second']);
+    ~~~
+
+- Outra opção é você passar para o método middleware, o nome completo da classe:
+
+- Exemplo:
+    ~~~php
+        use App\Http\Middleware\EnsureTokenIsValid;
+
+        Route::get('/profile', function () {
+            //
+        })->middleware(EnsureTokenIsValid::class);
+    ~~~
+
+- OBS: ao fazer dessa maneira não há necessidade de alterar o kernel.
+
+#### **Middleware Groups(Grupos de Middleware):**
+
+- Às vezes, você pode querer agrupar vários middleware em uma única chave para torná-los mais fáceis de atribuir a rotas. Você pode fazer isso usando a propriedade "$middlewareGroups" em seu kernel HTTP.
+
+- Exemplo:
+    ~~~php
+        protected $middlewareGroups = [
+            'web' => [
+                \App\Http\Middleware\EncryptCookies::class,
+                \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+                \Illuminate\Session\Middleware\StartSession::class,
+                // \Illuminate\Session\Middleware\AuthenticateSession::class,
+                \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+                \App\Http\Middleware\VerifyCsrfToken::class,
+                \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            ],
+
+            'api' => [
+                'throttle:api',
+                \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            ],
+        ];
+    ~~~
+
+- Os grupos de middleware tornam mais conveniente atribuir muitos middlewares a uma rota de uma vez:
+
+- Exemplo:
+    ~~~php
+        Route::get('/', function () {
+        //
+        })->middleware('web');
+
+        Route::middleware(['web'])->group(function () {
+            //
+        });
+    ~~~
+
+- OBS: Por padrão, os grupos de middleware "web" e "api" são aplicados automaticamente aos arquivos "routes/web.php" e "routes/api.php" correspondentes do seu aplicativo pelo "App\ Providers\RouteServiceProvider".
+
+#### **Sorting Middleware(Classificando Middleware):**
+
+- Caso você deseje alterar a ordem de prioridade dos seus middlewares, basta alterar o "$middlewarePriority" que fica em "app/Http/Kernel.php".
+
+- OBS: Essa propriedade não vem por padrão.
+
+### **Middleware Parameters(Parâmetros de Middleware):**
+
+- Você pode passar parametros adicionais para o middlewares, após o $next:
+
+- Exemplo:
+    ~~~php
+        <?php
+
+        namespace App\Http\Middleware;
+
+        use Closure;
+
+        class EnsureUserHasRole
+        {
+            /**
+            * Handle the incoming request.
+            *
+            * @param  \Illuminate\Http\Request  $request
+            * @param  \Closure  $next
+            * @param  string  $role
+            * @return mixed
+            */
+            public function handle($request, Closure $next, $role)
+            {
+                if (! $request->user()->hasRole($role)) {
+                    // Redirect...
+                }
+
+                return $next($request);
+            }
+        }
+    ~~~
+
+- Os parâmetros de middleware podem ser especificados ao definir a rota, separando o nome e os parâmetros do middleware com um ":" :
+
+- Exemplo:
+    ~~~php
+        Route::put('/post/{id}',  function ($id) {
+        //
+        })->middleware('role:editor');
+    ~~~
 
 
