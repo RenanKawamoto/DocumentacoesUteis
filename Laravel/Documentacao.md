@@ -657,3 +657,51 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
     ~~~
 
 
+## *CSRF Protection:*
+
+- As falsificações de solicitação entre sites são um tipo de exploração mal-intencionada em que comandos não autorizados são executados em nome de um usuário autenticado. Felizmente, o Laravel facilita a proteção do seu aplicativo contra ataques de falsificação de solicitação entre sites (CSRF).
+
+#### **An Explanation Of The Vulnerability(Uma explicação da vunerabilidade):**
+
+- Caso você não esteja familiarizado com essa falha de segurança, irei explicar com um exemplo, imagine que você tenham uma rota que necessita que o usuario esteja autenticado para que assim ele possa alterar seu email, com CSRF o atacante iria criar um form HTML que aponta para sua rota já estando autenticado, assim poderia mudar seu email sem dificuldades (Se o site mal-intencionado enviar automaticamente o formulário quando a página for carregada, o usuário mal-intencionado só precisa atrair um usuário desavisado do seu aplicativo para visitar o site dele e o endereço de e-mail dele será alterado no seu aplicativo.). 
+
+- Para evitar essa vulnerabilidade, precisamos inspecionar cada solicitação POST, PUT, PATCH ou DELETE de entrada para um valor de sessão secreta que o aplicativo malicioso não consegue acessar.
+
+### **Preventing CSRF Requests(Prevenção de solicitações de CSRF):**
+
+- O Laravel gera automaticamente um "token" CSRF para cada sessão de usuário ativa gerenciada pela aplicação. Este token é usado para verificar se o usuário autenticado é a pessoa que realmente faz as solicitações ao aplicativo. Como esse token é armazenado na sessão do usuário e muda toda vez que a sessão é regenerada, um aplicativo malicioso não consegue acessá-lo
+
+- O token CSRF da sessão atual pode ser acessado por meio da sessão da solicitação ou por meio da função auxiliar "csrf_token":
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Http\Request;
+
+        Route::get('/token', function (Request $request) {
+            $token = $request->session()->token();
+
+            $token = csrf_token();
+
+            // ...
+        });
+    ~~~
+
+- Sempre que definir um formulário HTML "POST", "PUT", "PATCH" ou "DELETE" em seu aplicativo, você deve incluir um campo CSRF _token oculto no formulário para que o middleware de proteção CSRF possa validar a solicitação. Por conveniência, você pode usar a diretiva @csrf Blade para gerar o campo de entrada de token oculto:
+
+- Exemplo:
+    ~~~php
+        <form method="POST" action="/profile">
+            @csrf
+
+            <!-- Equivalent to... -->
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+        </form>
+    ~~~
+
+- O middleware "App \ Http \ Middleware \ VerifyCsrfToken", que está incluído no grupo de middleware da web por padrão, verificará automaticamente se o token na entrada da solicitação corresponde ao token armazenado na sessão. Quando esses dois tokens coincidem, sabemos que o usuário autenticado é aquele que inicia a solicitação.
+
+
+
+
+
+
