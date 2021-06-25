@@ -802,5 +802,344 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
         }
     ~~~
 
+## *HTTP Requests:*
 
+- O Laravel oferece uma maneira simples de interagir com as requisições HTTP através da sua class "Illuminate\Http\Request".
 
+### **Interacting With The Request(Interagindo com a requisição):**
+
+#### **Accessing The Request(Acessabdo a requisição):**
+
+- Para acessar uma requisição no seu controller basta colocar a clausula "use" seguida do "Illuminate\Http\Request" e utilizar da classe "Request":
+
+- Exemplo:
+    ~~~php
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use Illuminate\Http\Request;
+
+        class UserController extends Controller
+        {
+            /**
+            * Store a new user.
+            *
+            * @param  \Illuminate\Http\Request  $request
+            * @return \Illuminate\Http\Response
+            */
+            public function store(Request $request)
+            {
+                $name = $request->input('name');
+
+                //
+            }
+        }
+    ~~~
+
+- Você também pode utilizar da "Request" em uma rota:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Http\Request;
+
+        Route::get('/', function (Request $request) {
+            //
+        });
+    ~~~
+
+#### **Request Path & Method(Solicitar caminho e método):**
+
+- O método path presente no "Request" irá retornar o caminha da requisição, por exemplo em localhost:8000/ola/mundo, vai retornar ola/mundo:
+
+- Exemplo:
+    ~~~php
+        $uri = $request->path();
+    ~~~
+
+#### **Inspecting The Request Path / Route (Inspecionando o Caminho / Rota):**
+
+- O método "is" permite que você verifique se determinado caminho da solicitação corresponde a determinado padrão:
+
+- Exemplo:
+    ~~~php
+        if ($request->is('admin/*')) {
+            //
+        }
+    ~~~
+
+- Caso você queira verificar uma rota nomeada, você pode fazer isso pelo método "routeIs":
+
+- Exemplo:
+    ~~~php
+        if ($request->routeIs('admin.*')) {
+            //
+        }
+    ~~~
+
+#### **Retrieving The Request URL(Recuperando o URL da solicitação):**
+
+- Para recuperar o URL completo da solicitação recebida, você pode usar os métodos "url" ou "fullUrl". O método url retornará o URL sem a string de consulta, enquanto o método fullUrl inclui a string de consulta:
+
+- Exemplo:
+    ~~~php
+        $url = $request->url();
+
+        $urlWithQueryString = $request->fullUrl();
+    ~~~
+
+#### **Retrieving The Request Method(Recuperando o Método de Solicitação):**
+
+- Caso você queira obter qual o método Http foi chamado, basta utilizar o "method":
+
+- Exemplo:
+    ~~~php
+        $method = $request->method();
+    ~~~
+
+- Caso você deseje fazer um condicional com o verbo, basta utilizar "isMethod":
+
+- Exemplo:
+    ~~~php
+        if($request->isMethod("get"))
+        {
+            return "get";
+        }
+    ~~~
+
+### **Request Headers:**
+
+- Se você precisa recuperar o header para utilizar o método "header" presente em "Request". Se o header não estiver presente o método retornara null (Isso pode ser alterado passando um segundo parametro, que será o retorno caso não encontre o header):
+
+- Exemplo:
+    ~~~php
+        $value = $request->header('X-Header-Name');
+
+        $value = $request->header('X-Header-Name', 'default');
+    ~~~
+
+- Você também pode fazer uma comparação utilizando o método "hasHeader" para ver se o header existe:
+
+- Exemplo:
+    ~~~php
+        if ($request->hasHeader('X-Header-Name')) {
+        //
+        }
+    ~~~
+
+- Por conveniencia o Laravel possui um método "bearerToken", que retorna o token da pessoa que está com header autorizado. Se o header não estiver presente será retornado uma string vazia:
+
+- Exemplo:
+    ~~~php
+        $token = $request->bearerToken();
+    ~~~
+
+#### **Request IP Address(Requisição de indereço de ip):**
+
+- O método "ip" pode ser usado para recuperar o ip que fez a requisição na sua aplicação:
+
+- Exemplo:
+    ~~~php
+        $ip = $request->ip();
+    ~~~
+
+#### **Content Negotiation(Negociação de Conteúdo):**
+
+- Para saber quais tipos são aceitos em uma determinada requisição o Laravel, nós diponibiliza o método "getAcceptableContentTypes()" (esse método retorna um array contendo todos os tipos aceitos pela requisição):
+
+- Exemplo:
+    ~~~php
+        $contentTypes = $request->getAcceptableContentTypes();
+    ~~~
+
+- Caso você deseje saber se um determinado tipo é aceito na sua requisição, você também pode utilizar o método "accepts":
+
+- Exemplo:
+    ~~~php
+        if ($request->accepts(['text/html', 'application/json'])) {
+            // ...
+        }
+    ~~~
+
+- Com o método "prefers", você pode determinar qual o tipo que terá maior prioridade na requisição:
+
+- Exemplo:
+    ~~~php
+        $preferred = $request->prefers(['text/html', 'application/json']);
+    ~~~
+
+- OBS: Se nenhum dos tipos de conteúdo fornecidos for aceito pela solicitação, será retornado nulo;
+
+- Se você quiser saber se determinada requisição aceita json você pode usar o método "expectsJson":
+
+- Exemplo: 
+    ~~~php
+        if ($request->expectsJson()) {
+            // ...
+        }
+    ~~~
+
+### **Input:**
+
+#### **Retrieving All Input Data(Recuperando todos os dados de input):**
+
+- Você pode recuperar todos os dados dos inputs vindos da request como uma matriz usando o método "all". Este método pode ser usado independentemente de a solicitação de entrada ser de um formulário HTML ou uma solicitação XHR:
+
+- Exemplo:
+    ~~~php
+        $input = $request->all();
+    ~~~
+
+#### **Retrieving An Input Value(Recuperando um unico valor de input):**
+
+- Independentemente do verbo HTTP, o método de "input" pode ser usado para recuperar a entrada do usuário:
+
+- Exemplo:
+    ~~~php
+        $name = $request->input('name');
+    ~~~
+
+- Você pode passar um valor padrão como segundo argumento do input:
+
+- Exemplo:
+    ~~~php
+        $name = $request->input('name', 'Sally');
+    ~~~
+
+- Ao trabalhar com inputs de array, podemos usar o ponto para acessar o array:
+
+- Exemplo:
+    ~~~php
+        $name = $request->input('products.0.name');
+
+        $names = $request->input('products.*.name');
+    ~~~
+
+- Você pode chamar o input sem nenhum argumento, assim ele irá retornar todos os input como um array associativo:
+
+- Exemplo:
+    ~~~php
+        $input = $request->input();
+    ~~~
+
+#### **Retrieving Input From The Query String(Recuperando input da string de consulta):**
+
+- Enquanto o método de "input" recupera valores de toda a carga útil da solicitação (incluindo a string de consulta), o método de "query" recupera apenas os valores da string de consulta:
+
+- Exemplo: 
+    ~~~php
+        $name = $resquest->query("name");
+    ~~~
+
+- Se os dados do valor da string de consulta solicitados não estiverem presentes, o segundo argumento para este método será retornado:
+
+- Exemplo: 
+    ~~~php
+        $name = $request->query("name", "nomePadrao");
+    ~~~
+
+- Você pode chamar o método de "query" sem nenhum argumento para recuperar todos os valores da string de consulta como uma matriz associativa.
+
+#### **Retrieving Boolean Input Values(Recuperando Valores Booleanos no input):**
+
+- Quando trabalhamos com HTML podemos ter campos que retornam uma especie de boolean, sendo assim através do Laravel podemos pegar esses valores, como sendo realmente bool utilizando o método "boolean". O método booleano retorna verdadeiro para 1, "1", true, "true", "on" e "yes". Todos os outros valores retornarão falso:
+
+- Exemplo:
+    ~~~php
+        $check = $request->boolean('checkbox');
+    ~~~
+
+#### **Retrieving a portion of the input data(Recuperando uma parte dos dados de entrada):**
+
+- Se você precisar recuperar um subconjunto dos dados de entrada, pode usar os métodos "only" e "except". Ambos os métodos aceitam uma única matriz ou uma lista dinâmica de argumentos:
+
+- Exemplo:
+    ~~~php
+        $input = $request->only(['username', 'password']);
+
+        $input = $request->only('username', 'password');
+
+        $input = $request->except(['credit_card']);
+
+        $input = $request->except('credit_card');
+    ~~~
+
+### **Determining If Input Is Present(Determinando se o input está presente):**
+
+- Você pode usar o método "has" para saber se um valor está presente dentro da requisição:
+
+- Exemplo:
+    ~~~php
+        if ($request->has('name')) {
+            //
+        }
+    ~~~
+
+- Quando fornecido uma matriz, o método "has" determinará se todos os valores especificados estão presentes:
+
+- Exemplo:
+    ~~~php
+        if ($request->has(['name', 'email'])) {
+            //
+        }   
+    ~~~
+
+- O método "whenHas" executará o fechamento fornecido se um valor estiver presente na solicitação:
+
+- Exemplo:
+    ~~~php
+        $request->whenHas('name', function () {
+            //
+        });
+    ~~~
+
+- O método "hasAny" retorna verdadeiro se algum dos valores especificados estiver presente:
+
+- Exemplo:
+    ~~~php
+        if ($request->hasAny(['name', 'email'])) {
+            //
+        }
+    ~~~
+
+- Se você deseja determinar se um valor está presente na requisição e não está vazio, você pode usar o método "filled":
+
+- Exemplo:
+    ~~~php
+        if ($request->filled('name')) {
+            //
+        }
+    ~~~
+
+- O método "whenFilled" executará o fechamento fornecido se um valor estiver presente na requisição e não estiver vazio:
+
+- Exemplo:
+    ~~~php
+        $request->whenFilled('name', function ($input) {
+            //
+        });
+    ~~~
+
+- Para determinar se uma determinada chave está ausente da solicitação, você pode usar o método "missing":
+
+- Exemplo:
+    ~~~php
+        if ($request->missing('name')) {
+            //
+        }
+    ~~~
+
+### **Old Input(Input antigo):**
+
+#### **Flashing Input To The Session(Entrada intermitente para a sessão):**
+
+- O método "flash" na classe "Illuminate \ Http \ Request" atualizará a entrada atual para a sessão para que esteja disponível durante a próxima solicitação do usuário ao aplicativo:
+
+- Exemplo: 
+    ~~~php
+        $request->flash();
+    ~~~
+
+### **Cookies:**
+
+- Para acessar os valores dentro dos cookies com o laravel de forma simplificado é através do $request->cookie("<nome>");
