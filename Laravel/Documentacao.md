@@ -700,8 +700,107 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
 
 - O middleware "App \ Http \ Middleware \ VerifyCsrfToken", que está incluído no grupo de middleware da web por padrão, verificará automaticamente se o token na entrada da solicitação corresponde ao token armazenado na sessão. Quando esses dois tokens coincidem, sabemos que o usuário autenticado é aquele que inicia a solicitação.
 
+## *Controllers:*
 
+- Os controladores são uma forma de organizar seu código agrupando a lógica de tratamento de solicitações relacionadas em uma única classe.
 
+### **Writing Controllers(Escrevendo controllers):**
+
+#### **Basic Controllers(Controllers básicos):**
+
+- A classe base de todos os controller é "App\Http\Controllers\ontroller"
+
+- Exemplo controller basico:
+    ~~~php
+        <?php
+        namespace App\Http\Controllers;
+
+        use App\Http\Controllers\Controller;
+        use App\Models\User;
+
+        class UserController extends Controller
+        {
+            /**
+            * Show the profile for a given user.
+            *
+            * @param  int  $id
+            * @return \Illuminate\View\View
+            */
+            public function show($id)
+            {
+                return view('user.profile', [
+                    'user' => User::findOrFail($id)
+                ]);
+            }
+        }
+    ~~~
+
+- Como definir um controller para uma rota:
+
+    ~~~php
+        use App\Http\Controllers\UserController;
+
+        Route::get('/user/{id}', [UserController::class, 'show']);
+    ~~~
+
+#### **Single Action Controllers(Controladores de ação unica):**
+
+- Se você acha que um método tem uma função muito extensa e portanto merece uma classe somente para ele, o Laravel tem uma solução com o método "__invoke":
+
+- Exemplo:
+    ~~~php
+    <?php
+        namespace App\Http\Controllers;
+
+        use App\Http\Controllers\Controller;
+        use App\Models\User;
+
+        class ProvisionServer extends Controller
+        {
+            /**
+            * Provision a new web server.
+            *
+            * @return \Illuminate\Http\Response
+            */
+            public function __invoke()
+            {
+                // ...
+            }
+        }
+    ~~~
+
+- Ao registrar rotas para controladores de ação única, você não precisa especificar um método de controlador. Em vez disso, você pode simplesmente passar o nome do controlador para o roteador:
+
+- Exemplo:
+    ~~~php
+        use App\Http\Controllers\ProvisionServer;
+
+        Route::post('/server', ProvisionServer::class);
+    ~~~
+
+### **Controller Middleware(Middleware de controlador):**
+
+- Existem duas maneiras de usar um middleware juntamente com um controller, uma delas é através das rotas:
+
+- Exemplo:
+    ~~~php
+        Route::get('profile', [UserController::class, 'show'])->middleware('auth');
+    ~~~
+
+- A outra maneira é definir o middleware no controller através do método middleware:
+
+- Exemplo: 
+    ~~~php
+        class UserController extends Controller
+        {
+            __construct()
+            {
+                $this->middleware('auth');
+                $this->middleware('log')->only('index');
+                $this->middleware('subscribed')->except('store');
+            }
+        }
+    ~~~
 
 
 
