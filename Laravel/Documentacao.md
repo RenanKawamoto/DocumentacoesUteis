@@ -1523,4 +1523,162 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
         echo URL::current();
     ~~~
 
-    
+**...**
+
+## *HTTP Session:*
+
+- As sessões são uma maneira de armazenar informações em varias solicitações.
+
+#### **Configuration:**
+
+- O arquivo de configuração das sessões é armazenado em "config/session.php". Por padrão, o Laravel é configurado para usar o driver "file" de sessão, que funcionará bem para muitos aplicativos.
+
+- A opção de configuração do "driver" de sessão define onde os dados da sessão serão armazenados para cada solicitação. O Laravel vem com vários drivers excelentes prontos para uso:
+    - `file`: as sessões são armazenadas em "storage/framework/sessions".
+    - `cookie`: as sessões são armazenadas em segurança, em um cookie encriptado;
+    - `database`: as sessões são armazenadas em um banco de dados relacional;
+    - `memcached / redis`: as sessões são armazenadas em um desses armazenamentos rápidos baseados em cache;
+    - `array`: as sessões são armazenadas em um array PHP e não serão persistidas;
+
+#### **Driver Prerequisites:**
+
+- Tanto para o driver database e o redis são necessários pré-requisitos, saiba mais na docs oficial do laravel.
+
+### **Using The Session:**
+
+#### **Retrieving Data(Recuperando dados):**
+
+- Existem duas maneiras de recuperar dados de sessões com o laravel:
+    - Com o helper global "session";
+    - E com a instancia do "Request";
+
+- Vamos ver inicialmente a instancia do Request:
+
+- Exemplo:
+    ~~~php
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use App\Http\Controllers\Controller;
+        use Illuminate\Http\Request;
+
+        class UserController extends Controller
+        {
+            /**
+            * Show the profile for the given user.
+            *
+            * @param  Request  $request
+            * @param  int  $id
+            * @return Response
+            */
+            public function show(Request $request, $id)
+            {
+                $value = $request->session()->get('key');
+
+                //
+            }
+        }
+    ~~~
+
+- OBS: Existem meios de passar valores padrões caso as sessões não existam, eles são: passando segundo valor no método get, e passando uma função de fechamento.
+
+#### **The Global Session Helper:**
+
+- Você também pode utilizar das sessões através do helper "session" global, onde é possível passar um ou muitos parametros:
+
+- Exemplo:
+    ~~~php
+        Route::get('home', function () {
+        // Retrieve a piece of data from the session...
+        $value = session('key');
+
+        // Specifying a default value...
+        $value = session('key', 'default');
+
+        // Store a piece of data in the session...
+        session(['key' => 'value']);
+        });
+    ~~~
+
+#### **Retrieving All Session Data(Recuperando todos os dados da sessão):**
+
+- Se você quiser recuperar todos os dados de uma sessão basta utilizar o método "all":
+
+- Exemplo:
+    ~~~php
+        $data = $request->session()->all();
+    ~~~
+
+#### **Determining If An Item Exists In The Session(Determinando se um item existe na sessão):**
+
+- Para saber se uma chave existe na sessão basta utilizar o método "has", retornara true se existir ou null se não:
+
+- Exemplo:
+    ~~~php
+        if ($request->session()->has('users')) {
+            //
+        }
+    ~~~
+
+- Para determinar se um item está presente na sessão, mesmo se seu valor for nulo, você pode usar o método "exists":
+
+- Exemplo:
+    ~~~php
+        if ($request->session()->exists('users')) {
+            //
+        }
+    ~~~
+
+#### **Storing Data(Armazenando dados):**
+
+- Para armazenar dados basta utilizar o método "put" do helper session:
+
+- Exemplo:
+    ~~~php
+        // Via a request instance...
+        $request->session()->put('key', 'value');
+
+        // Via the global helper...
+        session(['key' => 'value']);
+    ~~~
+
+#### **Flash Data:**
+
+- Com o método "flash" é possível manter os itens de uma sessão somente até a proxima requisição, e após isso são deletados:
+
+- Exemplo:
+    ~~~php
+        $request->session()->flash('status', 'Task was successful!');
+    ~~~
+
+- Caso você queira manter os dados por mais uma requisição basta utilizar o método "reflash", e caso queira que alguns métodos permanessam, basta utilizar o "keep":
+
+- Exemplo:
+    ~~~php
+        $request->session()->reflash();
+
+        $request->session()->keep(['username', 'email']);
+    ~~~
+
+#### **Deleting Data(Deleção de dados):**
+
+- O método "forget" remove um ou alguns dados de uma sessão. Já o método "flush" removerá todos:
+
+- Exemplo:
+    ~~~php
+        // Forget a single key...
+        $request->session()->forget('key');
+
+        // Forget multiple keys...
+        $request->session()->forget(['key1', 'key2']);
+
+        $request->session()->flush();
+    ~~~
+
+### **Session Blocking:**
+
+- É importante para melhor as requisições: porém não é essencial ta vá na docs do laravel.
+
+
+
