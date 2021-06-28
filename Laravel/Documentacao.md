@@ -1143,3 +1143,197 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
 ### **Cookies:**
 
 - Para acessar os valores dentro dos cookies com o laravel de forma simplificado é através do $request->cookie("<nome>");
+
+## *HTTP Responses:*
+
+### **Creating Responses(Criação de respostas):**
+
+#### **Strings & Arrays:**
+
+- O Laravel possui uma maneira diferente de retornas responses. A response mais básica retorna uma string de uma rota ou controller. O Framework vai transformar automaticamente a string para uma HTTP response:
+
+- Exemplo:
+    ~~~php
+        Route::get('/', function () {
+            return 'Hello World';
+        });
+    ~~~
+
+- Caso você retorne um array o Laravel irá transforma-lo em uma response JSON:
+
+- Exemplo:
+    ~~~php
+        Route::get('/', function () {
+            return [1, 2, 3];
+        });
+    ~~~
+
+#### **Response Objects(Objetos de Resposta):**
+
+- Normalmente não iremos retornar apenas uma string ou uma matriz. Nós comumente retornamos uma instancia de "Response"(vem de Illuminate\Http\Response) ou uma view.
+
+- Retornar uma instancia de "Response" permite que você personalize o código de status HTTP e os cabeçalhos. Uma instância Response é herdada da classe "Symfony \ Component \ HttpFoundation \ Response", que fornece uma variedade de métodos para construir respostas HTTP:
+
+- Exemplo: 
+    ~~~php
+        Route::get('home', function () {
+            return response('Hello World', 200)
+                        ->header('Content-Type', 'text/plain');
+        });
+    ~~~
+
+#### **Attaching Headers To Responses(Atribuindo headers para as reponses):**
+
+- Para fazer essa atribuição basta utilizar o método header:
+
+- Exemplo:
+    ~~~php
+        return response($content)
+            ->header('Content-Type', $type)
+            ->header('X-Header-One', 'Header Value')
+            ->header('X-Header-Two', 'Header Value');
+    ~~~
+
+- OBS: Como é possível ver acima você pode usar um método após o outro sem problemas.
+
+- Outra maneira de especificar multiplos métodos header é utilizando o "withHeaders", onde você passará um array de headers para adicionar a response:
+
+- Exemplo:
+    ~~~php
+    return response($content)
+            ->withHeaders([
+                'Content-Type' => $type,
+                'X-Header-One' => 'Header Value',
+                'X-Header-Two' => 'Header Value',
+            ]);
+    ~~~
+
+#### **Attaching Cookies To Responses(Atribuindo cookies às response)**:
+
+- Com o método "cookie" o Laravel nós disponibiliza uma maneira simples e prática de atribuir um cookie a response:
+
+- Exemplo:
+    ~~~php
+        return response($content)
+                ->header('Content-Type', $type)
+                ->cookie('name', 'value', $minutes);
+    ~~~
+
+- OBS: o método cookie do Laravel aceita mais atributos como o setcookie do PHP, porém são menos usados: "cookie($name, $value, $minutes, $path, $domain, $secure, $httpOnly)"
+
+- Uma alternativa para o método cookie é a classe Cookie com método estático queue, onde você pode criar um cookie que será anexado a response antes do navegador manda-lá:
+
+- Exemplo:
+    ~~~php
+        Cookie::queue(Cookie::make('name', 'value', $minutes));
+
+        Cookie::queue('name', 'value', $minutes);
+    ~~~
+
+### **Redirects(Redirecionamento):**
+
+- As respostas de redirecionamento são instâncias da classe "Illuminate \ Http \ RedirectResponse" e contêm os cabeçalhos apropriados necessários para redirecionar o usuário para outro URL.
+
+- Existem diversas maneiras de gerar a "RedirectResponse", porém o mais simples é o método global "redirect":
+
+- Exemplo:
+    ~~~php
+        Route::get('dashboard', function () {
+            return redirect('home/dashboard');
+        });
+    ~~~
+
+- Às vezes, você pode querer redirecionar o usuário para o local anterior, como quando um formulário enviado é inválido. Para isso podemos utilizar o método "back":
+
+- Exemplo:
+    ~~~php
+        Route::post('user/profile', function () {
+            // Validate the request...
+
+            return back()->withInput();
+        });
+    ~~~
+
+#### **Redirecting To Controller Actions(Redirecionando para ações do controlador):**
+
+- Para você redirecionar para um controller action, basta utilizar do método "action" e passar o nome da action:
+
+- Exemplo:
+    ~~~php
+        return redirect()->action('HomeController@index');
+    ~~~
+
+- Caso seu controller route precise de parametros, basta passa-los como segundo parametro do método action:
+
+- Exemplo:
+    ~~~php
+        return redirect()->action(
+            'UserController@profile', ['id' => 1]
+        );
+    ~~~
+
+#### **Redirecting To External Domains(Redirecionando para dominios externos):**
+
+- Para fazer isso basta utilizar o método "away()":
+
+- Exemplo:
+    ~~~php
+        return redirect()->away('https://www.google.com');
+    ~~~
+
+### **Other Response Types(Outros tipos de response):**
+
+#### **View Responses:**
+
+- Se você precisa retornar uma view, basta utilizar o método "view":
+
+- Exemplo:
+    ~~~php
+        return response()
+            ->view('hello', $data, 200)
+            ->header('Content-Type', $type);
+    ~~~
+
+#### **JSON Responses:**
+
+- Para retornar um Json de maneira pratica basta utilizar o método "json", que já irá setar o "Content-Type" para "application/json" e converter o array para um Json, usando o json_encode:
+
+- Exemplo:
+    ~~~php
+        return response()->json([
+            'name' => 'Abigail',
+            'state' => 'CA',
+        ]);
+    ~~~
+
+#### **File Downloads:**
+
+- O método "download" pode ser usado para forçar que o navegador do usuario faça o download de um arquivo segundo o path.
+
+- Exemplo:
+    ~~~php
+        return response()->download($pathToFile);
+
+        return response()->download($pathToFile, $name, $headers);
+
+        return response()->download($pathToFile)->deleteFileAfterSend();
+    ~~~
+
+- OBS: O método de download aceita um nome de arquivo como o segundo argumento para o método, que determinará o nome do arquivo que é visto pelo usuário que faz o download do arquivo. Finalmente, você pode passar uma matriz de cabeçalhos HTTP como o terceiro argumento para o método.
+
+#### **File Responses:**
+
+- O método de "file" pode ser usado para exibir um arquivo, como uma imagem ou PDF, diretamente no navegador do usuário, em vez de iniciar um download. Este método aceita o caminho para o arquivo como seu primeiro argumento e uma matriz de cabeçalhos como seu segundo argumento:
+
+- Exemplo:
+    ~~~php
+        return response()->file($pathToFile);
+
+        return response()->file($pathToFile, $headers);
+    ~~~
+
+### **Response Macros:**
+
+- A reponse macro é uma maneira de você definir um padrão de reponse para utilizar em outras partes do seu programa.
+
+
