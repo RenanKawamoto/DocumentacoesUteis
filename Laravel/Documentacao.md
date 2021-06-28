@@ -1477,7 +1477,50 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
 
 - Você também pode usar o comando 'view:clear" para limpar o cache das views.
 
+## *URL Generation:*
 
+- O Laravel fornece vários helpers para ajudá-lo a gerar URLs para sua aplicação. Eles são úteis principalmente ao construir links em seus modelos e respostas de API, ou ao gerar respostas de redirecionamento para outra parte de seu aplicativo.
 
+### **The Basic:**
 
+#### **Generating Basic URLs:**
 
+- Para gerar um URL básica, basta utilizar do helper "url".
+
+- OBS: O URL gerado usará automaticamente o esquema (HTTP ou HTTPS) e o host da solicitação atual.
+
+- Exemplo:
+    ~~~php
+        $post = App\Post::find(1);
+
+        echo url("/posts/{$post->id}");
+
+        // http://example.com/posts/1
+    ~~~
+
+#### **Accessing The Current URL(Acessando a URL atual):**
+
+- Se nenhum parametro for passado para o método "url" ele irá retornar uma instancia de "Illuminate\Routing\UrlGenerator" permitindo que você acesse informações sobre o URL atual:
+
+- Exemplo:
+    ~~~php
+        // Get the current URL without the query string...
+        echo url()->current();
+
+        // Get the current URL including the query string...
+        echo url()->full();
+
+        // Get the full URL for the previous request...
+        echo url()->previous();
+    ~~~
+
+- Cada um desses métodos também pode ser acessado pela "facade" "URL":
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\URL;
+
+        echo URL::current();
+    ~~~
+
+    
