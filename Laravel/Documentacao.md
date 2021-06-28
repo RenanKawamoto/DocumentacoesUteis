@@ -1336,4 +1336,148 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
 
 - A reponse macro é uma maneira de você definir um padrão de reponse para utilizar em outras partes do seu programa.
 
+## *Creating Views(Criando views):*
+
+- As views são a parte HTML do seu programa, sendo separadas dos seus controllers / aplicação lógic.
+
+- As views são armazenadas em "resources/views".
+
+- O primeiro parametro da view é o seu nome, o segundo é uma array de argumentos que será passado para a view.
+
+- Caso você tenha subdiretorios dentro de "resources/views" você pode utilizar o " . " para acessa-los:
+
+- Exemplo:
+    ~~~php
+        return view('admin.profile', $data);
+    ~~~
+
+#### **Determining If A View Exists(Determinando se uma view existe):**
+
+- Para saber se uma view existe, basta utilizar o método "exists", que retorna true caso exista:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\View;
+
+        if (View::exists('emails.customer')) {
+            //
+        }
+    ~~~
+
+### **Passing Data To Views(Passando dados para as views):**
+
+- Como já foi visto anteriormente é possível passar um array de dados para as views:
+
+- Exemplo:
+    ~~~php
+        return view('greetings', ['name' => 'Victoria']);
+    ~~~
+
+- OBS: essas informações podem ser acessadas utilizando a chave como nome da variavel (Exemplo: $name).
+
+- Uma alternativa para passar um array completo para a view, é utilizar o método "with"  para adicionar um dado individual:
+
+- Exemplo:
+    ~~~php
+        return view('greeting')->with('name', 'Victoria');
+    ~~~
+
+#### **Sharing Data With All Views(Compartilhando dados com todas as views):**
+
+- Ocasionalmente, você pode precisar compartilhar uma parte dos dados com todas as views que são renderizadas pelo seu aplicativo. Você pode fazer isso usando o método "share". Normalmente, você deve fazer chamada do "share" dentro do método "boot" de um provedor de serviços:
+
+- Exemplo:
+    ~~~php
+        <?php
+
+        namespace App\Providers;
+
+        use Illuminate\Support\Facades\View;
+
+        class AppServiceProvider extends ServiceProvider
+        {
+            /**
+            * Register any application services.
+            *
+            * @return void
+            */
+            public function register()
+            {
+                //
+            }
+
+            /**
+            * Bootstrap any application services.
+            *
+            * @return void
+            */
+            public function boot()
+            {
+                View::share('key', 'value');
+            }
+        }
+    ~~~
+
+### **View Composers:**
+
+- As "view composers" são retornos de chamada ou métodos de classe que são chamados quando uma visualização é renderizada. Se você tiver dados que deseja vincular a uma visualização cada vez que essa visualização for renderizada, um compositor de visualização pode ajudá-lo a organizar essa lógica em um único local:
+
+- Exemplo:
+    ~~~php
+        <?php
+
+        namespace App\Providers;
+
+        use Illuminate\Support\Facades\View;
+        use Illuminate\Support\ServiceProvider;
+
+        class ViewServiceProvider extends ServiceProvider
+        {
+            /**
+            * Register any application services.
+            *
+            * @return void
+            */
+            public function register()
+            {
+                //
+            }
+
+            /**
+            * Bootstrap any application services.
+            *
+            * @return void
+            */
+            public function boot()
+            {
+                // Using class based composers...
+                View::composer(
+                    'profile', 'App\Http\View\Composers\ProfileComposer'
+                );
+
+                // Using Closure based composers...
+                View::composer('dashboard', function ($view) {
+                    //
+                });
+            }
+        }
+    ~~~
+
+- OBS:  o Laravel não inclui um diretório padrão para os compositores de visões. Você é livre para organizá-los como desejar. Por exemplo, você pode criar um diretório app / Http / View / Composers.
+
+### **Optimizing Views:**
+
+- Uma boa pratica para optimizar o seu código quando está em produção é utilizar o comando:
+
+~~~php
+    php artisan view:cache
+~~~
+
+- Esse comando irá limpar o cache das views, assim evitando lentidão, por conta das alterações de views.
+
+- Você também pode usar o comando 'view:clear" para limpar o cache das views.
+
+
+
+
 
