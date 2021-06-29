@@ -1681,4 +1681,128 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
 - É importante para melhor as requisições: porém não é essencial ta vá na docs do laravel.
 
 
+## *Validation:*
+
+- O laravel oferece diferenes abordagens para validar os dados da sua aplicação. Porém o mais comum de ser utilizado é o método "validate" presente em todos os HTTP requests.
+
+- O método validate irá tentar validar a sua request, seguindo algumas regras, caso passe seu código seguirá, caso não passe seu código irá redirecionar automaticamente o usuário de volta ao seu local anterior e gerar um erro que será mandado para a sessão.
+
+### **Validation Quickstart:**
+
+- Existem duas maneiras de utilizar o método "validate", sendo uma delas através de strings e outra através de arrays, veja seguir um exemplo:
+
+- Exemplo:  
+    ~~~php
+        public function store(Request $request)
+        {
+            $validated = $request->validate([
+                'title' => 'required|unique:posts|max:255',
+                'body' => 'required',
+            ]);
+        }
+    ~~~
+
+- Como é possível ver no método store utilizamos o validate na $request, passando como parametros um array chave valor onde o "valor" é uma string com " | " para simbolizar os espaços.
+
+- OBS: Não se preocupe com as regras passadas no valor, pois há uma explicação completa delas na documentação do laravel: https://laravel.com/docs/8.x/validation#available-validation-rules.
+
+- A segunda maneira de se utilizar o validate é passando um array como valor:
+
+- Exemplo:
+    ~~~php
+        $validatedData = $request->validate([
+            'title' => ['required', 'unique:posts', 'max:255'],
+            'body' => ['required'],
+        ]);
+    ~~~
+
+- Caso você deseje também é possível criar um pacote de erro nomeado que irá guardar o erro gerado nas validações, através do "validateWithBag":
+
+- Exemplo:
+    ~~~php
+        $validatedData = $request->validateWithBag('post', [
+            'title' => ['required', 'unique:posts', 'max:255'],
+            'body' => ['required'],
+        ]); 
+    ~~~
+
+#### **Displaying The Validation Errors(Exibindo erros de validação):**
+
+- Todos o erros gerados vão para uma variavel global entre as views(compartilhada pelo middleware Illuminate\View\Middleware\ShareErrorsFromSession, que é fornecido pelo grupo de middleware da web) chamada "$errors".
+
+- A variável $errors será uma instância de "Illuminate \ Support \ MessageBag"
+
+#### **Customizing The Error Messages:**
+
+- Para customizar as mensagens de erros geradas pelas validações com o laravel é muito simples, bsta alterar em "resources/lang/en/validation.php".
+
+#### **The @error Directive:**
+
+- Você pode usar a diretiva @error do Blade para determinar rapidamente se existem mensagens de erro de validação para um determinado atributo. Dentro de uma diretiva @error, você pode usar a variável $message para exibir a mensagem de erro:
+
+- Exemplo:
+    ~~~php
+        <!-- /resources/views/post/create.blade.php -->
+
+        <label for="title">Post Title</label>
+
+        <input id="title" type="text" name="title" class="@error('title') is-invalid @enderror">
+
+        @error('title')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+    ~~~
+
+#### **Repopulating Forms:**
+
+- Quando o Laravel, redireciona o devido ao validation ele cria automaticamente um flash input, assim para obter os antigos valores de uma request, basta utilizar o método old():
+
+- Exemplo: 
+    ~~~php
+        title = $request->old('title');
+    ~~~
+
+- O blade também oferece um helper global "old", que retorna o valor se existir e retorna null se não:
+
+- Exemplo:
+    ~~~php
+        <input type="text" name="title" value="{{ old('title') }}">
+    ~~~
+
+### **Form Request Validation:**
+
+#### **Creating Form Requests:**
+
+- As solicitações de formulário são classes de solicitação personalizadas que encapsulam sua própria lógica de validação e autorização. Para criar uma classe de solicitação de formulário, você pode usar o comando make: request Artisan da CLI:
+
+~~~
+    php artisan make:request StorePostRequest
+~~~
+
+- A classe de solicitação de formulário gerada será colocada no diretório "app / Http / Requests".
+
+- Cada solicitação de formulário gerada pelo Laravel possui dois métodos: "authorize" e "rules".
+
+- Como você deve ter adivinhado, o método de "authorize" é responsável por determinar se o usuário autenticado no momento pode executar a ação representada pela solicitação, enquanto o método de "rules" retorna as regras de validação que devem ser aplicadas aos dados da solicitação:
+
+- Exemplo:
+    ~~~php
+        /**
+        * Get the validation rules that apply to the request.
+        *
+        * @return array
+        */
+        public function rules()
+        {
+            return [
+                'title' => 'required|unique:posts|max:255',
+                'body' => 'required',
+            ];
+        }
+    ~~~
+
+
+
+
+
 
