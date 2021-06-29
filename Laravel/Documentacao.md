@@ -1801,8 +1801,71 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
         }
     ~~~
 
+- Para utilizar esse request form, basta chama-lo em vez do "Request" e chamar o método "validated":
 
+- Exemplo:
+    ~~~php
+        /**
+        * Store a new blog post.
+        *
+        * @param  \App\Http\Requests\StorePostRequest  $request
+        * @return Illuminate\Http\Response
+        */
+        public function store(StorePostRequest $request)
+        {
+            // The incoming request is valid...
 
+            // Retrieve the validated input data...
+            $validated = $request->validated();
+        }
+    ~~~
+
+- Se a validação falhar, uma resposta de redirecionamento será gerada para enviar o usuário de volta ao local anterior. Os erros também serão exibidos na sessão para que estejam disponíveis para exibição. 
+
+#### **Authorizing Form Requests:**
+
+- A classe de solicitação de formulário também contém um método "authorize". Nesse método, você pode determinar se o usuário autenticado realmente tem autoridade para atualizar um determinado recurso.
+
+#### **Preparing Input For Validation:**
+
+- Se você precisar preparar ou higienizar quaisquer dados da solicitação antes de aplicar suas regras de validação, você pode usar o método "prepareForValidation":
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Str;
+
+        /**
+        * Prepare the data for validation.
+        *
+        * @return void
+        */
+        protected function prepareForValidation()
+        {
+            $this->merge([
+                'slug' => Str::slug($this->slug),
+            ]);
+        }
+    ~~~
+
+## *Error Handling(Manipulação de erros):*
+
+- Quando você inicia um novo projeto Laravel, o tratamento de erros e exceções já está configurado para você. A classe "App \ Exceptions \ Handler" é onde todas as exceções lançadas por seu aplicativo são registradas e, em seguida, processadas para o usuário.
+
+### **Configuration:**
+
+- A opção "debug" presente dentro de "config/app.php" determina quanta informação será exibida para o usuario. Por padrão ele respeita o valor contido na variavel global "APP_DEBUG" (que está armazenada no arquivo .env);
+
+- OBS: Durante a fase de desenvolvimento é recomendavel que deixe o APP_DEBUG com true, e em produção como false.
+
+### **The Exception Handler:**
+
+#### **Reporting Exceptions:**
+
+- Todas as exceções são tratadas pela classe "App \ Exceptions \ Handler". Esta classe contém um método de "register" onde você pode registrar relatórios de exceção personalizados e renderizar retornos de chamada.
+
+- O relatório de exceção é usado para registrar exceções ou enviá-las a um serviço externo como Flare, Bugsnag ou Sentry. Por padrão, as exceções serão registradas com base em sua configuração de registro.
+
+**...**
 
 
 
