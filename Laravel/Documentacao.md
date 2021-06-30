@@ -1867,5 +1867,138 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
 
 **...**
 
+## *Database: Getting Started:*
+
+- Quase todos os aplicativos da web modernos interagem com um banco de dados. O Laravel torna a interação com bancos de dados extremamente simples em uma variedade de bancos de dados suportados usando SQL puro, "fluent query builder" e o Eloquent ORM.
+
+#### **Configuration:**
+
+- A configuração dos serviços de banco de dados do Laravel está localizada no arquivo de configuração config / database.php de sua aplicação.
+
+- Neste arquivo, você pode definir todas as suas conexões de banco de dados, bem como especificar qual conexão deve ser usada por padrão. A maioria das opções de configuração dentro deste arquivo são orientadas pelos valores das variáveis ​​de ambiente do seu aplicativo.
+
+### **Running SQL Queries:**
+
+- Depois de configurar sua conexão de banco de dados, você pode executar consultas usando a classe estatica "DB". Essa classe fornece métodos para cada tipo de consulta: "select, update, insert, deleter e statement.
+
+#### **Running A Select Query:**
+
+- Para executar uma consulta SELECT básica, você pode usar o método "select" na fachada "DB":
+
+- Exemplo:
+    ~~~php
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use App\Http\Controllers\Controller;
+        use Illuminate\Support\Facades\DB;
+
+        class UserController extends Controller
+        {
+            /**
+            * Show a list of all of the application's users.
+            *
+            * @return \Illuminate\Http\Response
+            */
+            public function index()
+            {
+                $users = DB::select('select * from users where active = ?', [1]);
+
+                return view('user.index', ['users' => $users]);
+            }
+        }
+    ~~~
+
+- O primeiro argumento passado para o método select é a consulta SQL, enquanto o segundo argumento são quaisquer ligações de parâmetro que precisam ser vinculadas à consulta. Normalmente, esses são os valores das restrições da cláusula where. A vinculação de parâmetros fornece proteção contra injeção de SQL.
+
+- O método "select" sempre retornará uma matriz de resultados. Cada resultado dentro da matriz será um objeto PHP "stdClass" que representa um registro do banco de dados:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $users = DB::select('select * from users');
+
+        foreach ($users as $user) {
+            echo $user->name;
+        }
+    ~~~
+
+#### **Using Named Bindings(Usando ligações nomeadas):**
+
+- Ao invés de usar "? "para representar seus vínculos de parâmetro, você pode executar uma consulta usando vínculos nomeados:
+
+- Exemplo:
+    ~~~php
+        $results = DB::select('select * from users where id = :id', ['id' => 1]);
+    ~~~
+
+#### **Running An Insert Statement(Rodando um insert demonstrativo):**
+
+- Para rodar um insert demonstrativo, você terá que usar o método "insert" da fachada "DB". Ele funciona igual ao método select:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        DB::insert('insert into users (id, name) values (?, ?)', [1, 'Marc']);
+    ~~~
+
+- #### **Running An Update Statement(Executando uma declaração de atualização):**
+
+- O método "update" deve ser usado para atualizar os registros existentes no banco de dados. O número de linhas afetadas pela instrução é retornado pelo método:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $affected = DB::update(
+            'update users set votes = 100 where name = ?',
+            ['Anita']
+        );
+    ~~~
+
+#### **Running A Delete Statement(Executando uma declaração de exclusão):**
+
+- O método "delete" deve ser usado para excluir registros do banco de dados. Como a "update", o número de linhas afetadas será retornado pelo método:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $deleted = DB::delete('delete from users'); 
+    ~~~
+
+#### **Running A General Statement(Executando uma declaração geral):**
+
+- Algumas instruções do banco de dados não retornam nenhum valor. Para esses tipos de operações, você pode usar o método "statement" na fachada "DB":
+
+- Exemplo:
+    ~~~php
+        DB::statement('drop table users');
+    ~~~
+
+#### **Using Multiple Database Connections(Usando mutiplos conexões com o db):**
+
+- Se a sua aplicação define múltiplas conexões em seu arquivo de configuração "config / database.php", você pode acessar cada conexão através do método "connection" fornecido pela fachada "DB".
+
+- O nome da conexão passado para o método de conexão deve corresponder a uma das conexões listadas em seu arquivo de configuração "config / database.php":
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $users = DB::connection('sqlite')->select(...);
+    ~~~
+
+#### **Listening For Query Events(Ouvindo eventos de consulta):**
+
+**...**
+
+
+
+
+
 
 
