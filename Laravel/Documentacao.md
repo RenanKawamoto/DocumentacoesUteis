@@ -1996,9 +1996,829 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
 
 **...**
 
+## *Database: Query Builder:*
 
+- O construtor de consultas de banco de dados do Laravel fornece uma interface conveniente e fluente para criar e executar consultas de banco de dados. Ele pode ser usado para realizar a maioria das operações de banco de dados em sua aplicação e funciona perfeitamente com todos os sistemas de banco de dados suportados pelo Laravel.
 
+- O construtor de consultas Laravel usa ligação de parâmetros PDO para proteger sua aplicação contra ataques de injeção SQL. Não há necessidade de limpar ou higienizar strings passadas para o construtor de consultas como ligações de consulta.
 
+### **Running Database Queries:**
+
+#### **Retrieving All Rows From A Table(Recuperando todas as linhas de uma tabela):**
+
+- Para isso você pode usar o método "table" presente em "DB". O método "table" retorna uma instância de "fluent query builder" da tabela fornecida, permitindo assim que você encadeie mais restrições na consulta e, finalmente, recupere os resultados usando o método "get":
+
+- Exemplo:
+    ~~~php
+        <?php
+
+        namespace App\Http\Controllers;
+
+        use App\Http\Controllers\Controller;
+        use Illuminate\Support\Facades\DB;
+
+        class UserController extends Controller
+        {
+            /**
+            * Show a list of all of the application's users.
+            *
+            * @return \Illuminate\Http\Response
+            */
+            public function index()
+            {
+                $users = DB::table('users')->get();
+
+                return view('user.index', ['users' => $users]);
+            }
+        }
+    ~~~
+
+- O método get retorna uma instância de "Illuminate \ Support \ Collection" contendo os resultados da consulta, em que cada resultado é uma instância do objeto "stdClass" do PHP. Sendo assim você pode acessar o valor de cada coluna acessando a coluna como uma propriedade do objeto:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $users = DB::table('users')->get();
+
+        foreach ($users as $user) {
+            echo $user->name;
+        }
+    ~~~
+
+#### **Retrieving A Single Row / Column From A Table:**
+
+- Se você só precisa recuperar uma única linha de uma tabela de banco de dados, pode usar o método "first" da fachada "DB". Este método retornará um único objeto stdClass:
+
+- Exemplo: 
+    ~~~php
+        $user = DB::table('users')->where('name', 'John')->first();
+
+        return $user->email;
+    ~~~
+
+- Se você não precisa de uma linha inteira, pode extrair um único valor de um registro usando o método "value". Este método retornará o valor da coluna diretamente:
+
+- Exemplo:
+    ~~~php
+        $email = DB::table('users')->where('name', 'John')->value('email');
+    ~~~
+
+- Para recuperar uma única linha por seu valor de coluna id, use o método "find":
+
+- Exemplo:
+    ~~~php
+        $user = DB::table('users')->find(3);
+    ~~~
+
+#### **Retrieving A List Of Column Values(Recuperando uma lista de valores da coluna):**
+
+- Se desejar recuperar uma instância "Illuminate \ Support \ Collection" contendo os valores de uma única coluna, você pode usar o método "pluck".
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $titles = DB::table('users')->pluck('title');
+
+        foreach ($titles as $title) {
+            echo $title;
+        }
+    ~~~
+
+- Outra funcionalidade do "pluck", é a capacidade de passarmos um segundo parametro, que também é um coluna, que será entendido como chave do valor:
+
+- Exemplo:
+    ~~~php
+        $titles = DB::table('users')->pluck('title', 'name');
+
+        foreach ($titles as $name => $title) {
+            echo $title;
+        }
+    ~~~
+
+#### **Chunking Results:**
+
+- Caso você esteja trabalhando com um db muito grande, é interessante utilizar o chunks, uma vez que com ele você pode pegar um bloco de valores de cada vez, até finalizar todo o processo:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        DB::table('users')->orderBy('id')->chunk(100, function ($users) {
+            foreach ($users as $user) {
+                //
+            }
+        });
+    ~~~
+
+- OBS: se você deseja dar update nos resultados é melhor usar o método "chunkById".
+
+#### **Streaming Results Lazily(Resultados de streaming preguiçosamente):**
+
+- O método "lazy", é muito semelhante com o chunk, pois também irá executar a consulta em pedaços, porém em um unico fluxo, retornando uma "LazyCollection":
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        DB::table('users')->lazy()->each(function ($user) {
+            //
+        });
+    ~~~
+
+- OBS: O mesmo vale para o lazy, caso você deseje atualizar os dados é necessário utilizar o "lazyById".
+
+#### **Aggregates:**
+
+- O construtor de consultas também fornece uma variedade de métodos para recuperar valores agregados, como "count, max, min, avg e sum". Você pode chamar qualquer um desses métodos após construir sua consulta:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $users = DB::table('users')->count();
+
+        $price = DB::table('orders')->max('price');
+    ~~~
+
+- Claro, você pode combinar esses métodos com outras cláusulas para ajustar como seu valor agregado é calculado:
+
+- Exemplo:
+    ~~~php
+        $price = DB::table('orders')
+                ->where('finalized', 1)
+                ->avg('price');
+    ~~~
+
+#### **Determining If Records Exist:**
+
+- Em vez de usar o método "count" para determinar se existem registros que correspondam às restrições de sua consulta, você pode usar os métodos "exists" e "doesntExist":
+
+- Exemplo:
+    ~~~php
+        if (DB::table('orders')->where('finalized', 1)->exists()) {
+             // ...
+        }
+
+        if (DB::table('orders')->where('finalized', 1)->doesntExist()) {
+            // ...
+        }
+    ~~~
+
+### **Select Statements:**
+
+#### **Specifying A Select Clause:**
+
+- Nem sempre você deseja selecionar todas as colunas de uma tabela de banco de dados. Usando o método "select", você pode especificar uma cláusula "select" personalizada para a consulta:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $users = DB::table('users')
+            ->select('name', 'email as user_email')
+            ->get();
+    ~~~
+
+- O método "distinct" permite que você force a consulta a retornar resultados distintos:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')->distinct()->get();
+    ~~~
+
+- Se você já tem uma instância do construtor de consultas e deseja adicionar uma coluna à cláusula de seleção existente, pode usar o método "addSelect":
+
+- Exemplo:
+    ~~~php
+        $query = DB::table('users')->select('name');
+
+        $users = $query->addSelect('age')->get();
+    ~~~
+
+### **Raw Expressions(Expressões brutas):**
+
+- Às vezes, você pode precisar inserir uma string arbitrária de consulta. Para criar uma expressão de string bruta, você pode usar o método "raw" fornecido pela fachada "DB":
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+             ->select(DB::raw('count(*) as user_count, status'))
+             ->where('status', '<>', 1)
+             ->groupBy('status')
+             ->get();
+    ~~~
+
+#### **Raw Methods:**
+
+- Em vez de usar o método "DB::raw", você também pode usar os seguintes métodos para inserir uma expressão "raw" em várias partes de sua consulta.
+
+- OBS: Lembre-se, o Laravel não pode garantir que qualquer consulta usando expressões brutas esteja protegida contra vulnerabilidades de injeção SQL.
+
+- **selectRaw:**
+    - O método "selectRaw" pode ser usado no lugar de "addSelect(DB::raw (...))". Este método aceita uma matriz opcional de ligações como seu segundo argumento:
+
+    - Exemplo:
+        ~~~php
+            $orders = DB::table('orders')
+                ->selectRaw('price * ? as price_with_tax', [1.0825])
+                ->get();
+        ~~~
+
+- **whereRaw / orWhereRaw:**
+    - Os métodos "whereRaw" e "orWhereRaw" podem ser usados ​​para injetar uma cláusula "where" bruta em sua consulta. Esses métodos aceitam uma matriz opcional de ligações como seu segundo argumento:
+
+    - Exemplo:
+        ~~~php
+            $orders = DB::table('orders')
+                    ->whereRaw('price > IF(state = "TX", ?, 100)', [200])
+                    ->get();
+        ~~~
+
+- **havingRaw / orHavingRaw:**
+    - Os métodos havingRaw e orHavingRaw podem ser usados ​​para fornecer uma string bruta como o valor da cláusula "having". Esses métodos aceitam uma matriz opcional de ligações como seu segundo argumento.
+
+    - Exemplo:
+        ~~~php
+            $orders = DB::table('orders')
+                ->select('department', DB::raw('SUM(price) as total_sales'))
+                ->groupBy('department')
+                ->havingRaw('SUM(price) > ?', [2500])
+                ->get();
+        ~~~
+
+- **orderByRaw:**
+    - The orderByRaw é um método que é usado para fornecer uma string bruta como para o "order by":
+
+    - Exemplo:
+        ~~~php
+            $orders = DB::table('orders')
+                ->orderByRaw('updated_at - created_at DESC')
+                ->get();
+        ~~~
+
+- **groupByRaw:**
+    - O método groupByRaw pode ser usado para fornecer uma string bruta como o valor da cláusula group by:
+
+    - Exemplo:
+        ~~~php
+            $orders = DB::table('orders')
+                ->select('city', 'state')
+                ->groupByRaw('city, state')
+                ->get();
+        ~~~
+
+### **Joins:**
+
+#### **Inner Join Clause:**
+
+- O query builder também pode ser usado para adicionar cláusulas de junção(joins) às suas consultas. Para realizar um "inner join" básica, você pode usar o método "join" em uma instância do construtor de consultas. 
+
+- O primeiro argumento passado para o método de "join" é o nome da tabela à qual você precisa fazer a junção, enquanto os argumentos restantes especificam as restrições de coluna para a junção. Você pode até juntar várias tabelas em uma única consulta:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $users = DB::table('users')
+                    ->join('contacts', 'users.id', '=', 'contacts.user_id')
+                    ->join('orders', 'users.id', '=', 'orders.user_id')
+                    ->select('users.*', 'contacts.phone', 'orders.price')
+                    ->get();
+    ~~~
+
+#### **Left Join / Right Join Clause:**
+
+- Se desejar realizar uma "left join" ou "right join" em vez de uma "inner join", use os métodos "leftJoin" ou "rightJoin". Esses métodos têm a mesma funcionalidade que o método 'join':
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+            ->leftJoin('posts', 'users.id', '=', 'posts.user_id')
+            ->get();
+
+        $users = DB::table('users')
+                    ->rightJoin('posts', 'users.id', '=', 'posts.user_id')
+                    ->get();
+    ~~~
+
+#### **Advanced Join Clauses:**
+
+- Você também pode especificar cláusulas de junção mais avançadas. Para fazer isso, passe um fechamento como segundo argumento para o método "join". Esse fechamento será um instancia de "Illuminate\Database\Query\JoinClause", o que permite especificar restrições na cláusula "join".
+
+- Exemplo:  
+    ~~~php
+        DB::table('users')
+        ->join('contacts', function ($join) {
+            $join->on('users.id', '=', 'contacts.user_id')->orOn(...);
+        })
+        ->get();
+    ~~~
+
+#### **Subquery Joins:**
+
+- Você pode usar os métodos "joinSub", "leftJoinSub" e "rightJoinSub" para unir uma consulta a uma subconsulta. 
+
+- Cada um desses métodos recebe três argumentos: a subconsulta, seu alias da tabela e um encerramento que define as colunas relacionadas.
+
+- Exemplo:
+    ~~~php
+        $latestPosts = DB::table('posts')
+                   ->select('user_id', DB::raw('MAX(created_at) as last_post_created_at'))
+                   ->where('is_published', true)
+                   ->groupBy('user_id');
+
+        $users = DB::table('users')
+                ->joinSub($latestPosts, 'latest_posts', function ($join) {
+                    $join->on('users.id', '=', 'latest_posts.user_id');
+                })->get();
+    ~~~
+
+### **Unions:**
+
+- O construtor de consultas também fornece um método conveniente para "unir" duas ou mais consultas. Por exemplo, você pode criar uma consulta inicial e usar o método "union" para uni-la com mais consultas:
+
+- Exemplo:
+    ~~~php
+        use Illuminate\Support\Facades\DB;
+
+        $first = DB::table('users')
+                    ->whereNull('first_name');
+
+        $users = DB::table('users')
+                    ->whereNull('last_name')
+                    ->union($first)
+                    ->get();
+    ~~~
+
+- Além do método de união, o construtor de consulta fornece um método "unionAll". As consultas combinadas usando o método "unionAll" não terão seus resultados duplicados removidos. O método "unionAll" tem a mesma assinatura de método do método de união.
+
+### **Basic Where Clauses:**
+
+#### **Where Clauses:**
+
+- Você pode usar o método "where" do construtor de consultas para adicionar cláusulas "where" à consulta. A chamada mais básica para o método where requer três argumentos. O primeiro argumento é o nome da coluna. O segundo argumento é um operador, que pode ser qualquer um dos operadores com suporte do banco de dados. O terceiro argumento é o valor a ser comparado ao valor da coluna.
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+                ->where('votes', '=', 100)
+                ->where('age', '>', 35)
+                ->get();
+    ~~~
+
+- Por conveniência, se você quiser verificar se uma coluna é = para um determinado valor, você pode passar o valor como o segundo argumento para o método where. O Laravel irá assumir que você gostaria de usar o operador =:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')->where('votes', 100)->get();
+    ~~~
+
+- Como dito antes é possível usar qualquer operador disponivel no sql:
+    ~~~php
+        $users = DB::table('users')
+                ->where('votes', '>=', 100)
+                ->get();
+
+        $users = DB::table('users')
+                        ->where('votes', '<>', 100)
+                        ->get();
+
+        $users = DB::table('users')
+                        ->where('name', 'like', 'T%')
+                        ->get();
+    ~~~
+
+- Você também pode passar uma série de condições para a função where. Cada elemento da matriz deve ser uma matriz contendo os três argumentos normalmente passados ​​para o método where:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')->where([
+            ['status', '=', '1'],
+            ['subscribed', '<>', '1'],
+        ])->get();
+    ~~~
+
+#### **Or Where Clauses:**
+
+- Ao encadear chamadas para o método where do construtor de consultas, as cláusulas "where" serão unidas usando o operador "and". No entanto, você pode usar o método "orWhere" para associar uma cláusula à consulta usando o operador "or". O método orWhere aceita os mesmos argumentos do método where:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+                    ->where('votes', '>', 100)
+                    ->orWhere('name', 'John')
+                    ->get();
+    ~~~
+
+- Se precisar agrupar uma condição "ou" entre parênteses, você pode passar um encerramento como o primeiro argumento para o método orWhere:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+            ->where('votes', '>', 100)
+            ->orWhere(function($query) {
+                $query->where('name', 'Abigail')
+                      ->where('votes', '>', 50);
+            })
+            ->get();
+    ~~~
+
+#### **JSON Where Clauses:**
+
+- O Laravel também suporta a consulta de tipos de coluna JSON em bancos de dados que fornecem suporte para tipos de coluna JSON. Para consultar uma coluna JSON, use o operador "->":
+
+- Exemplo: 
+    ~~~php
+        $users = DB::table('users')
+                ->where('preferences->dining->meal', 'salad')
+                ->get();
+    ~~~
+
+- Você pode usar "whereJsonContains" para consultar matrizes JSON:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+                    ->whereJsonContains('options->languages', 'en')
+                    ->get();
+    ~~~
+
+- Se seu aplicativo usa bancos de dados MySQL ou PostgreSQL, você pode passar uma matriz de valores para o método whereJsonContains:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+                ->whereJsonContains('options->languages', ['en', 'de'])
+                ->get();
+    ~~~
+
+- Você pode usar o método whereJsonLength para consultar matrizes JSON por seu comprimento:
+
+- Exemplo:
+    ~~~php
+        $users = DB::table('users')
+                ->whereJsonLength('options->languages', 0)
+                ->get();
+
+        $users = DB::table('users')
+                        ->whereJsonLength('options->languages', '>', 1)
+                        ->get();
+    ~~~
+
+#### **Additional Where Clauses:**
+
+- **whereBetween / orWhereBetween:**
+    - O método whereBetween verifica se o valor de uma coluna está entre dois valores:
+    
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+           ->whereBetween('votes', [1, 100])
+           ->get();
+        ~~~
+
+- **whereNotBetween / orWhereNotBetween:**
+    - O método whereNotBetween verifica se o valor de uma coluna está fora de dois valores:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                    ->whereNotBetween('votes', [1, 100])
+                    ->get();
+        ~~~
+
+- **whereIn / whereNotIn / orWhereIn / orWhereNotIn:** 
+    - O método "whereIn" verifica se o valor de uma determinada coluna está contido na matriz fornecida:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                    ->whereIn('id', [1, 2, 3])
+                    ->get();
+        ~~~
+
+    - O método whereNotIn verifica se o valor da coluna fornecida não está contido na matriz fornecida:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                    ->whereNotIn('id', [1, 2, 3])
+                    ->get();
+        ~~~
+
+- **whereNull / whereNotNull / orWhereNull / orWhereNotNull:** 
+    - O método whereNull verifica se o valor da coluna fornecida é NULL:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereNull('updated_at')
+                ->get();
+        ~~~
+
+    - O método whereNotNull verifica se o valor da coluna não é NULL:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereNotNull('updated_at')
+                ->get();
+        ~~~
+
+- **whereDate / whereMonth / whereDay / whereYear / whereTime:**
+    - O método whereDate pode ser usado para comparar o valor de uma coluna com uma data:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereDate('created_at', '2016-12-31')
+                ->get();
+        ~~~
+
+    - O método whereMonth pode ser usado para comparar o valor de uma coluna com um mês específico:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereMonth('created_at', '12')
+                ->get();
+        ~~~
+
+    - O método whereDay pode ser usado para comparar o valor de uma coluna com um dia específico do mês:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereDay('created_at', '31')
+                ->get();
+        ~~~
+
+    - O método whereYear pode ser usado para comparar o valor de uma coluna com um ano específico:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereYear('created_at', '2016')
+                ->get();
+        ~~~
+
+    - O método whereTime pode ser usado para comparar o valor de uma coluna com um tempo específico:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereTime('created_at', '=', '11:20:45')
+                ->get();
+        ~~~
+
+- **whereColumn / orWhereColumn:**
+    - O método whereColumn pode ser usado para verificar se duas colunas são iguais:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereColumn('first_name', 'last_name')
+                ->get();
+        ~~~
+
+    - Você também pode passar um operador de comparação para o método whereColumn:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereColumn('updated_at', '>', 'created_at')
+                ->get();
+        ~~~
+
+    - Você também pode passar uma matriz de comparações de coluna para o método whereColumn. Essas condições serão unidas usando o operador 'and':
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->whereColumn([
+                    ['first_name', '=', 'last_name'],
+                    ['updated_at', '>', 'created_at'],
+                ])->get();
+        ~~~
+
+#### **Ordering, Grouping, Limit & Offset**
+
+#### **Ordering:**
+
+- **The orderBy Method:**
+    - O método orderBy permite classificar os resultados da consulta por uma determinada coluna. O primeiro argumento aceito pelo método orderBy deve ser a coluna pela qual você deseja classificar, enquanto o segundo argumento determina a direção da classificação e pode ser asc ou desc:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->orderBy('name', 'desc')
+                ->get();
+        ~~~
+
+    - OBS: você pode chamar quantas vezes forem necessárias esse método.
+
+- **The latest & oldest Methods:**
+    - Os métodos "latest" e "oldest" permitem ordenar facilmente os resultados por data. Por padrão, o resultado será ordenado pela coluna created_at da tabela. Ou você pode passar o nome da coluna que deseja classificar:
+
+    - Exemplo:
+        ~~~php
+            $user = DB::table('users')
+                ->latest()
+                ->first();
+        ~~~
+
+- **Random Ordering:**
+    - O método inRandomOrder pode ser usado para classificar os resultados da consulta aleatoriamente:
+
+    - Exemplo:
+        ~~~php
+            $randomUser = DB::table('users')
+                ->inRandomOrder()
+                ->first();
+        ~~~
+
+- **Removing Existing Orderings:**
+    - O método reordenar remove todas as cláusulas "order by" que foram aplicadas anteriormente à consulta:
+
+    - Exemplo:
+        ~~~php
+            $query = DB::table('users')->orderBy('name');
+
+            $unorderedUsers = $query->reorder()->get();
+        ~~~
+
+    - Você pode passar uma coluna e uma direção ao chamar o método reordenar para remover todas as cláusulas "order by" existentes e aplicar uma ordem inteiramente nova à consulta:
+
+    - Exemplo:
+        ~~~php
+            $query = DB::table('users')->orderBy('name');
+
+          $usersOrderedByEmail = $query->reorder('email', 'desc')->get();
+        ~~~
+
+#### **Grouping:**
+
+- **The groupBy & having Methods:**
+    - Como você pode esperar, os métodos groupBy e having podem ser usados ​​para agrupar os resultados da consulta. A assinatura do método "having" é semelhante à do método where:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')
+                ->groupBy('account_id')
+                ->having('account_id', '>', 100)
+                ->get();
+        ~~~
+
+    - Você pode passar vários argumentos para o método groupBy para agrupar por várias colunas:
+
+    - Exemplo: 
+        ~~~php
+            $users = DB::table('users')
+                ->groupBy('first_name', 'status')
+                ->having('account_id', '>', 100)
+                ->get();
+        ~~~
+
+#### **Limit & Offset:**
+    
+- **The skip & take Methods:**
+    - Você pode usar os métodos skip and take para limitar o número de resultados retornados da consulta ou para pular um determinado número de resultados na consulta:
+
+    - Exemplo:
+        ~~~php
+            $users = DB::table('users')->skip(10)->take(5)->get();
+        ~~~
+
+    - Como alternativa, você pode usar os métodos de "limit e offset". Esses métodos são funcionalmente equivalentes aos métodos take e skip, respectivamente:
+
+### **Conditional Clauses:**
+
+- Às vezes, você pode querer que certas cláusulas de consulta se apliquem a uma consulta com base em outra condição. Você pode fazer isso usando o método "when":
+
+- Exemplo:
+    ~~~php
+        $role = $request->input('role');
+
+        $users = DB::table('users')
+                        ->when($role, function ($query, $role) {
+                            return $query->where('role_id', $role);
+                        })
+                        ->get();
+    ~~~
+
+- O método when apenas executa o fechamento fornecido quando o primeiro argumento é verdadeiro. Se o primeiro argumento for falso, o fechamento não será executado.
+
+- Você pode passar outro encerramento como o terceiro argumento para o método when. Este fechamento só será executado se o primeiro argumento for avaliado como falso.
+
+- Exemplo:
+    ~~~php
+        $sortByVotes = $request->input('sort_by_votes');
+
+        $users = DB::table('users')
+                        ->when($sortByVotes, function ($query, $sortByVotes) {
+                            return $query->orderBy('votes');
+                        }, function ($query) {
+                            return $query->orderBy('name');
+                        })
+                        ->get();
+    ~~~
+
+### **Insert Statements:**
+
+- O construtor de consultas também fornece um método de inserção que pode ser usado para inserir registros na tabela do banco de dados. O método "insert" aceita uma matriz de nomes e valores de coluna:
+
+- Exemplo:
+    ~~~php
+        DB::table('users')->insert([
+            'email' => 'kayla@example.com',
+            'votes' => 0
+        ]);
+    ~~~
+
+- Você pode inserir vários registros de uma vez, passando uma matriz de matrizes. Cada array representa um registro que deve ser inserido na tabela:
+
+- Exemplo:
+    ~~~php
+        DB::table('users')->insert([
+            ['email' => 'picard@example.com', 'votes' => 0],
+            ['email' => 'janeway@example.com', 'votes' => 0],
+        ]);
+    ~~~
+
+#### **Auto-Incrementing IDs:**
+
+- Se a tabela tiver um ID de incremento automático, use o método insertGetId para inserir um registro e, em seguida, recuperar o ID:
+
+- Exemplo:
+    ~~~php
+        $id = DB::table('users')->insertGetId(
+            ['email' => 'john@example.com', 'votes' => 0]
+        );
+    ~~~
+
+#### **Upserts:**
+
+- O método upsert irá inserir registros que não existem e atualizar os registros que já existem com novos valores que você pode especificar. O primeiro argumento do método consiste nos valores a inserir ou atualizar, enquanto o segundo argumento lista as colunas que identificam exclusivamente os registros na tabela associada. O terceiro e último argumento do método é uma matriz de colunas que deve ser atualizada se um registro correspondente já existir no banco de dados:
+
+- Exemplo:
+    ~~~php
+            DB::table('flights')->upsert([
+            ['departure' => 'Oakland', 'destination' => 'San Diego', 'price' => 99],
+            ['departure' => 'Chicago', 'destination' => 'New York', 'price' => 150]
+        ], ['departure', 'destination'], ['price']);
+    ~~~
+
+### **Update Statements:**
+
+- Além de inserir registros no banco de dados, o construtor de consultas também pode atualizar os registros existentes usando o método "update". O método "update", como o método "insert", aceita uma matriz de pares de coluna e valor indicando as colunas a serem atualizadas. Você pode restringir a consulta de atualização usando cláusulas where:
+
+- Exemplo:
+    ~~~php
+        $affected = DB::table('users')
+              ->where('id', 1)
+              ->update(['votes' => 1]);
+    ~~~
+
+#### **Update Or Insert:**
+
+- Às vezes, você pode querer atualizar um registro existente no banco de dados ou criá-lo se não houver nenhum registro correspondente. Nesse cenário, o método updateOrInsert pode ser usado. O método updateOrInsert aceita dois argumentos: uma matriz de condições pelas quais irá localizar o registro e uma matriz de pares de coluna e valor indicando as colunas a serem atualizadas.
+
+- Exemplo:
+    ~~~php
+        DB::table('users')
+            ->updateOrInsert(
+                ['email' => 'john@example.com', 'name' => 'John'],
+                ['votes' => '2']
+            );
+    ~~~
+
+#### **Increment & Decrement:**
+
+- O construtor de consultas também fornece métodos convenientes para aumentar ou diminuir o valor de uma determinada coluna. Ambos os métodos aceitam pelo menos um argumento: a coluna a ser modificada.Um segundo argumento pode ser fornecido para especificar o valor pelo qual a coluna deve ser incrementada ou diminuída:
+
+- Exemplo:
+    ~~~php
+        DB::table('users')->increment('votes');
+
+        DB::table('users')->increment('votes', 5);
+
+        DB::table('users')->decrement('votes');
+
+        DB::table('users')->decrement('votes', 5);
+    ~~~
+
+### **Delete Statements:**
+
+- O método de "delete" do construtor de consultas pode ser usado para excluir registros da tabela. Você pode restringir as instruções de exclusão adicionando cláusulas "where" antes de chamar o método delete:
+
+- Exemplo:
+    ~~~php
+        DB::table('users')->delete();
+
+        DB::table('users')->where('votes', '>', 100)->delete();
+    ~~~
 
 
 
