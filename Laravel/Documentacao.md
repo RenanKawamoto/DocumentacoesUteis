@@ -2820,5 +2820,61 @@ OBS: Você pode modificar o prefixo e outras opções de grupo de rota, modifica
         DB::table('users')->where('votes', '>', 100)->delete();
     ~~~
 
+## *Migrations:*
 
+- Migration é um recurso de versionamento de banco de dados que é nativo do laravel.
+
+### **Configurando o banco de dados:**
+
+- Grande parte das configurações relacionada ao seu banco está contida no arquivo ".env"(compo por exemplo: DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD)
+
+### **Diretorio das migrations:**
+
+- As migrations ficam em "database/migrations".
+
+### **Up e Down:**
+
+- As suas migrations quando forem criadas viram por padrão com esses métodos: onde dentro do método Up é a criação/alteração dos recursos do banco, já o down é o rollback (sendo assim, tudo que você fizer no up, você terá que fazer o inverso no down).
+
+### **Comando básico para criar a migration:**
+
+~~~
+    php artisan make:migration <nomeDaMigration>
+~~~
+
+### **Padronização de nomeclatura:**
+
+- Ao criar uma migration de create table você deve seguir os seguintes padrões:
+    - Coloque o termo "create_" e o nome(sempre em ingles);
+    - Após o nome da migration coloque um "_table";
+    - Coloque o nome da migration no plural;
+
+    - Exemplo:
+        ~~~php
+            php artisan make:migration create_people_table
+        ~~~
+
+    - OBS: uma alternativa seria "php artisan make:migration <nomeDaMigration> --create <nomeDaTabela>"
+
+- Ao criar uma migration de alter table você deve seguir os seguintes padrões:
+    - Coloque o termo "add_" + "nomeDaColuna" + "_to_" + "nomeDaTabelaAdicionada";
+
+    - Exemplo:
+        ~~~php
+            php artisan make:migration add_name_to_people
+        ~~~
+
+    - OBS: uma alternativa seria "php artisan make:migration <nomeDaMigration> --table <nomeDaTabelaAlterada>
+
+### **Comandos migrate:**
+
+- Rodar todas as migration pendentes:
+    ~~~php
+        php artisan migrate
+    ~~~
+
+- Voltar as migrations:
+    ~~~php
+        php artisan migrate:rollback <--step <n°PassoParaSeremVoltados>>
+    ~~~
 
