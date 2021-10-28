@@ -276,5 +276,419 @@
 
         - Exemplo: `php bin/console router:match /numeroDaSorte`
 
-### **Parametros de rota:**
+### **Parâmetros de rota:**
+
+- Já definimos rotas estáticas(que não mudam) nessa documentação, porém tem cenários que rotas precisam ser dinamicas, sendo assim partes variáveis ​​são agrupadas entre `{}`e devem ter um nome único.
+
+- Exemplo:
+    ~~~yaml
+        nome_da_rota:
+            path:       /caminho_na_url/{parametro_da_rota_variavel}
+            controller: App\Controller\NomeDaClasse::Método
+    ~~~
+
+    Nesse exemplo o parametro de rota `{parametro_da_rota_variavel}` é usado para criar uma variavel PHP onde o conteudo da rota é armazenado e passado para o controlador.
+
+    `OBS: Para acessar você tem que colocar um atributo na sua função com o mesmo nome do parametro de rota.`
+
+### **Validação de parâmetro de rota:**
+
+- Imagine um cenario onde você tem duas rotas que aceitam parametros, sendo elas: `pagina/{numero}` e `pagina/{nome_da_pagina}`, o Symfony nos disponibiliza um recurso para diferencia-las.
+
+- Esse recurso citado é o `requirement`(que tem que ser definida no arquivo de rotas):
+
+    - Exemplo:
+        ~~~yaml
+            pagina_numero:
+            path:       /pagina/{numero}
+                controller: App\Controller\Pagina::lista
+                requirements:
+                    numero: '\d+'
+
+            pagina_nome:
+                path:       /pagina/{nome_da_pagina}
+                controller: App\Controller\Pagina::nome
+        ~~~
+
+    - Nesse exemplo colocamos uma regra ao parametro de rota `{numero}`, definida por uma regra de expressão regular(no caso só aceita rotas com numeros) | Exemplo: /pagina/1213 -> cai na pagina_numero | Exemplo2: /pagina/ola_mundo -> cai na pagina_nome.
+
+- Uma outra opção que é possível ser adotada é colocar o `requirement` entre `<>` dentro da propria rota:
+
+    - Exemplo:
+        ~~~yaml
+            pagina_numero:
+                path:       /pagina/{numero<\d+>}
+                controller: App\Controller\Pagina::lista
+        ~~~
+
+### **Parâmetros opcionais:**
+
+- Ao adicionar um parametro de rota, caso você tenha testado, você só conseguirá acessar a rota quando for passado um valor: Exemplo /pagina/1 -> você será redirecionado, mas caso coloque /pagina -> você não vai conseguir acessar.
+
+- Para resolver esse problema o Symfony projetou uma solução, sendo ela o `defaults`, que é um parametro que você insere no seu arquivo de rotas.yaml, que tem  a unica e exclusiva função de passar um parametro como padrão caso o usuario não o faça:
+
+- Exemplo:
+    ~~~yaml
+        pagina_numero:
+                path:       /pagina/{numero}
+                controller: App\Controller\Pagina::lista
+                defaults:
+                    numero: 1
+    ~~~
+
+    - Nesse exemplo caso o usuario digite `/pagina` na url, o Symfony passará como padrão `/pagina/1`
+
+- Outra alternativa para esse métodos é:
+
+    - Colocar um `?` após o parametro mostrando qual é o valor default:
+        
+        - Exemplo:
+            ~~~yaml
+                pagina_numero:
+                    path:       /pagina/{numero?1}
+                    controller: App\Controller\Pagina::lista
+            ~~~
+
+### **Conversão de parâmetro:**
+
+- MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
+
+### **Parâmetros especiais:**
+
+- Além de seus próprios parâmetros(definidos pelo programador), as rotas podem incluir qualquer um dos seguintes parâmetros especiais criados pelo Symfony:
+
+    - `_controller`: Este parâmetro é usado para determinar qual controlador e ação são executados quando a rota é correspondida.
+
+    - `_format`: O valor correspondido é usado para definir o "formato de solicitação" da Request. Isso é usado para coisas como definir o Content-Type da resposta (por exemplo, um json se traduz em um Content-Type application/json).
+
+    - `_fragment`: Usado para definir o identificador de fragmento, que é a última parte opcional de um URL que começa com um **#** e é usado para identificar uma parte de um documento.
+
+    - `_locale`: Usado para definir o local(região, tipo pt-br) na solicitação.
+
+### **Parametros extras:**
+
+- Caso você deseje passar mais parametros ao acessar uma rota, você pode ao envia-los pelo `defaults`:
+
+- Exemplo:
+    ~~~yaml
+        index:
+            path:       /index/{n}
+            controller: App\Controller\Controller::método
+            defaults:
+                n: 1
+                ola: "Ola mundo!"
+    ~~~
+
+### **Caracteres de barra em parâmetros de rota:**
+
+- Como o caractere barra é especial ele não é aceito nos parametros de rotas, porém é possível fazer uma configuração para que a rota seja mais aceptivel, através do `requirements: parametro_de_rota: .+`:
+
+- Exemplo:
+    ~~~yaml
+        compartilha:
+            path:       /compartilha/{token}
+            controller: App\Controller\Controller::compartilha
+            requirements:
+                token: .+
+    ~~~
+
+### **Grupos e prefixos de rotas:**
+
+- MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
+
+### **Obtendo o nome e os parâmetros da rota:**
+
+- O `Request` criado pelo Symfony armazena toda a configuração da rota (como o nome e parâmetros) nos "atributos de solicitação". 
+
+- Exemplo:
+    ~~~php
+        use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+        use Symfony\Component\HttpFoundation\Request;
+        use Symfony\Component\HttpFoundation\Response;
+
+        class Controller extends AbstractController
+        {
+            public function list(Request $request): Response
+            {
+                $routeName = $request->attributes->get('_route');
+                $routeParameters = $request->attributes->get('_route_params');
+                $allAttributes = $request->attributes->all();
+
+                ...
+            }
+        }
+    ~~~
+
+### **Redirecionando para URLs e rotas diretamente de uma rota:**
+
+- Para redirecionar para uma rota utilizando o Symfony é muito simples, basta utilizar o controller `RedirectController` e passar como parametro `defaults` o `path`:
+
+- Exemplo:
+    ~~~
+        Pagina:
+            path: /pagina/{n}
+            controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+            defaults:
+                path: '/oi/'
+                n: 1
+    ~~~
+
+### **Redirecionando URLs com barras finais:**
+
+- MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
+
+### **Roteamento de Subdomínio:**
+
+- MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
+
+### **Rotas localizadas (i18n):**
+
+- Se seu aplicativo for traduzido para vários idiomas, cada rota pode definir um URL diferente para cada local de tradução . Isso evita a necessidade de duplicar rotas, o que também reduz os possíveis bugs:
+
+    - Exemplo:
+        ~~~yaml
+            about_us:
+                path:
+                    en: /about-us
+                    pt-br: /sobre
+                controller: App\Controller\CompanyController::about
+        ~~~
+
+- Um requisito comum para aplicativos internacionalizados é prefixar todas as rotas com uma localidade. Isso pode ser feito definindo um prefixo diferente para cada localidade (e configurando um prefixo vazio para sua localidade padrão, se preferir):
+
+    - Exemplo: 
+        ~~~yaml
+            controllers:
+            resource: '../../src/Controller/'
+            type: annotation
+            prefix:
+                pt-br: '' 
+                en: '/en'
+        ~~~
+
+- Outro requisito comum é hospedar o site em um domínio diferente de acordo com a localidade. Isso pode ser feito definindo um host diferente para cada local:
+
+    - Exemplo:
+        ~~~yaml
+            controllers:
+                resource: '../../src/Controller/'
+                type: annotation
+                host:
+                    en: 'https://www.example.com'
+                    pt-br: 'https://www.exemplo.com'
+        ~~~
+
+### **Rotas sem estado:**
+
+- MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
+
+### **EXISTEM MAIS INFORMAÇÕES SOBRE OUTROS TÓPICOS, PORÉM NÃO OS CITAREI AQUI NESSE MOMENTO**
+
+## - Controladores(Controllers):
+
+### **Definindo um controller básico:**
+
+- Embora um controlador possa ser qualquer PHP chamável (função, método em um objeto ou a Closure), um controlador geralmente é um método dentro de uma classe de controller.
+
+
+### **A classe e os serviços do controlador de base:**
+
+- Para ajudar no desenvolvimento, o Symfony vem com uma classe abstrata de controller base opcional chamada AbstractController. Ele pode ser estendido para obter acesso a métodos auxiliares.
+
+- Exemplo:
+    ~~~php
+          namespace App\Controller;
+
+            use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+            class NomeDaClasse_Controller extends AbstractController
+            {
+                // ...
+            }
+    ~~~
+
+### **Redirecionamento:**
+
+- Se você deseja redirecionar o usuário para outra página, use os métodos `redirectToRoute()` e `redirect()`:
+
+- Exemplo:
+    ~~~php
+        use Symfony\Component\HttpFoundation\RedirectResponse;
+       
+        //...
+
+        public function index(): RedirectResponse
+        {
+            return $this->redirectToRoute('homepage');
+
+            return $this->redirectToRoute('homepage', [], 301);
+
+            return $this->redirectToRoute('app_lucky_number', ['max' => 10]);
+
+            return $this->redirectToRoute('blog_show', $request->query->all());
+
+            return $this->redirect('http://symfony.com/doc');
+        }
+    ~~~
+
+    OBS: A diferença entre esses métodos é que o `redirect` não verifica o seu destino de forma alguma.
+
+    OBS2: O redirecionamento tem que ser para o nome da rota.
+
+### **Buscando serviços:**
+
+- Serviços são classes e funcionalidades úteis que já vem embutidas no Symfony (Eles são usados ​​para renderizar modelos, enviar e-mails, consultar o banco de dados e qualquer outro "trabalho" que você possa imaginar).
+
+-  Para vê-los, use o `debug:autowiring` no console:
+
+    - Exemplo:
+        ~~~
+            php bin/console debug:autowiring
+        ~~~
+
+### **Gerando controladores:**
+
+- Para economizar tempo, você pode instalar o `Symfony Maker` e dizer ao Symfony para gerar uma nova classe de controlador:
+
+    - Exemplo:
+        ~~~
+            php bin/console make:controller BrandNewController
+        ~~~
+
+- Com o Symfony Maker é possível criar até mesmo cruds inteiros, porém não citarei aqui para não tomar muito tempo.
+
+### **Gerenciando erros e páginas 404:**
+
+- Quando as coisas não são encontradas, você deve retornar uma resposta 404. Para fazer isso, lance um tipo especial de exceção, utilizando o método `createNotFoundException` da classe `NotFoundHttpException`:
+
+- Exemplo:
+    ~~~php
+        use Symfony\Component\HttpFoundation\Response;
+        use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+        // ...
+        public function index(): Response
+        {
+            $product = ...;
+            if (!$product) {
+                throw $this->createNotFoundException('Pagina não encontrada');
+            }
+
+            return $this->render(...);
+        }
+    ~~~
+
+### **O objeto Request como um Argumento do Controlador:**
+
+- E se você precisar ler parâmetros de consulta, obter um cabeçalho de solicitação ou obter acesso a um arquivo carregado? Essas informações são armazenadas no Request objeto do Symfony. Para acessá-lo em seu controlador, adicione-o como um argumento e digite-o com a classe Request:
+
+- Exemplo:
+    ~~~php
+        use Symfony\Component\HttpFoundation\Request;
+        use Symfony\Component\HttpFoundation\Response;
+        // ...
+
+        public function index(Request $request, string $firstName, string $lastName): Response
+        {
+            $page = $request->query->get('page', 1);
+
+            // ...
+        }
+    ~~~
+
+### **Gerenciando a Sessão:**
+
+- Symfony fornece um objeto de sessão que você pode usar para armazenar informações entre as solicitações. A sessão está habilitada por padrão, mas só será iniciada se você ler ou escrever a partir dela.
+
+- O armazenamento da sessão e outras configurações podem ser controlados na configuração framework.session em config/packages/framework.yaml.
+
+    - Para obter a sessão, adicione um argumento e tipe ele com `SessionInterface`:
+
+        ~~~php
+            use Symfony\Component\HttpFoundation\Response;
+            use Symfony\Component\HttpFoundation\Session\SessionInterface;
+            // ...
+
+            public function index(SessionInterface $session): Response
+            {
+                $session->set('foo', 'bar');
+
+                $foobar = $session->get('foobar');
+
+                $filters = $session->get('filters', []);
+
+                // ...
+            }
+        ~~~
+
+### **Mensagens Flash:**
+
+- Você também pode armazenar mensagens especiais, chamadas de mensagens "flash", na sessão do usuário. Por design, as mensagens flash devem ser usadas exatamente uma vez: elas desaparecem da sessão automaticamente assim que você as recupera. Esse recurso torna as mensagens "flash" particularmente excelentes para armazenar notificações do usuário.
+
+- Exemplo:
+    ~~~php
+        use Symfony\Component\HttpFoundation\Request;
+        use Symfony\Component\HttpFoundation\Response;
+        // ...
+
+        public function update(Request $request): Response
+        {
+            // ...
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                // do some sort of processing
+
+                $this->addFlash(
+                    'notice',
+                    'Your changes were saved!'
+                );
+                // $this->addFlash() is equivalent to $request->getSession()->getFlashBag()->add()
+
+                return $this->redirectToRoute(...);
+            }
+
+            return $this->render(...);
+        }
+    ~~~
+
+### **Requests e Responses:**
+
+- Tanto requests como responses que são classes do HttpFoundation possuem métodos para suas configurações e muitos outros, porém aqui não irei exemplifica-los e explica-los, para não tomar tanto tempo.
+
+### **Retornando resposta JSON:**
+
+- Para retornar JSON de um controlador, você pode usar o método `json`. Ele retornara um objeto JsonResponse que codifica os dados automaticamente:
+
+- Exemplo:
+    ~~~php
+        use Symfony\Component\HttpFoundation\Response;
+        // ...
+
+        public function index(): Response
+        {
+            return $this->json(['username' => 'jane.doe']);
+        }
+    ~~~
+
+### **Respostas de arquivos de streaming:**
+
+- Você pode usar o auxiliar `file()` para disponibilizar arquivos de dentro de um controlador:
+
+- Exemplo:
+    ~~~php
+        use Symfony\Component\HttpFoundation\Response;
+        // ...
+
+        public function download(): Response
+        {
+            // send the file contents and force the browser to download it
+            return $this->file('/path/to/some_file.pdf');
+        }
+    ~~~
+
+## - Criando e usando templates:
+
+
+
+
 
