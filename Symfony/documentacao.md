@@ -688,6 +688,49 @@
 
 ## - Criando e usando templates:
 
+### **Twig: a linguagem dos template**
+
+- A linguagem de templates Twig permite que você escreva templates concisos e legíveis que são mais amigáveis ​​para web designers e, de várias maneiras, mais poderosos do que templates PHP.
+
+- Exemplo:
+    ~~~html
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>Bem vindo ao Symfony!</title>
+            </head>
+            <body>
+                <h1>{{ titulo }}</h1>
+
+                {% if user.isLoggedIn %}
+                    Ola {{ user.name }}!
+                {% endif %}
+
+                {# ... #}
+            </body>
+        </html>
+    ~~~
+
+- A sintaxe Twig é baseada em três construções:
+    - `{{ }}`: usado para exibir o conteúdo de uma variável ou o resultado de uma expressão;
+    - `{%  %}`: usado para executar alguma lógica, como uma condicional ou um loop;
+    - `{# ... #}`: usado para adicionar comentários ao template (ao contrário dos comentários HTML, esses comentários não são incluídos na página renderizada).
+
+- Uma caracteristica do Twig que você **NÃO** pode executar código PHP dentro dos templates, mas esses oforecem utilitários para executar alguma lógica nos modelos. Por exemplo, os filtros modificam o conteúdo antes de serem renderizados, como o *upper* para o conteúdo em letras maiúsculas:
+    - Exemplo:
+        ~~~
+          {{ title|upper }}  
+        ~~~
+
+- Twig vem com uma longa lista de tags , filtros e funções que estão disponíveis por padrão, porém você também pode criar seus próprios filtros e funções Twig.
+
+### **Configuração do Twig:**
+
+- Twig tem várias opções de configuração para definir coisas como o formato usado para exibir números e datas, o cache de template, etc, porém não irei explicar sobre como fazer isso nessa documentação.
+
+### **Criando os templates:**
+
+
 
 
 
