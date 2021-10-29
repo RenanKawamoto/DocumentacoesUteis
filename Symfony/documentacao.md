@@ -537,7 +537,7 @@
 
 ### **Buscando serviços:**
 
-- Serviços são classes e funcionalidades úteis que já vem embutidas no Symfony (Eles são usados ​​para renderizar modelos, enviar e-mails, consultar o banco de dados e qualquer outro "trabalho" que você possa imaginar).
+- Serviços são classes e funcionalidades úteis que já vem embutidas no Symfony (Eles são usados ​​para renderizar templates, enviar e-mails, consultar o banco de dados e qualquer outro "trabalho" que você possa imaginar).
 
 -  Para vê-los, use o `debug:autowiring` no console:
 
@@ -716,7 +716,7 @@
     - `{%  %}`: usado para executar alguma lógica, como uma condicional ou um loop;
     - `{# ... #}`: usado para adicionar comentários ao template (ao contrário dos comentários HTML, esses comentários não são incluídos na página renderizada).
 
-- Uma caracteristica do Twig que você **NÃO** pode executar código PHP dentro dos templates, mas esses oforecem utilitários para executar alguma lógica nos modelos. Por exemplo, os filtros modificam o conteúdo antes de serem renderizados, como o *upper* para o conteúdo em letras maiúsculas:
+- Uma caracteristica do Twig que você **NÃO** pode executar código PHP dentro dos templates, mas esses oforecem utilitários para executar alguma lógica nos templates. Por exemplo, os filtros modificam o conteúdo antes de serem renderizados, como o *upper* para o conteúdo em letras maiúsculas:
     - Exemplo:
         ~~~
           {{ title|upper }}  
@@ -729,6 +729,253 @@
 - Twig tem várias opções de configuração para definir coisas como o formato usado para exibir números e datas, o cache de template, etc, porém não irei explicar sobre como fazer isso nessa documentação.
 
 ### **Criando os templates:**
+
+- Como visto em "Criando sua primeira página com o Symfony", podemos seguir os mesmos passos:
+
+    - 1°: Vá até o diretorio `templates/` e crie uma arquivo <nomeDoTemplate>.html.twig;
+    - 2°: Depois crie um controlador que reenderize esse template.
+
+        OBS: Para você ter acesso ao método render() é necessário herdar de AbstractController.
+
+### **Nomenclatura de templates:**
+
+- Por convensão os nomes dos arquivos Twig e seus diretorios ficam em snake_case (Exemplo: templates/novo_diretorio/exemplo_snake_case.html.twig).
+
+### **Localização do template:**
+
+- Os templates são armazenados por padrão no diretorio templates/. Quando um serviço ou controlador renderiza um template, eles estão, na verdade, se referindo ao <seu-projeto>/templates/nome_do_template.html.twig.
+
+- O diretório de templates padrão é configurável com a opção twig.default_path e você pode adicionar mais diretórios de templates.
+
+### **Variáveis ​​de template:**
+
+- Uma necessidade comum é imprimir as variaveis armazenados nos templates, passados ​​do controlador ou serviço. 
+
+- Essas ​​geralmente armazenam objetos e matrizes em vez de strings, números e valores booleanos. É por isso que o Twig fornece acesso rápido a variáveis ​​PHP complexas:
+
+    - Exemplo:
+        ~~~html
+            <p>{{ user.name }}</p>
+        ~~~
+
+    - Como você pode ver o Twig acessa o valor através do `<nomeDaVariavel>.<nomeDoIndice/Propriedade/Método>`
+
+- Uma caracteristica muito importante do Twig é que ele não se importa se a variavel é um array ou um objeto, pois ele irá seguir uma ordem para acessar o elemento solicitado:
+
+    - Ordem seguindo o exemplo: `user.name`
+        - 1°: $user['name'] (matriz e elemento);
+        - 2°: $user->name (objeto e propriedade pública);
+        - 3°: $user->name() (objeto e método público);
+        - 4°: $user->getName()(objeto e método getter );
+        - 5°: $user->isName()(objeto e método emissor );
+        - 6°: $user->hasName()(objeto e método hasser );
+
+    - Caso não encontrei retornará um null.
+
+### **Links para páginas:**
+
+- O Twig apresenta um ferramenta muito util para ajudar na manutenção das nossas rotas, em vez de colocarmos as rotas "na mão" podemos utilizar o método `path()`, passando o nome das rotas e parametros se for necessário, assim se quisermos futuramente mudar o caminho das rotas alteramos apenas no arquivo .yaml.
+
+- Exemplo:
+    ~~~php
+        <a href="{{ path('index') }}">Home</a>       
+        <h1>
+            <a href="{{ path('blog', {titulo: 'teste'}) }}">Blog</a>
+        </h1>
+    ~~~
+
+- A path()função gera URLs relativos. Se você precisar gerar URLs absolutos, use a função url(), que recebe os mesmos argumentos de path().
+
+### **Vinculando o CSS, JavaScript e imagens:**
+
+- Se um template precisa ser vinculado a um ativo estático (por exemplo, uma imagem), o Symfony fornece uma função do Twig (o `asset()`) para ajudar a gerar essa URL, porém para utiliza-lo é necessário instala-lo>
+
+    ~~~
+        composer require symfony/asset
+    ~~~
+
+- Agora você poderá usar a função asset() dentro dos seus templates:
+
+    - Exemplo:
+        ~~~
+            <img src="{{ asset('img/logo.png') }}"/>
+        ~~~
+
+- A principal função de utilizar o `asset` é tornar seu software mais portavel, pois com ele independente de onde fica seu arquivo ele irá criar um caminho correto.
+
+    `OBS: PARA O ASSET TER ACESSO É NECESSÁRIO COLOCAR OS ARQUIVOS DENTRO DA PASTA PUBLIC`.
+
+### **A variavel global App:**
+
+- O Symfony cria um objeto de contexto que é injetado em cada template Twig automaticamente, que se trata da variável `app`. Ele fornece acesso a algumas informações do aplicativo.
+
+- A variável app (que é uma instância de AppVariable ) da acesso a:
+
+    - `app.user`: O objeto do usuário atual ou null se o usuário não está autenticado.
+
+    - `app.request`: O objeto Request que armazena os dados da solicitação atual.
+
+    - `app.session:` O objeto Session que representa a sessão do usuário atual ou null se não houver nenhuma.
+
+    - `app.flashes:` Uma matriz de todas as mensagens flash armazenadas na sessão. Você também pode obter apenas as mensagens de algum tipo (por exemplo app.flashes('notice')).
+
+    - `app.environment:` O nome do atual ambiente de configuração ( dev, prod, etc.).
+
+    - `app.debug:` Verdadeiro se estiver no modo de depuração . Caso contrário, falso.
+
+    - `app.token:` Um objeto TokenInterface que representa o token de segurança.
+
+### **templates de renderização:**
+
+- `Renderizando um template em controladores:`
+    
+    - Como foi explicado anteriormente se sua classe Controller extender a classe AbstractController você poder usar o método render().
+
+- `Renderizando um template em serviços:`
+
+    - Para utilizar o método render em um serviço utilize o use `use Twig\Environment;` e crie uma lógica para usar de maneira dinamica:
+
+        Exemplo:
+        ~~~php
+            namespace App\Service;
+
+            use Twig\Environment;
+
+            class AlgumServico
+            {
+                private $twig;
+
+                public function __construct(Environment $twig)
+                {
+                    $this->twig = $twig;
+                }
+
+                public function AlgumMétodo()
+                {
+                    // ...
+
+                    $htmlContents = $this->twig->render('index.html.twig');
+                }
+            }
+        ~~~
+
+- `Renderizando um template em e-mails:`
+
+    - MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
+
+- `Renderizando um template diretamente de uma rota:`
+
+    - Embora os templates geralmente sejam renderizados em controladores e serviços, você pode renderizar páginas estáticas que não precisam de nenhuma variável diretamente da definição de rota. Use o `TemplateController` fornecido pelo Symfony:
+
+        Exemplo:
+        ~~~twig
+            teste:
+                path:          /teste
+                controller:    Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+                defaults:
+                    template:  'teste.html.twig'
+        ~~~
+
+- `Verificando se um template existe:`
+
+    - Esse processo é possível através de dois métodos presentes no Enviroment do Twig, são eles: `getLoader()` e `exists()`:
+
+        Exemplo:
+        ~~~php
+            use Twig\Environment;
+
+            class SeuServico
+            {
+                public function __construct(Environment $twig)
+                {
+                    $loader = $twig->getLoader();
+                    if ($loader->exists('teste.html.twig')) {
+                        //...
+                    }
+                }
+            }
+        ~~~
+
+### **templates de depuração:**
+
+- `Confirmar sintaxe:`
+
+    - O comando lint:twig verifica se seus templates Twig não têm erros de sintaxe:
+
+        Exemplo:
+        ~~~
+            #-------CONFERE TODOS OS TEMPLATES---------------------------#
+            php bin/console lint:twig
+            #------------------------------------------------------------#
+
+            #---CONFERE OS TEMPLATES DE UM DIRETORIO OU UM EXPECIFICO----#
+            php bin/console lint:twig templates/email/
+            php bin/console lint:twig templates/article/recent_list.html.twig
+            #------------------------------------------------------------#
+        ~~~
+
+- `Inspecionando Informações do Twig:`
+
+    - O comando `debug:twig` lista todas as informações disponíveis sobre o Twig (funções, filtros, variáveis ​​globais, etc.).
+
+        Exemplo:
+        ~~~
+            php bin/console debug:twig
+        ~~~
+
+- `Os utilitários Dump Twig:`
+
+    - Symfony fornece uma função `dump()` como uma alternativa melhorada para a var_dump() função do PHP. Esta função é útil para inspecionar o conteúdo de qualquer variável e você pode usá-lo em seus templates Twig também.
+
+    - Para utiliza-la, certifique-se de que o componente VarDumper esteja instalado no aplicativo:
+
+        ~~~
+            composer require symfony/var-dumper
+        ~~~
+
+    - Em seguida, use a tag `{% dump %}` ou a função `{{ dump() }}` dependendo de suas necessidades:
+
+### **Como reutilizar o conteúdo de templates:**
+
+- `Incluindo Templates:`
+
+    - Se determinado código Twig é repetido em vários templates, você pode extraí-lo em um único "fragmento de template" e incluí-lo em outros templates.
+
+    - Por padrão os framentros de template tem um `_` antes de seus nomes, para facilitar na diferenciação.
+
+    - Após criar o fragmento de template, para adiciona-lo em outro, basta utilizar o método `include()`:
+
+        Exemplo:
+        ~~~
+            {{include('_cabecalho.html.twig')}}
+
+            <h1>Teste</h1>
+        ~~~
+
+    - A função include() do Twig leva como argumento o caminho do fragmento de template a ser incluído. O fragmento incluído tem acesso a todas as variáveis ​​do template que o incluio.
+
+        OBS: Você também pode passar variáveis ​​para o modelo incluído.
+
+- `Controladores de incorporação:`
+
+    - MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
+
+- `Herança de modelo e layouts:`
+
+    - O conceito de herança de template Twig é semelhante à herança de classe PHP. Você define um template pai a partir do qual outros templates podem se estender e os modelos filhos podem substituir partes do template pai.
+
+    - Symfony recomenda a seguinte herança de template em três níveis para aplicações médias e complexas:
+
+        - `templates/base.html.twig`: Define os elementos comuns a todos os modelos de aplicações, tais como \<head>, \<header>,\<footer>, etc .;
+
+        - `templates/layout.html.twig`: estende-se base.html.twige define a estrutura de conteúdo usada em todas ou na maioria das páginas, como um conteúdo de duas colunas + layout da barra lateral. Algumas seções do aplicativo podem definir seus próprios layouts (por exemplo templates/blog/layout.html.twig);
+
+        - `templates/*.html.twig`: as páginas do aplicativo que se estendem do layout.html.twig modelo principal ou de qualquer outro layout de seção.
+
+
+
+
+
 
 
 
