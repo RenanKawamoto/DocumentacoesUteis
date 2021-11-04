@@ -960,7 +960,7 @@
 
     - MAIS INFORMAÇÕES SOBRE ESSE TEMA QUE PRECISAM SER ADICIONADAS;
 
-- `Herança de modelo e layouts:`
+- `Herança de template e layouts:`
 
     - O conceito de herança de template Twig é semelhante à herança de classe PHP. Você define um template pai a partir do qual outros templates podem se estender e os modelos filhos podem substituir partes do template pai.
 
@@ -968,11 +968,42 @@
 
         - `templates/base.html.twig`: Define os elementos comuns a todos os modelos de aplicações, tais como \<head>, \<header>,\<footer>, etc .;
 
-        - `templates/layout.html.twig`: estende-se base.html.twige define a estrutura de conteúdo usada em todas ou na maioria das páginas, como um conteúdo de duas colunas + layout da barra lateral. Algumas seções do aplicativo podem definir seus próprios layouts (por exemplo templates/blog/layout.html.twig);
+        - `templates/layout.html.twig`: estende-se base.html.twige define a estrutura de conteúdo usada em todas ou na maioria das páginas, como um conteúdo de duas colunas + layout da barra lateral. 
 
         - `templates/*.html.twig`: as páginas do aplicativo que se estendem do layout.html.twig modelo principal ou de qualquer outro layout de seção.
 
+    - Para criar um layout com o Twig é necessário utilizar duas tags, sendo elas: `{% block nome_do_bloco %}` e `{% endbock %}`:
 
+        - Exemplo:
+            ~~~html
+                {# _layout.html.twig #}
+                <h1>{% block titulo %}Esse conteudo vai ser substituido{% endblock %}</h1>
+            ~~~
+
+    - Agora para utilizar o layout criado você tem que extende-lo com a tag `{% extends 'nome_do_arquivo_do_twig.html.twig' %}`:
+
+        - Exemplo:
+            ~~~html
+                {% extends '_layout.html.twig' %}
+
+                {% block titulo %} Novo titulo {% endblock %}
+            ~~~
+
+
+### **Saida de escape de variaveis no Twig:**
+
+- Com o avanço das tecnologias na web muitos usuarios começaram a desenvolver tecnicas maliciosas que podem deixar seu site menos seguro, e umas delas é a **Cross-Site Scripting**(XSS), que se trata de enviar um comando através de uma variavel. Porém com o Symfony, você não precisa se preocupar com isso, pois ele utiliza o "escape de saida", assim trocando caracteres especiais por tags html.
+
+- Se você estiver renderizando uma variável que é confiável e contém conteúdo HTML, use o filtro do Twig `raw` para desativar o escape de saída para essa variável:
+
+    - Exemplo:
+        ~~~html
+            <h1>{{ product.title|raw }}</h1>
+        ~~~
+
+### **Namespaces de templates:**
+
+- O twig disponibiliza funcionalidades muito interessante para você organizar seus layouts, sendo uma delas a possibilidade de você definir namespaces para seus layouts, assim não precisando coloca-los no diretorio padrão(que é o templates)
 
 
 
