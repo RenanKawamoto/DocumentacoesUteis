@@ -38,5 +38,21 @@
 - Um objeto Request contém informações sobre a solicitação do cliente. Essas informações podem ser acessadas por meio de propriedades públicas:
     - `request`: equivalente a $_POST;
     - `query`: equivalente a $_GET($request->query->get('name'));
-    -
-    -
+    - `cookies`: equivale a $_COOKIE;
+    - `attributes`: sem equivalente - usado pro seu aplicativo para armazenar outros dados;
+    - `files`: equivalente a $_FILES;
+    - `server`: equivalente a $_SERVER;
+    - `headers`: principalmente equivalente a um subconjunto de $_SERVER ($request->headers->get('User-Agent'))
+
+- Cada propriedade é uma instância de `ParameterBag`(ou uma subclasse de), que é uma classe de suporte de dados.
+
+- Todas as instâncias de ParameterBag tem métodos para recuperar e atualizar seus dados:
+
+    - `all()`: retorna todos os pametros;
+    - `keys()`: retorna as chaves de parametro;
+    - `replace()`: substitui os parametros atuais por um novo conjunto;
+    - `add()`: adiciona parâmetros;
+    - `get()`: retorna um parametro por nome;
+    - `set()`: define um parametro por nome;
+    - `has()`: retorna true se o parametro for definido;
+    - `remover()`: remove um parametro;
