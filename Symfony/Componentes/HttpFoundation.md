@@ -227,3 +227,58 @@
         $request->query->set('email', 'email@gmail.com');
         var_dump($request->query->filter('email', null/* esse parametro valor padrão caso não encontre o parametro passado*/, FILTER_VALIDATE_EMAIL));
         ~~~
+
+- `Uma caracteristica importante do método get() é que ele não da suporte a parametros de tipo array, sendo assim é necessário usar outro método, no caso o all():`
+    
+    ~~~php
+    <?php
+
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\Request;
+
+    $request = Request::createFromGlobals();
+    $request->query->set('chave', ['chaveDoArray' => 'valor do array']);
+    var_dump($request->query->all()['chave']['chaveDoArray']);
+    ~~~
+
+- Um ponto muito interessante a ser mencionado é a propriedade publica `attributes`(que existe nas instâncias de ParameterBag), onde você pode guardar informações que pertencem à solicitação e que precisam ser acessadas de muitos pontos diferentes em seu aplicativo.
+
+- Caso você seja observador deve ter percebido, que até agora não foi mostrado nenhuma maneira para acessar o body das requisições, e por esse motivo passaremos para esse tópico:
+
+    - `Como acessar os dados "brutos" vindos de um body de uma request (basta utilizar o método getContent()):`
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        var_dump($request->getContent()); 
+        ~~~
+
+    - `Como acessar os dados em formato de array vindo de um body de uma request (json):`
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        var_dump($request->toArray());
+        ~~~
+
+## **Indentificando uma requisição (request):**
+
+- As vezes em seu aplicativo você precisa indentificar uma solicitação e na maioria das vezes isso é feito por meio das "URI" da solicitação, que pode ser acessada por meio do método `getPathInfo()`:
+
+    ~~~php
+    <?php
+
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\Request;
+
+    $request = Request::createFromGlobals();
+    var_dump($request->getPathInfo());
+    ~~~
+
