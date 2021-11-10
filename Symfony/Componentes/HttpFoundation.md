@@ -149,3 +149,81 @@
         $request->query->remove('chave');
         var_dump($request->query->all());
         ~~~
+
+- Outra caracteristica das instâncias de ParameterBag é a presença de métodos para filtrar os seus resultados:
+
+    - `getAlpha()`: retorna caracteres alfabeticos:
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave','valor12');
+        var_dump($request->query->getAlpha('chave'));
+        ~~~
+
+    - `getAlnum()`: retorna caracteres alfabeticos e numericos:
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave', 'valor22');
+        var_dump($request->query->getAlnum('chave'));
+        ~~~
+
+    - `getBoolean()`: retorna o parametro convertendo seu valor para um booleano:
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave', '1');
+        var_dump($request->query->getBoolean('chave'));
+        ~~~
+
+    - `getDigits()`: retorna os digitos do parametro solicitado(esse virá como sendo uma string):
+
+        ~~~php
+        <?php
+
+        require 'vendor\autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave', 'valor78');
+        var_dump($request->query->getDigits('chave'));
+        ~~~
+
+    - `getInt()`: retorna o valor do parametro solicitado porém convertido para inteiro:
+
+        ~~~php
+        <?php
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave', '189');
+        var_dump($request->query->getInt('chave'));
+        ~~~
+
+    - `filter()`: o método filter usa a função `filter_var()` do php para filtrar o parametro:
+
+        ~~~php
+        <?php
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('email', 'email@gmail.com');
+        var_dump($request->query->filter('email', null/* esse parametro valor padrão caso não encontre o parametro passado*/, FILTER_VALIDATE_EMAIL));
+        ~~~
