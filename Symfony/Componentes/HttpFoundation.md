@@ -39,7 +39,7 @@
     - `request`: equivalente a $_POST;
     - `query`: equivalente a $_GET($request->query->get('name'));
     - `cookies`: equivale a $_COOKIE;
-    - `attributes`: sem equivalente - usado pro seu aplicativo para armazenar outros dados;
+    - `attributes`: sem equivalente - usado no seu aplicativo para armazenar outros dados;
     - `files`: equivalente a $_FILES;
     - `server`: equivalente a $_SERVER;
     - `headers`: principalmente equivalente a um subconjunto de $_SERVER ($request->headers->get('User-Agent'))
@@ -48,11 +48,105 @@
 
 - Todas as instâncias de ParameterBag tem métodos para recuperar e atualizar seus dados:
 
-    - `all()`: retorna todos os pametros;
-    - `keys()`: retorna as chaves de parametro;
-    - `replace()`: substitui os parametros atuais por um novo conjunto;
+    - `all()`: retorna todos os pametros:
+        
+        ~~~php
+        <?php
+        
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::creteFromGlobals();
+        var_dump($request->query->all()); 
+        ~~~
+
+    - `keys()`: retorna as chaves de parametro:
+        
+        ~~~php
+        <?php
+        
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        var_dump($request->query->keys());
+        ~~~
+
+    - `replace()`: substitui os parametros atuais por um novo conjunto:
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->replace(['chave' => 'valor']);
+        var_dump($request->query->all());
+        ~~~
+
     - `add()`: adiciona parâmetros;
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->add(['chave' => 'valor']);
+        var_dump($request->query->all());
+        ~~~
+
     - `get()`: retorna um parametro por nome;
-    - `set()`: define um parametro por nome;
-    - `has()`: retorna true se o parametro for definido;
-    - `remover()`: remove um parametro;
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        var_dump($request->query->get('nomeDoParametroSolicitadoNaQueryString', 'valorPadraoCasoEleNaoExista'));
+        ~~~
+
+    - `set()`: define um parametro por nome:
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave', 'valor');
+        echo $request->query->get('chave');
+        ~~~
+
+    - `has()`: retorna true se o parametro for definido:
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave', 'valor');
+        var_dump($request->query->has('chave'));
+        ~~~
+
+    - `remove()`: remove um parametro:
+
+        ~~~php
+        <?php
+
+        require 'vendor/autoload.php';
+        use Symfony\Component\HttpFoundation\Request;
+
+        $request = Request::createFromGlobals();
+        $request->query->set('chave', 'valor');
+        $request->query->remove('chave');
+        var_dump($request->query->all());
+        ~~~
+
