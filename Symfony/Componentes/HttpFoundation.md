@@ -356,16 +356,154 @@
     ~~~
 
 
+## **Enviando a response:**
 
+- Antes de enviar a response, você pode utilizar o método `prapare()` para corrigir qualquer incompatibilidade com a especificação HTTP.
 
+- Após esse processo você pode utilizar o método `send()` para enviar a response:
 
+    ~~~php
+    <?php
+    require 'vendor/autoload.php';
 
+    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\HttpFoundation\Request;
 
+    $request = Request::createFromGlobals();
+    $response = new Response(
+        '<html><h1>Ola mundo</h1></html>',
+        Response::HTTP_OK,
+        ['content-type' => 'text/html']
+    );
 
+    $response->prepare($request);
+    $response->send();
+    ~~~
 
+## **Configurado Cookies:**
 
+- Os cookies das responses podem ser manipulados por meio do atributo público `headers`:
 
+    ~~~php
+    <?php
 
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\Cookie;
+    use Symfony\Component\HttpFoundation\Response;
+
+    $response = new Response(
+        'conteudo',
+        Response::HTTP_OK,
+        ['content-type' => 'text/html']
+    );
+
+    $response->headers->setCookie(Cookie::create('chave', 'valor'));
+    ~~~
+
+    Como você pode ter percebido no atributo header temos o método `setCookie()`, que irá gerar para nos o nosso cookie (através de uma instancia da classe `Cookie`).
+
+    OBS: a classe Cookie aprensenta diversos métodos, como getValue(), getName() e etc (esse podem ser muito uteis caso esteja tentando acessar, os valores presentes dentro dos cookies).
+
+- Além do setCookie, podemos também "limpar o nosso cookie" com o método `cleanCookie()` (presente nas instancias de HeaderBag).
+
+- Caso você queira criar ou alterar um cookie, é possível fazer isso através do métodos `->with*()`:
+
+    ~~~php
+    <?php
+
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\Cookie;
+    use Symfony\Component\HttpFoundation\Response;
+
+    $response = new Response(
+        'conteudo',
+        Response::HTTP_OK,
+        ['content-type' => 'text/html']
+    );
+    $cookie = Cookie::create('nomeCookie', 'valorCookie')->withValue('novoValorDoCookie')->withExpires(strtotime('Fri, 20-May-2080 15:25:52 GMT'));
+    $response->headers->setCookie($cookie);
+    
+    var_dump($response->headers->getCookies()[0]->getValue());
+    ~~~
+
+## **Gerenciando o Cache HTTP:**
+
+- **...**
+
+## **Redirecionando o cliente:**
+
+- Para redirecionar os clientes, o HttpFoundation utiliza a classe `RedirectResponse()`:
+
+    ~~~php
+    <?php
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\RedirectResponse;
+
+    $redirect = new RedirectResponse('/olamundo');
+    $redirect->send();
+    ~~~
+
+## **Transmitindo uma response:**
+
+- **...**
+
+## **Disponibilizando arquivos:**
+
+- Ao enviar um arquivo para o usuario fazer download, você deve adicionar um header `Content-Disposition` a sua response. Embora a criação desse cabeçalho para downloads básicos de arquivos seja direta, o uso de nomes de arquivos não ASCII é mais complexo. Por esse motivo a classe HeaderUtils possui o método `makeDisposition()`:
+
+    ~~~php
+    <?php
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\Response;
+    use Symfony\Component\HttpFoundation\HeaderUtils;
+
+    $conteudoQueApareceraNoArquivo = "Ola mundo";
+    $response = new Response($conteudoQueApareceraNoArquivo);
+
+    $disposition = HeaderUtils::makeDisposition(
+        HeaderUtils::DISPOSITION_ATTACHMENT,
+        'nomeDoArquivo.txt'
+    );
+
+    $response->headers->set('Content-Disposition', $disposition);
+    $response->send();
+    ~~~
+
+- Caso você esteja disponibilizando(para a leitura, dentro do seu site) um arquivo estático, você pode usar a classe `BinaryFileResponse()`:
+
+    ~~~php
+    <?php
+
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+    $caminho = 'texto.txt';
+    $response = new BinaryFileResponse($caminho);
+    $response->send();
+    ~~~
+
+    Você ainda assim pode usar o `HeaderUtils::makeDisposition()`, para disponibilizar o arquivo para download:
+
+    ~~~php
+
+    <?php
+
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\BinaryFileResponse;
+    use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+    $caminho = 'texto.txt';
+    $response = new BinaryFileResponse($caminho);
+    $response->headers->set('Conten-type', 'text/plain');
+    $response->setContentDisposition(
+        ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+        'nomeDoArquivo.txt'
+    );
+    $response->send();
+    ~~~
+
+- **...**
+
+## **Crianção de uma response JSON:**
 
 
 
