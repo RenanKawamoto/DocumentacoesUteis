@@ -282,3 +282,96 @@
     var_dump($request->getPathInfo());
     ~~~
 
+## **Simulando uma requisição:**
+
+- Em vez de criar uma requisição baseada nas superglobais do php, é possível com o HttpFoundation simular uma requisição:
+
+    ~~~php
+    $request = Request::create(
+        '/uri',
+        'GET',
+        ['chave'=>'valor']
+    )
+    ~~~
+
+- O método create recebe uma URI, um método(GET, POST, PUT ...) e alguns outros parametros(isso depende do método escolhido).
+
+- Caso você deseje também é possível sobreescrever as superglobais post com o método: `overrideGlobals()`;
+
+## **Acessando uma sessão atrelada a uma Request:**
+
+- Se você tem um sessão atrelada a uma requisição você pode acessar ela via `getSession()` método presente na classe Request e RequestStack.
+
+- Caso você queria conferir se uma requisição possui uma sessão que foi inicializada anterirormente, é possível utilizar o método `hasPreviousSession() `.
+
+## **Processando headers http:**
+
+- **...**
+
+## **Acessando Accept-\*Dados de Cabeçalhos:**
+
+- **...**
+
+## **Anonimizando endereços IP:**
+
+- **..**
+
+## **Acessando outros dados:**
+
+- A classe Request possui muitos outros métodos que você pode usar para acessar as informações da solicitação. Dê uma olhada na API Request para obter mais informações sobre eles (https://github.com/symfony/symfony/blob/5.3/src/Symfony/Component/HttpFoundation/Request.php).
+
+## **Sobrescrevendo a request:**
+
+- **...**
+
+## **Response:**
+
+- Um objeto da classe Reponse tem todas as informações que precisam ser enviadas para um cliente em uma determinada solicitação. O seu construtor aceita três argumentos: o conteúdo da response, o código de status e uma matriz de cabeçalhos HTTP:
+
+    ~~~php
+    <?php
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\Response;
+
+    $response = new Response(
+        '<html><h1>Ola mundo!</h1></html>',
+        Response::HTTP_OK,
+        ['content-type' => 'text/html']
+    );
+    ~~~
+
+    OBS: Nesse momento a response foi criada, porém ainda não foi enviada para o cliente.
+
+- Essas informações também podem ser manipuladas após a criação do objeto Response:
+
+    ~~~php
+    <?php
+
+    require 'vendor/autoload.php';
+    use Symfony\Component\HttpFoundation\Response;
+    $response = new Response();
+    $response->setContent('<html><h1>Ola mundo</h1></html>');
+    $response->headers->set('Content-Type', 'text/html');
+    $response->setStatusCode(Response::HTTP_OK);
+    ~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
