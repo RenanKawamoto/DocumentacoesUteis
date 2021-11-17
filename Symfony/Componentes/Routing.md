@@ -154,8 +154,102 @@
     var_dump($context->getPathInfo());
     ~~~
 
+## *Exemplo básico de criação de rotas com o componente routing:*
+
+~~~php
+<?php
+
+require 'vendor/autoload.php';
+use Symfony\Component\HttpFoundation\Request;
+
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+
+$route = new Route('/', ['conteudo' => 'index']);
+$route2 = new Route('/nome/{name}', ['name'=>'', 'conteudo' => 'Ola ']);
+$routeCollection = new RouteCollection();
+$routeCollection->add('index', $route);
+$routeCollection->add('nome', $route2);
+
+$context = new RequestContext();
+$context->fromRequest(Request::createFromGlobals());
+
+$urlMatcher = new UrlMatcher($routeCollection, $context);
+
+try
+{
+    extract($urlMatcher->match($context->getPathInfo()));
+    if(isset($name))
+    {
+        echo $conteudo . $name;
+    }
+    else
+    {
+        echo $conteudo;
+    }
+}catch(Exception $ex)
+{
+    echo 'erro';
+}
+~~~
 
 
+## *Carregadores de rotas:*
+
+- Os carregadores de rotas tem a função de organizar a estrutura das suas rotas (colocando elas em um arquivo a parte), os três carregadores são `YamlFileLoader`, `XmlFileLoader` e `PhpFileLoader`.
+
+- Nessa documentação só explicarei o `YamlFileLoader`.
+
+- OBS: Todos os carregadores tem recebem no seu construtor uma instancia da classe `FileLocator`, que é uma classe que recebe uma matriz de caminhos para os arquivos. Caso o carregador encontre o arquivo ele irá retornar uma instancia de `RouteCollection`.
+
+- Exemplo:
+    ~~~yaml
+    # src/routes/routes.yaml
+    route1:
+        path:       /
+        controller: Index::show
+        methods:    GET
+    route2:
+        path:       /sobrenos
+        controller: SobreNos
+        methods:    GET
+    ~~~
+
+    ~~~php
+    <?php
+    //require 'vendor/autoload.php';
+
+    use Symfony\Component\Routing\Loader\YamlFileLoader;
+    use Symfony\Component\Config\FileLocator;
+    use Symfony\Component\Routing\RequestContext;
+    use Symfony\Component\Routing\Matcher\UrlMatcher;
+
+
+    $fileLocator = new FileLocator([__DIR__.'/src/routes']);
+    $loader = new YamlFileLoader($fileLocator);
+    $routes = $loader->load('routes.yaml');
+
+    $context = new RequestContext();
+
+    $url = new UrlMatcher($routes, $context);
+    var_dump($url->match('/'));
+    ~~~
+
+    `OBS: Para utilizar esse carregador é necessário o pacote symfony/config e symfony/yaml`
+
+## *Carregadores de roteamento de fechamento:*
+
+- ...
+
+## *Carregadores de roteamento de anotação:*
+
+- ...
+
+## *O roteador multifuncional:*
+
+- ...
 
 
 
