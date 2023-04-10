@@ -1,6 +1,5 @@
 # **-Documentação básica de PostgreSQL**
 --------------------------------------------------
---------------------------------------------------
 ## *-Sumário:*
 1. [introducao](#introducao)
     1. [O que é PostgreSQL](#oqueeh)
